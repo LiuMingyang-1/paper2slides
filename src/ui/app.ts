@@ -26,6 +26,12 @@ function editedOutlineKey(paper: Paper, language: Language, emphasis: Emphasis) 
 }
 
 export function mountApp(root: HTMLElement, host: AnnaHost | null) {
+  const themeParams = new URLSearchParams(window.location.search);
+  const mode = themeParams.get("themeMode");
+  const theme = mode === "light" || mode === "dark" ? mode : themeParams.get("theme");
+  if (theme === "light" || theme === "dark") document.documentElement.dataset.theme = theme;
+  else delete document.documentElement.dataset.theme;
+
   const hostCache = createCache(host?.storage);
   const demoCache = createCache();
   const embeddingCache = host ? createEmbeddingCache() : undefined;
@@ -56,6 +62,10 @@ export function mountApp(root: HTMLElement, host: AnnaHost | null) {
   let overflow: string[] = [];
   let compressionFailed = false;
   let exportUrl: string | undefined;
+  let renderedStage: number | undefined;
+  let topbar: HTMLElement;
+  const syncScroll = () => topbar?.classList.toggle("is-scrolled", window.scrollY > 0);
+  window.addEventListener("scroll", syncScroll, { passive: true });
   const progressLabel = el("strong");
   const meter = el("progress");
   const progress = el("div", "progress-card", progressLabel, meter);
@@ -236,7 +246,10 @@ export function mountApp(root: HTMLElement, host: AnnaHost | null) {
     const save = button(t().saveLogs, () => download(new Blob([list.textContent!], { type: "application/json" }), "paper2slides-calls.json"), "primary");
     const close = button("×", () => modal.close(), "icon");
     close.setAttribute("aria-label", language === "zh" ? "关闭" : "Close");
-    modal.append(el("div", "dialog-heading", el("h2", "", t().calls), close),
+    const title = el("h2", "", t().calls);
+    title.id = "logs-title";
+    modal.setAttribute("aria-labelledby", title.id);
+    modal.append(el("div", "dialog-heading", title, close),
       el("p", "muted", `${logs.length} ${t().attempts}`), list, save);
     modal.addEventListener("close", () => modal.remove());
     document.body.append(modal);
@@ -245,23 +258,32 @@ export function mountApp(root: HTMLElement, host: AnnaHost | null) {
 
   function header() {
     updateQuota();
-    const langs = el("div", "language-control");
+    const langs = el("div", "language-control segmented");
     for (const lang of ["zh", "en"] as const) {
-      const toggle = button(lang === "zh" ? "中文" : "EN", () => { language = lang; render(); }, "locale");
+      const toggle = button(lang === "zh" ? "中文" : "EN", () => {
+        if (language === lang) return;
+        const restoreFocus = document.activeElement === toggle;
+        language = lang;
+        render();
+        if (restoreFocus) topbar.querySelector<HTMLElement>('.locale[aria-pressed="true"]')?.focus();
+      }, "locale");
       toggle.setAttribute("aria-pressed", String(lang === language));
       langs.append(toggle);
     }
+    const icon = el("span", "brand-icon", "P");
+    icon.setAttribute("aria-hidden", "true");
     return el("header", "topbar",
-      el("div", "brand", el("span", "brand-icon", "P"), el("div", "", el("strong", "", "Paper2Slides"), el("small", "", t().product))),
+      el("div", "brand", icon, el("div", "", el("strong", "", "Paper2Slides"), el("small", "", t().product))),
       el("div", "top-actions", el("span", "mode", demo ? t().demoMode : host ? t().workspace : t().standalone),
         quotaLabel, button(t().calls, logsDialog, "subtle"), langs));
   }
 
-  function stepper() {
-    const stage = deck ? 2 : outline ? 1 : 0;
+  function stepper(stage: number) {
     return el("ol", "stepper", ...[t().source, t().outline, t().slides].map((label, index) => {
+      const symbol = el("span", "step-symbol", index < stage ? "✓" : String(index + 1));
+      symbol.setAttribute("aria-hidden", "true");
       const item = el("li", index === stage ? "current" : index < stage ? "complete" : "",
-        el("span", "step-symbol", index < stage ? "✓" : String(index + 1)), label);
+        symbol, label);
       if (index === stage) item.setAttribute("aria-current", "step");
       return item;
     }));
@@ -291,21 +313,30 @@ export function mountApp(root: HTMLElement, host: AnnaHost | null) {
   }
 
   function controls(onChange: () => void) {
-    function select<T extends string>(label: string, selected: T, options: readonly (readonly [T, string])[], change: (value: T) => void) {
-      const field = el("select");
-      for (const [value, text] of options) {
-        const option = el("option", "", text);
-        option.value = value;
-        field.append(option);
-      }
-      field.value = selected;
-      field.addEventListener("change", () => { change(field.value as T); onChange(); });
-      return el("label", "control", label, field);
+    const outputLanguage = el("select");
+    for (const [value, label] of [["zh", "简体中文"], ["en", "English"]] as const) {
+      const option = el("option", "", label);
+      option.value = value;
+      outputLanguage.append(option);
+    }
+    outputLanguage.value = output;
+    outputLanguage.addEventListener("change", () => {
+      output = outputLanguage.value === "en" ? "en" : "zh";
+      onChange();
+    });
+    const segments = el("div", "segmented");
+    for (const value of ["balanced", "method", "experiments"] as const) {
+      const radio = el("input");
+      radio.type = "radio";
+      radio.name = "emphasis";
+      radio.value = value;
+      radio.checked = value === emphasis;
+      radio.addEventListener("change", () => { emphasis = value; onChange(); });
+      segments.append(el("label", "segment", radio, el("span", "segment-label", t()[value])));
     }
     return el("div", "settings",
-      select<Language>(t().lang, output, [["zh", "简体中文"], ["en", "English"]], (value) => { output = value; }),
-      select<Emphasis>(t().emphasis, emphasis, [["balanced", t().balanced], ["method", t().method], ["experiments", t().experiments]],
-        (value) => { emphasis = value; }));
+      el("label", "control", t().lang, outputLanguage),
+      el("fieldset", "control", el("legend", "", t().emphasis), segments));
   }
 
   function estimate(label: string, count: string, budget: string | undefined, detail: string = t().estimateHint) {
@@ -368,7 +399,7 @@ export function mountApp(root: HTMLElement, host: AnnaHost | null) {
     const current = outline!;
     const editor = el("section", "editor");
     const rows = el("ol", "outline-rows");
-    const refresh = button(t().update, () => { void draft(); });
+    const refresh = button(t().update, () => { void draft(); }, "subtle");
     const submit = button(t().generate, () => { void generate(); }, "primary");
     const stale = el("p", "muted", t().settingsChanged);
     let vectorPending = false;
@@ -429,8 +460,11 @@ export function mountApp(root: HTMLElement, host: AnnaHost | null) {
           el("ul", "", ...module.points.map((point) => el("li", "", point.text))));
         return details;
       }));
+    const footer = vector
+      ? el("div", "", amount, vector.section, submit)
+      : el("div", "outline-footer", amount, submit);
     editor.append(el("div", "outline-main", el("h1", "", t().confirm), el("p", "muted", t().outlineHelp),
-      controls(sync), stale, refresh, rows, amount, ...(vector ? [vector.section] : []), submit), interpretation);
+      controls(sync), stale, refresh, rows, footer), interpretation);
     return editor;
   }
 
@@ -439,6 +473,10 @@ export function mountApp(root: HTMLElement, host: AnnaHost | null) {
     preview = undefined;
     document.documentElement.lang = language === "zh" ? "zh-CN" : "en";
     const body = el("main", deck ? "main is-preview" : "main");
+    const stage = deck ? 2 : outline ? 1 : 0;
+    const stepChanged = stage !== renderedStage;
+    if (stepChanged) body.classList.add("step-enter");
+    renderedStage = stage;
     if (error) {
       const notice = el("div", "error", `${t().failed} · ${message()}`);
       notice.role = "alert";
@@ -475,7 +513,10 @@ export function mountApp(root: HTMLElement, host: AnnaHost | null) {
     } else {
       body.append(el("p", "current-file", filename));
     }
-    root.replaceChildren(header(), stepper(), body);
+    topbar = header();
+    root.replaceChildren(topbar, stepper(stage), body);
+    if (stepChanged) window.scrollTo(0, 0);
+    syncScroll();
     if (busy) {
       root.querySelectorAll<HTMLButtonElement | HTMLInputElement | HTMLSelectElement>("button, input, select")
         .forEach((control) => { control.disabled = true; });

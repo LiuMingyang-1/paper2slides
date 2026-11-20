@@ -65,3 +65,24 @@
 - 不引入新的运行时依赖和外部字体/资源（CSP `connect-src 'self'`，bundle 不能访问外部域名）。
 - 不改变文案和交互流程；`src/ui/strings.ts` 只在必要时新增。
 - 现有测试和 e2e 脚本依赖的按钮文字（"理解论文并生成大纲"、"生成幻灯片"、"导出 PPTX"、"调用日志"、"试用 BERT Demo"、"下载 PPTX"、"更换论文"）保持不变。
+
+## 7. 实现记录
+
+- 使用系统字体、蓝色主操作和浅深色表面令牌。顶栏和预览工具栏吸顶，滚动时顶栏下沿用渐变过渡。宿主 URL 的明确 `themeMode` 优先，其次使用宿主解析后的 `theme`，无有效参数时跟随系统。
+- 上传入口和 Demo 使用同一套卡片。大纲采用分组列表，汇报侧重点支持方向键切换。预览在 900×600 保留缩略图、幻灯片和 PDF 三栏，引用气泡从角标附近淡入，核验计数用颜色和形状共同表达状态。
+- 按钮与链接使用同一蓝色色系的对比度变体。主按钮使用比基础强调色更深的底色，毛玻璃上的链接和说明文字单独提高对比度。大纲沿用现有的上下移动图标按钮。减少动态效果时保留淡入，减少透明度或提高对比度时使用实色面板。
+- 上传截图用 Puppeteer 注入离线宿主替身，随后使用内置 BERT Demo。独立运行 Run 6 回放生成 10 页截图和通过 XML 校验的 PPTX。基线与改版后 PPTX 解包比较，差异仅为文档属性中的创建和修改时间。录制与回放累计额度均为 0。
+
+| 界面 | 配置 | 改版前 | 改版后 |
+|---|---|---|---|
+| 首页上传 | 浅色 1280×820 | [前](images/redesign/before-upload-light-1280x820.png) | [后](images/redesign/after-upload-light-1280x820.png) |
+| 首页上传 | 深色 1280×820 | [前](images/redesign/before-upload-dark-1280x820.png) | [后](images/redesign/after-upload-dark-1280x820.png) |
+| 首页上传 | 浅色 900×600 | [前](images/redesign/before-upload-light-900x600.png) | [后](images/redesign/after-upload-light-900x600.png) |
+| 首页上传 | 深色 900×600 | [前](images/redesign/before-upload-dark-900x600.png) | [后](images/redesign/after-upload-dark-900x600.png) |
+| 大纲 | 浅色 1280×820 | [前](images/redesign/before-outline-light-1280x820.png) | [后](images/redesign/after-outline-light-1280x820.png) |
+| 预览与引用气泡 | 浅色 1280×820 | [前](images/redesign/before-preview-light-1280x820.png) | [后](images/redesign/after-preview-light-1280x820.png) |
+| 预览与引用气泡 | 深色 1280×820 | [前](images/redesign/before-preview-dark-1280x820.png) | [后](images/redesign/after-preview-dark-1280x820.png) |
+| 预览与引用气泡 | 浅色 900×600 | [前](images/redesign/before-preview-light-900x600.png) | [后](images/redesign/after-preview-light-900x600.png) |
+| 预览与引用气泡 | 深色 900×600 | [前](images/redesign/before-preview-dark-900x600.png) | [后](images/redesign/after-preview-dark-900x600.png) |
+| 核验展开 | 浅色 1280×820 | [前](images/redesign/before-verification-light-1280x820.png) | [后](images/redesign/after-verification-light-1280x820.png) |
+| 调用日志 | 浅色 1280×820 | [前](images/redesign/before-logs-light-1280x820.png) | [后](images/redesign/after-logs-light-1280x820.png) |

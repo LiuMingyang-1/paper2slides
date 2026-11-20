@@ -58,7 +58,10 @@ export function renderPreview(
   const marks = (checks: readonly PointVerification[]) => {
     const totals = counts(checks);
     return statuses.map((status) => {
-      const item = el("span", `stat ${status}`, `${glyph[status]} ${totals[status]}`);
+      const icon = el("span", "status-glyph", `${glyph[status]} `);
+      icon.setAttribute("aria-hidden", "true");
+      const item = el("span", `stat ${status}`, icon, String(totals[status]));
+      item.role = "img";
       item.title = t[status];
       item.setAttribute("aria-label", `${t[status]} ${totals[status]}`);
       return item;
@@ -115,7 +118,9 @@ export function renderPreview(
       const source = point.evidenceIds.map((id) => evidence.get(id)).find(Boolean);
       if (source) reveal(source);
     }, "failed-claim");
-    item.append(el("span", "counter unsupported", `❌ ${index + 1}`), el("span", "", point.text), el("small", "", reason));
+    const icon = el("span", "status-glyph", "❌ ");
+    icon.setAttribute("aria-hidden", "true");
+    item.append(el("span", "counter unsupported", icon, String(index + 1)), el("span", "", point.text), el("small", "", reason));
     failed.append(item);
   }
   return {
