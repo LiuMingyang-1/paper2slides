@@ -1,0 +1,5902 @@
+{
+  "id": "722204e563c50d5761e4958cb5c94b768a2a1854f03fc738c636f1b795e09282",
+  "title": "Deep learning: systematic review, models, challenges, and research directions",
+  "authors": [
+    "Tala Talaei Khoei",
+    "Hadjar Ould Slimane",
+    "Naima Kaabouch"
+  ],
+  "pageCount": 22,
+  "bodyPageCount": 18,
+  "blocks": [
+    {
+      "id": "e1-1",
+      "page": 1,
+      "sectionPath": [
+        "Abstract"
+      ],
+      "type": "text",
+      "text": "The current development in deep learning is witnessing an exponential transition into automation applications. This automation transition can provide a promising framework for higher performance and lower complexity. This ongoing transition undergoes several rapid changes, resulting in the processing of the data by several studies, while it may lead to time-consuming and costly models. Thus, to address these challenges, several studies have been conducted to investigate deep learning techniques; however, they mostly focused on specific learning approaches, such as supervised deep learning. In addition, these studies did not comprehensively investigate other deep learning techniques, such as deep unsupervised and deep reinforcement learning techniques.",
+      "bbox": [
+        51.023601531,
+        467.93763779634946,
+        544.2470092131593,
+        551.6234757299494
+      ]
+    },
+    {
+      "id": "e1-2",
+      "page": 1,
+      "sectionPath": [
+        "Abstract"
+      ],
+      "type": "text",
+      "text": "Moreover, the majority of these studies neglect to discuss some main methodologies in deep learning, such as transfer learning, federated learning, and online learning. Therefore, motivated by the limitations of the existing studies, this study summarizes the deep learning techniques into supervised, unsupervised, reinforcement, and hybrid learning-based models. In addition to address each category, a brief description of these categories and their models is provided. Some of the critical topics in deep learning, namely, transfer, federated, and online learning models, are explored and discussed in detail. Finally, challenges and future directions are outlined to provide",
+      "bbox": [
+        51.023601531,
+        405.69031827338216,
+        544.2290764708775,
+        476.90397757494947
+      ]
+    },
+    {
+      "id": "e1-3",
+      "page": 1,
+      "sectionPath": [
+        "Abstract"
+      ],
+      "type": "text",
+      "text": "wider outlooks for future researchers.",
+      "bbox": [
+        51.023601531,
+        393.2181396413496,
+        204.49745055892487,
+        402.1844794199496
+      ]
+    },
+    {
+      "id": "e1-4",
+      "page": 1,
+      "sectionPath": [
+        "Abstract"
+      ],
+      "type": "text",
+      "text": "Keywords Artificial intelligence \u0002 Neural networks \u0002 Deep learning \u0002 Supervised learning \u0002 Unsupervised learning \u0002 Reinforcement learning \u0002 Online learning \u0002 Federated learning \u0002 Transfer learning",
+      "bbox": [
+        51.023601531,
+        355.53958737172155,
+        520.8050054043682,
+        377.90761633940235
+      ]
+    },
+    {
+      "id": "e1-5",
+      "page": 1,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "The main concept of artificial neural networks (ANN) was proposed and introduced as a mathematical model of an artificial neuron in 1943 [1–3]. In 2006, the concept of deep learning (DL) was proposed as an ANN model with several layers, which has significant learning capacity. In recent years, DL models have seen tremendous progress in addressing and solving challenges, such as anomaly detection, object detection, disease diagnosis, semantic segmentation, social network analysis, and video recommendations [4–7].",
+      "bbox": [
+        51.023601531,
+        170.64067404088195,
+        289.1277456363164,
+        291.686261051982
+      ]
+    },
+    {
+      "id": "e1-6",
+      "page": 1,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "Several studies have been conducted to discuss and investigate the importance of the DL models in different",
+      "bbox": [
+        51.02559529627585,
+        145.75310359541453,
+        289.1227630732515,
+        167.13483518744934
+      ]
+    },
+    {
+      "id": "e1-7",
+      "page": 1,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "& Tala Talaei Khoei",
+      "bbox": [
+        50.513401031,
+        115.11989730159,
+        128.08973193754855,
+        122.74127705859
+      ]
+    },
+    {
+      "id": "e1-8",
+      "page": 1,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "tala.talaeikhoei@und.edu",
+      "bbox": [
+        65.196412542847,
+        105.141817559731,
+        151.83456398047701,
+        112.763197316731
+      ]
+    },
+    {
+      "id": "e1-9",
+      "page": 1,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "1",
+      "bbox": [
+        51.023601531,
+        89.483659638635,
+        54.199101447,
+        94.564069499135
+      ]
+    },
+    {
+      "id": "e1-10",
+      "page": 1,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "School of Electrical Engineering and Computer Science, University of North Dakota, Grand Forks, ND 58202, USA",
+      "bbox": [
+        65.1968,
+        75.09452294273099,
+        271.89624007944917,
+        92.69398244159
+      ]
+    },
+    {
+      "id": "e1-11",
+      "page": 1,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "applications, as illustrated in Table 1. For instance, the authors of [8] reviewed supervised, unsupervised, and reinforcement DL-based models. In [9], the authors out-lined DL-based models, platforms, applications, and future directions. Another survey [10] provided a comprehensive review of the existing models in the literature in different applications, such as natural processing, social network analysis, and audio. In this study, the authors provided a recent advancement in DL applications and elaborated on some of the existing challenges faced by these applications. In [11], the authors highlighted different DL-based models, such as deep neural networks, convolutional neural net-works, recurrent neural networks, and auto-encoders. They also covered their frameworks, benchmarks, and software development requirements.",
+      "bbox": [
+        306.1408705970763,
+        133.2839137433081,
+        544.2450123136103,
+        316.57682027737553
+      ]
+    },
+    {
+      "id": "e1-12",
+      "page": 1,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "In [12], the authors discussed the main concepts of deep learning and neural networks. They also provided several applications of DL in a variety of areas.",
+      "bbox": [
+        306.1408693019383,
+        95.92416466580812,
+        544.2420188370556,
+        142.2502535219081
+      ]
+    },
+    {
+      "id": "e2-1",
+      "page": 2,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "Other studies covered particular challenges of DL models. For instance, the authors of [13] explored the importance of class imbalanced dataset on the performance of the DL models as well as the strengths and weaknesses of the methods proposed in the literature for solving class imbalanced data. Another study [14] explored the chal-lenges that DL faces in the case of data mining, big data, and information processing due to huge volume of data, velocity, and variety. In [15], the authors analyzed the complexity of DL-based models and provided a review of the existing studies on this topic. In [16], the authors focused on the activation functions of DL.",
+      "bbox": [
+        51.02177439002176,
+        585.4632171204144,
+        289.11993867023966,
+        731.396374576982
+      ]
+    },
+    {
+      "id": "e2-2",
+      "page": 2,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "They introduced these functions as a strategy in DL to transfer nonlinearly separable input into the more linearly separable data by applying a hierarchy of layers, whereas they provided the most common activation functions and their characteristics.",
+      "bbox": [
+        51.02178299770793,
+        535.6312894108817,
+        289.11795427338416,
+        594.4295568990144
+      ]
+    },
+    {
+      "id": "e2-3",
+      "page": 2,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "In [17], the authors outlined the applications of DL in cybersecurity. They provided a comprehensive literature review of DL models in this field and discussed different types of DL models, such as convolutional neural net-works, auto-encoders, and generative adversarial networks. They also covered the applications of different attack cat-egories, such as malware, spam, insider threats, network intrusions, false data injection, and malicious in DL. In another study [18], the authors focused on detecting tiny objects using DL. They analyzed the performance of dif-ferent DL in detecting these objects. In [19], the authors reviewed DL models in the building and construction industry-based applications while they discussed several important key factors of using DL models in manufacturing and construction, such as progress monitoring and automation systems.",
+      "bbox": [
+        51.01979047775714,
+        336.4171522099472,
+        289.12193955844555,
+        532.1822373760469
+      ]
+    },
+    {
+      "id": "e2-4",
+      "page": 2,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "Another study [20] focused on using different strategies in the domain of artificial intelligence (AI), including DL in smart grids. In such a study, the authors introduced the main AI applications in smart grids while exploring different DL models in depth. In [7], the authors discussed the current progress of DL in medical areas and gave clear definitions of DL models and their theoretical concepts and architectures. In [21], the authors analyzed the DL applications in biology, medicine, and engineering domains. They also provided an overview of this field of study and major DL applications and illustrated the main characteristics of several frameworks, including molecular shuttles.",
+      "bbox": [
+        51.01978909295576,
+        186.9781558999472,
+        289.11795325536593,
+        345.3834919885472
+      ]
+    },
+    {
+      "id": "e2-5",
+      "page": 2,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "Despite the existing surveys in the field of DL focusing on a comprehensive overview of these techniques in dif-ferent domains, the increasing amount of these applications and the existing limitations in the current studies motivated us to investigate this topic in depth. In general, the recent studies in the literature mostly discussed specific learning strategies, such as supervised models, while they did not cover different learning strategies and compare them with each other. In addition, the majority of the existing surveys",
+      "bbox": [
+        51.02077628696537,
+        74.89890866744722,
+        289.09901506741244,
+        183.4723170465146
+      ]
+    },
+    {
+      "id": "e2-6",
+      "page": 2,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "excluded new strategies, such as online learning or feder-ated learning, from their studies. Moreover, these surveys mostly explored specific applications in DL, such as the Internet of Things, smart grid, or constructions; however, this field of study requires formulation and generalization in different applications. In fact, limited information, dis-cussions, and investigations in this domain may lead to prevent any development and progress in DL-based applications. To fill these gaps, this paper provides a comprehensive survey on four types of DL models, namely, supervised, unsupervised, reinforcement, and hybrid learning. It also provides the major DL models in each category and describes the main learning strategies, such as online, transfer, and federated learning. Finally, a detailed discussion of future direction and challenges is provided to support future studies.",
+      "bbox": [
+        306.13804948752033,
+        535.6442164618933,
+        544.2471722056014,
+        731.4093016279936
+      ]
+    },
+    {
+      "id": "e2-7",
+      "page": 2,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "In short, the main contributions of this paper are as follows:",
+      "bbox": [
+        306.13804948752033,
+        523.2288246484585,
+        544.1883932907922,
+        544.6105562404933
+      ]
+    },
+    {
+      "id": "e2-8",
+      "page": 2,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "• Classifications and in-depth descriptions of supervised,",
+      "bbox": [
+        306.13804948752033,
+        504.54396880983154,
+        544.2033368882973,
+        514.3073165687515
+      ]
+    },
+    {
+      "id": "e2-9",
+      "page": 2,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "unsupervised, enforcement, and hybrid models. Description and discussion of learning strategies, such as online, federated, and transfer learning, • Comparison of different classes of learning strategies,",
+      "bbox": [
+        306.13804948752033,
+        454.7688279188968,
+        544.2441836004991,
+        501.1845801727828
+      ]
+    },
+    {
+      "id": "e2-10",
+      "page": 2,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "their advantages, and disadvantages, • Current challenges and future directions in the domain",
+      "bbox": [
+        306.13804948752033,
+        429.82447065483166,
+        544.1744451057638,
+        451.35265246325025
+      ]
+    },
+    {
+      "id": "e2-11",
+      "page": 2,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "of deep learning.",
+      "bbox": [
+        319.85754560875375,
+        417.4987422391829,
+        389.11654308181323,
+        426.4650820177829
+      ]
+    },
+    {
+      "id": "e2-12",
+      "page": 2,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "The remainder of this paper is organized as follows: Sect. 2 provides descriptions of the supervised, unsuper-vised, reinforcement, and hybrid learning models, along with a brief description of the models in each category. Section 3 highlights the main learning approaches that are used in deep learning. Section 4 discusses the challenges and future directions in the field of deep learning. The conclusion is summarized in Sect. 5.",
+      "bbox": [
+        306.1370532275449,
+        311.5982993741138,
+        544.2491653317365,
+        407.7563159397463
+      ]
+    },
+    {
+      "id": "e2-13",
+      "page": 2,
+      "sectionPath": [
+        "2 Categories of deep learning models"
+      ],
+      "type": "text",
+      "text": "DL models can be classified into four categories, namely, deep supervised, unsupervised, reinforcement learning, and hybrid models. Figure 1 depicts the main categories of DL along with examples of models in each category. In the following, short descriptions of these categories are pro-vided. In addition, Table 2 provides the most common techniques in every category.",
+      "bbox": [
+        306.141693115,
+        174.60831769838194,
+        544.2378646947247,
+        258.294155631982
+      ]
+    },
+    {
+      "id": "e2-14",
+      "page": 2,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Deep supervised learning-based models are one of the main categories of deep learning models that use a labeled training dataset to be trained. These models measure the accuracy through a function, loss function, and adjust the weights till the error has been minimized sufficiently.",
+      "bbox": [
+        306.141693115,
+        74.99829171984943,
+        544.237865234379,
+        133.796559207982
+      ]
+    },
+    {
+      "id": "e3-1",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "caption",
+      "text": "Table 1 Summary of related works",
+      "bbox": [
+        51.023601531,
+        722.3008283925899,
+        173.98270837887466,
+        730.1085085436499
+      ]
+    },
+    {
+      "id": "e3-2",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "References Topics  Concepts covered  Concepts not covered",
+      "bbox": [
+        51.023601531000004,
+        705.9165555549858,
+        502.72329852738187,
+        713.5379353119858
+      ]
+    },
+    {
+      "id": "e3-3",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "[8]  General DL  Studies different DL categories, namely, supervised, unsupervised, and  Different models in DL categories,",
+      "bbox": [
+        51.080299377,
+        687.9962965999999,
+        541.8190530898113,
+        695.1694765999999
+      ]
+    },
+    {
+      "id": "e3-4",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "reinforcement learning",
+      "bbox": [
+        162.9356783758838,
+        679.03858882,
+        236.54525740010592,
+        686.21176882
+      ]
+    },
+    {
+      "id": "e3-5",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Applications of these DL models",
+      "bbox": [
+        427.74875362117723,
+        676.2609741199999,
+        535.7983639611693,
+        683.4341541199999
+      ]
+    },
+    {
+      "id": "e3-6",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "[9]  General DL  Reviews of supervised, unsupervised, and reinforcement learning models,  Lack of comprehensive analysis of",
+      "bbox": [
+        51.079492681177214,
+        664.46906322,
+        541.5369081071036,
+        671.64224322
+      ]
+    },
+    {
+      "id": "e3-7",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "different DL models",
+      "bbox": [
+        433.70089898117726,
+        655.51135544,
+        500.1938866184695,
+        662.68453544
+      ]
+    },
+    {
+      "id": "e3-8",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Detailed discussions of DL applications and future directions",
+      "bbox": [
+        156.92534272117723,
+        652.7337407399999,
+        356.6569603436631,
+        659.9069207399999
+      ]
+    },
+    {
+      "id": "e3-9",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "[10]  General DL  Studies DL algorithms, applications, and relevant techniques  Limited investigation on",
+      "bbox": [
+        51.079492681177214,
+        640.99762124,
+        507.6077615520974,
+        648.17080124
+      ]
+    },
+    {
+      "id": "e3-10",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "unsupervised and reinforcement models. Lack of investigation on the different architecture of DL models",
+      "bbox": [
+        427.74794370539365,
+        593.37487922,
+        537.3644955599782,
+        639.15650504
+      ]
+    },
+    {
+      "id": "e3-11",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "[11]  General DL  A short review of supervised, unsupervised, and reinforcement learning models, Lack of discussion on analysis and",
+      "bbox": [
+        51.07947978539363,
+        581.5829683200001,
+        541.89555421132,
+        588.7561483200001
+      ]
+    },
+    {
+      "id": "e3-12",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "different DL models in different",
+      "bbox": [
+        433.7008860853937,
+        572.6252605400001,
+        539.192062322678,
+        579.7984405400001
+      ]
+    },
+    {
+      "id": "e3-13",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Comprehensive analysis of current studies on DL architecture",
+      "bbox": [
+        156.92532982539365,
+        569.84764584,
+        358.8638961182498,
+        577.02082584
+      ]
+    },
+    {
+      "id": "e3-14",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "categories",
+      "bbox": [
+        433.7008860853937,
+        563.6675527600001,
+        466.1236596853937,
+        570.8407327600002
+      ]
+    },
+    {
+      "id": "e3-15",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "[12]  General DL  Compares the differences between DL, classical ML, and other conventional  No discussion on supervised,",
+      "bbox": [
+        51.07947978539363,
+        551.9322302800001,
+        522.57180239848,
+        559.1054102800001
+      ]
+    },
+    {
+      "id": "e3-16",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "learning approaches,  unsupervised, and reinforcement",
+      "bbox": [
+        162.93485871254563,
+        542.9179340800001,
+        539.34827637848,
+        550.0911140800001
+      ]
+    },
+    {
+      "id": "e3-17",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "learning models",
+      "bbox": [
+        433.70088417254567,
+        533.9602263000002,
+        485.6235491411878,
+        541.1334063000002
+      ]
+    },
+    {
+      "id": "e3-18",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Discusses different applications of DL",
+      "bbox": [
+        156.92532791254564,
+        531.1826116000001,
+        282.1762238438796,
+        538.3557916000001
+      ]
+    },
+    {
+      "id": "e3-19",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "[13]  Class balancing Investigates DL techniques in domain of class balancing  Limited discussions in different DL",
+      "bbox": [
+        51.079477872545624,
+        519.4464921000001,
+        544.2116944615848,
+        526.6196721000001
+      ]
+    },
+    {
+      "id": "e3-20",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "models, Lack of discussions of DL in the presence of class balancing",
+      "bbox": [
+        427.74792889676206,
+        489.7391656400002,
+        535.6708132026965,
+        517.6619643200002
+      ]
+    },
+    {
+      "id": "e3-21",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "[14]  Big data  Analyzes the emerging research directions in the field of big data,  Limited discussions of different DL",
+      "bbox": [
+        51.07946497676204,
+        478.0038431600002,
+        544.267470728104,
+        485.1770231600002
+      ]
+    },
+    {
+      "id": "e3-22",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "models",
+      "bbox": [
+        433.7008712767621,
+        468.9895469600002,
+        456.7666300767621,
+        476.1627269600002
+      ]
+    },
+    {
+      "id": "e3-23",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Discusses the challenges in big data and future directions",
+      "bbox": [
+        156.92531501676206,
+        466.2119322600002,
+        344.66098447025297,
+        473.3851122600002
+      ]
+    },
+    {
+      "id": "e3-24",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "[15]  Model  Discusses the complexity of DL models  No analysis of supervised,",
+      "bbox": [
+        51.07946497676204,
+        454.4758127600002,
+        513.7862378480879,
+        461.6489927600002
+      ]
+    },
+    {
+      "id": "e3-25",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "complexity  unsupervised, and reinforcement",
+      "bbox": [
+        103.29383921676205,
+        445.5181049800002,
+        539.3482577840035,
+        452.6912849800002
+      ]
+    },
+    {
+      "id": "e3-26",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "learning models, No discussion of the future directions of different DL models, No investigations of different DL applications",
+      "bbox": [
+        427.7479231980691,
+        395.11774826000016,
+        544.3097070407609,
+        443.7335772000002
+      ]
+    },
+    {
+      "id": "e3-27",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "[16]  Activation  Explores of different activation functions in DL models  Lack of discussions of different DL",
+      "bbox": [
+        51.079459278069066,
+        383.32583736000015,
+        544.2682590850064,
+        390.49901736000015
+      ]
+    },
+    {
+      "id": "e3-28",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "function  models,",
+      "bbox": [
+        103.29383351806908,
+        374.36812958000013,
+        458.75916867937616,
+        381.54130958000013
+      ]
+    },
+    {
+      "id": "e3-29",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "No investigations into the DL models’ architecture or different applications",
+      "bbox": [
+        427.7479174993761,
+        344.66080312000014,
+        539.2478275166603,
+        369.80598710000015
+      ]
+    },
+    {
+      "id": "e3-30",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "[17]  Cybersecurity  Investigates different DL techniques in the domain of cybersecurity  No discussion of DL in other",
+      "bbox": [
+        51.07945357937609,
+        332.92548064000016,
+        523.6605044137619,
+        340.09866064000016
+      ]
+    },
+    {
+      "id": "e3-31",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "domains, No discussion of reinforcement or unsupervised models, No discussion of different features in DL",
+      "bbox": [
+        427.74790460359253,
+        282.52512392000017,
+        540.5716648408768,
+        331.14095286000014
+      ]
+    },
+    {
+      "id": "e3-32",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "[18]  Tiny objects  Investigates tiny object detection techniques in the field of DL,  Limited discussion of other possible",
+      "bbox": [
+        51.07944068359251,
+        270.7332121113974,
+        544.3072898434625,
+        277.90639302000017
+      ]
+    },
+    {
+      "id": "e3-33",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "DL techniques in aspects of tiny",
+      "bbox": [
+        433.70083914888596,
+        261.77550433139737,
+        539.9778769115778,
+        268.9486843313974
+      ]
+    },
+    {
+      "id": "e3-34",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Discusses the 12 popular datasets for tiny objects and evaluates the current",
+      "bbox": [
+        156.92529072359252,
+        258.9978905400002,
+        402.6585115370675,
+        266.1710705400002
+      ]
+    },
+    {
+      "id": "e3-35",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "objects",
+      "bbox": [
+        433.70083914888596,
+        252.81779655139735,
+        456.344177348886,
+        259.99097655139735
+      ]
+    },
+    {
+      "id": "e3-36",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "techniques",
+      "bbox": [
+        162.93482152359252,
+        250.04018276000016,
+        197.00583248511484,
+        257.21336276000017
+      ]
+    },
+    {
+      "id": "e3-37",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "[19]  Building and  Presents a new perspective of ML/DL in the domain of building and construction, Not focusing only on DL",
+      "bbox": [
+        51.079432848885915,
+        238.30406235139736,
+        510.4219767087559,
+        245.47724235139736
+      ]
+    },
+    {
+      "id": "e3-38",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "construction  techniques,",
+      "bbox": [
+        103.29380708888593,
+        229.28976615139737,
+        469.8695989141794,
+        236.46294615139738
+      ]
+    },
+    {
+      "id": "e3-39",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Specifying different techniques in data cleaning, data storage, and existing challenges  Limited discussions of various DL",
+      "bbox": [
+        156.92528288888593,
+        217.55444367139737,
+        540.5246247968792,
+        233.68533145139736
+      ]
+    },
+    {
+      "id": "e3-40",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "models, Limited investigations on different functions of DL techniques",
+      "bbox": [
+        427.74788893417934,
+        187.84711721139738,
+        540.8354626455214,
+        215.76991589139737
+      ]
+    },
+    {
+      "id": "e3-41",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "[20]  Smart grid  Reviewing the existing research in different applications of smart grid, such as  Not detailed descriptions of DL",
+      "bbox": [
+        51.07942501417932,
+        176.11179382279457,
+        531.3413585899656,
+        183.28497473139737
+      ]
+    },
+    {
+      "id": "e3-42",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "forecasting, power grid stability, and fault detection.  techniques in domain of smart",
+      "bbox": [
+        162.93480394133132,
+        167.15408604279457,
+        532.9752496386077,
+        174.32726695139738
+      ]
+    },
+    {
+      "id": "e3-43",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "grid,",
+      "bbox": [
+        433.70082940133136,
+        158.19637826279458,
+        448.55728220133136,
+        165.36955826279458
+      ]
+    },
+    {
+      "id": "e3-44",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Future direction in domain of smart grid applying AI techniques",
+      "bbox": [
+        156.92527314133133,
+        155.41876447139737,
+        367.75937974995736,
+        162.59194447139737
+      ]
+    },
+    {
+      "id": "e3-45",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Limited focuses on DL models and different architectures",
+      "bbox": [
+        427.74788702133134,
+        137.44675958279458,
+        543.3133958153732,
+        153.57764736279458
+      ]
+    },
+    {
+      "id": "e3-46",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "[7]  Medicine  Investigating DL models along with the literature review in medicine,  Lack of investigations of DL models",
+      "bbox": [
+        51.080299377,
+        125.71606901700001,
+        544.301779992667,
+        132.889249017
+      ]
+    },
+    {
+      "id": "e3-47",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "in other fields of study,",
+      "bbox": [
+        433.701705677,
+        116.75836123700002,
+        510.04825147698403,
+        123.931541237
+      ]
+    },
+    {
+      "id": "e3-48",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "In-depth analysis of DL models and their literature review",
+      "bbox": [
+        156.926149417,
+        113.98074653700002,
+        347.8259886110336,
+        121.153926537
+      ]
+    },
+    {
+      "id": "e3-49",
+      "page": 3,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Limited descriptions of different DL models",
+      "bbox": [
+        427.748763297,
+        96.00874255700002,
+        544.2683051283419,
+        112.139630337
+      ]
+    },
+    {
+      "id": "e4-1",
+      "page": 4,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "References Topics  Concepts covered",
+      "bbox": [
+        51.023601531,
+        706.251484666,
+        214.4820426115188,
+        713.424664666
+      ]
+    },
+    {
+      "id": "e4-2",
+      "page": 4,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Concepts not covered",
+      "bbox": [
+        427.69286281151875,
+        706.251484666,
+        498.1183470801609,
+        713.424664666
+      ]
+    },
+    {
+      "id": "e4-3",
+      "page": 4,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "[21]  Medicine  Provides emerging technology in the field of DL models in medicine.  Limited discussions of",
+      "bbox": [
+        51.080189950999994,
+        688.5066321989605,
+        501.22911570234993,
+        695.6798121989605
+      ]
+    },
+    {
+      "id": "e4-4",
+      "page": 4,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "reinforcement or unsupervised",
+      "bbox": [
+        433.701596251,
+        679.5489244189605,
+        532.4196965799789,
+        686.7221044189605
+      ]
+    },
+    {
+      "id": "e4-5",
+      "page": 4,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Presents literature review of DL techniques in medicine",
+      "bbox": [
+        156.92603999099998,
+        676.7147212989605,
+        339.47470406439083,
+        683.8879012989605
+      ]
+    },
+    {
+      "id": "e4-6",
+      "page": 4,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "caption",
+      "text": "Fig. 1 Schematic review of the models in deep learning",
+      "bbox": [
+        51.023601531,
+        339.17021315859,
+        246.23338852691603,
+        346.97789330964997
+      ]
+    },
+    {
+      "id": "e4-7",
+      "page": 4,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Among the supervised deep learning category, three important models are identified, namely, deep neural net-works, convolutional neural networks, and recurrent neural network-based models, as illustrated in Fig. 2. Artificial neural networks (ANN), known as neural networks or neural nets, are one of the computing systems, which are inspired by biological neural networks. ANN models are a collection of connected nodes (artificial neurons) that model the neurons in a biological brain. One of the simple ANN models is known as a deep neural network (DNN) [22–29]. DNN models consist of a hierarchical architecture with input, output, and hidden layers, each of which has a nonlinear information processing unit, as illustrated in Fig. 2A. DNN, using the architecture of neural networks, consists of functions with higher complexity when the number of layers and units in a layer is increased.",
+      "bbox": [
+        51.02260682519018,
+        128.00937168588194,
+        289.12873945242626,
+        323.774456851982
+      ]
+    },
+    {
+      "id": "e4-8",
+      "page": 4,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Some known instances of DNN models, as highlighted in Table 2, are multi-layer perceptron, shallow neural net-work, operational neural network, self-operational neural network, and iterative residual blocks neural network.",
+      "bbox": [
+        51.02260682519018,
+        78.23423079494718,
+        289.116785818444,
+        136.97571146448195
+      ]
+    },
+    {
+      "id": "e4-9",
+      "page": 4,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "learning. Lack of descriptions of any DL models",
+      "bbox": [
+        427.748653871,
+        649.8415979589605,
+        530.8878240396341,
+        677.7078082189605
+      ]
+    },
+    {
+      "id": "e4-10",
+      "page": 4,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "The second type of deep supervised models is convo-lutional neural networks (CNN), known as one of the important DL models that are used to capture the semantic correlations of underlying spatial features among slice-wise representations by convolution operations in multi-dimensional data [25]. A simple architecture of CNN-based models is shown in Fig. 2B. In these models, the feature mapping has k filters that are partitioned spatially into several channels. In addition, the pooling function can shrink the width and height of the feature map, while the convolutional layer can apply a filter to an input to generate a feature map that can summarize the identified features as input. The convolutional layers are followed by one or more fully connected layers connected to all the neurons of the previous layer.",
+      "bbox": [
+        306.14087375522024,
+        429.5623054930748,
+        544.2460110609279,
+        612.8552120271422
+      ]
+    },
+    {
+      "id": "e4-11",
+      "page": 4,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "CNN usually analyzes the hidden pat-terns using pooling layers for scaling functions, sharing the weights for reducing memories, and filtering the semantic correlation captured by convolutional operations. There-fore, CNN architecture provides a strong potential in spa-tial features. However, CNN models suffer from their disability in capturing particular features. Some known examples of this network are presented in Table 2 [7, 20–47].",
+      "bbox": [
+        306.1418740699737,
+        329.89845007400976,
+        544.2440229606054,
+        438.5286452716748
+      ]
+    },
+    {
+      "id": "e4-12",
+      "page": 4,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "The other type of supervised DL is recurrent neural network (RNN) models, which are designed for sequential time-series data where the output is returned to the input, as shown in Fig. 2C [27]. RNN-based models are widely used to memorize the previous inputs and handle the sequential data and existing inputs [42]. In RNN models, the recursive process has hidden layers with loops that indicate effective information about the previous states. In traditional neural networks, the given inputs and outputs are totally inde-pendent of one another, whereas the recurrent layers of RNN have a memory that remembers the whole data about what is exactly calculated [48]. In fact, in RNN, similar parameters for every input are applied to construct the neural network and estimate the outputs.",
+      "bbox": [
+        306.1398779834123,
+        155.57188331854238,
+        544.2699249796851,
+        326.449398039175
+      ]
+    },
+    {
+      "id": "e4-13",
+      "page": 4,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "The critical principle of RNN-based models is to model time collection samples; hence, specific patterns can be estimated to be dependent on previous ones [48–64]. Table 2 provides the instances of RNN-based models as simple recurrent neural network, long short-term memory, gated recurrent unit neural network, bidirectional gated recurrent unit neural",
+      "bbox": [
+        306.13888859763074,
+        80.8523851635424,
+        544.2669406694791,
+        164.53822309714238
+      ]
+    },
+    {
+      "id": "e5-1",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "caption",
+      "text": "Table 2 Summary of deep learning models [22–74]",
+      "bbox": [
+        51.023601531,
+        722.3008283925899,
+        231.06514917055705,
+        730.1085085436499
+      ]
+    },
+    {
+      "id": "e5-2",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Learning methodology  Category  Model",
+      "bbox": [
+        51.023601531000025,
+        705.9165555549858,
+        334.1646357689565,
+        713.5379353119858
+      ]
+    },
+    {
+      "id": "e5-3",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Supervised learning  Deep neural networks  Multi-layer perceptron",
+      "bbox": [
+        51.08033846919103,
+        687.1510249533059,
+        389.9057117076281,
+        694.7724047103059
+      ]
+    },
+    {
+      "id": "e5-4",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Shallow neural network Operational neural network Self-operational neural network Iterative residual blocks neural network",
+      "bbox": [
+        312.03722110636545,
+        636.1284279401099,
+        449.84531602572537,
+        682.0167554570069
+      ]
+    },
+    {
+      "id": "e5-5",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Convolutional neural networks  Simple convolutional neural network",
+      "bbox": [
+        166.50698149722402,
+        623.3727786868109,
+        440.37872322530245,
+        630.9941584438109
+      ]
+    },
+    {
+      "id": "e5-6",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Faster R convolutional neural network Alex neural network Residual neural network Densely connected neural network Le neural network Google neural network Inception neural network Visual geometry neural network Efficient neural network",
+      "bbox": [
+        312.03722110636545,
+        508.6286723453109,
+        445.4799593233598,
+        618.2385091905119
+      ]
+    },
+    {
+      "id": "e5-7",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Recurrent neural networks  Simple recurrent neural network",
+      "bbox": [
+        166.50698149722402,
+        495.8730230920119,
+        424.33402354292195,
+        503.4944028490119
+      ]
+    },
+    {
+      "id": "e5-8",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Long short-term memory Gated recurrent unit neural network Bidirectional gated recurrent unit neural network Bidirectional long short-term memory Residual gated recurrent neural network",
+      "bbox": [
+        312.03722110636545,
+        432.09477682551693,
+        482.0473392423677,
+        490.7387535957129
+      ]
+    },
+    {
+      "id": "e5-9",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Unsupervised learning  Auto-encoders  Stacked auto-encoder",
+      "bbox": [
+        51.08033846919102,
+        419.33912757221793,
+        386.13228133941055,
+        426.96050732921793
+      ]
+    },
+    {
+      "id": "e5-10",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Variational auto-encoder Convolutional auto-encoder",
+      "bbox": [
+        312.03722110636545,
+        393.82782906561994,
+        407.78884919679274,
+        414.20485807591893
+      ]
+    },
+    {
+      "id": "e5-11",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Restricted Boltzmann machine  Shallow restricted Boltzmann machine",
+      "bbox": [
+        166.50698149722402,
+        381.07217981232094,
+        446.13371129665234,
+        388.69355956932094
+      ]
+    },
+    {
+      "id": "e5-12",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Convolutional restricted Boltzmann machine",
+      "bbox": [
+        312.03722110636545,
+        368.31653055902194,
+        466.93922431083433,
+        375.93791031602194
+      ]
+    },
+    {
+      "id": "e5-13",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Deep belief neural networks  Simple deep belief neural networks",
+      "bbox": [
+        166.50698149722402,
+        355.56088130572294,
+        435.19195063223646,
+        363.18226106272294
+      ]
+    },
+    {
+      "id": "e5-14",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Conditional deep belief neural networks",
+      "bbox": [
+        312.03722110636545,
+        342.86196899061497,
+        451.2357945247712,
+        350.48334874761497
+      ]
+    },
+    {
+      "id": "e5-15",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Generative adversarial networks  Generative adversarial networks",
+      "bbox": [
+        166.50698149722402,
+        330.10631973731597,
+        423.34155094805976,
+        337.72769949431597
+      ]
+    },
+    {
+      "id": "e5-16",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Signal augmented self-taught learning Wasserstein generative adversarial networks",
+      "bbox": [
+        312.03722110636545,
+        304.595021230718,
+        465.3514366030268,
+        324.972050241017
+      ]
+    },
+    {
+      "id": "e5-17",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Reinforcement learning  Value-based  Deep Q learning",
+      "bbox": [
+        51.08033846919102,
+        291.839371977419,
+        369.5396918738432,
+        299.460751734419
+      ]
+    },
+    {
+      "id": "e5-18",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Double deep Q learning Duel deep Q learning",
+      "bbox": [
+        312.03722110636545,
+        266.328073470821,
+        395.5057252299868,
+        286.70510248112
+      ]
+    },
+    {
+      "id": "e5-19",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Policy gradient-based  Deep deterministic policy gradient",
+      "bbox": [
+        166.50698149722402,
+        253.57242421752198,
+        432.0163767672165,
+        261.193803974522
+      ]
+    },
+    {
+      "id": "e5-20",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Asynchronous advantage actor critic",
+      "bbox": [
+        312.03722110636545,
+        240.816774964223,
+        438.41748100697237,
+        248.438154721223
+      ]
+    },
+    {
+      "id": "e5-21",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Model-based  Imagination-augmented agents",
+      "bbox": [
+        166.50698149722402,
+        228.061125710924,
+        417.79149341358107,
+        235.682505467924
+      ]
+    },
+    {
+      "id": "e5-22",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Model-based priors for model-free Model-based value expansion",
+      "bbox": [
+        312.03722110636545,
+        202.549827204326,
+        431.74538623295433,
+        222.926856214625
+      ]
+    },
+    {
+      "id": "e5-23",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Hybrid learning  DRL  Convolutional neural network-deep Q-learning",
+      "bbox": [
+        51.08033846919102,
+        189.794177951027,
+        473.7976263346314,
+        197.415557708027
+      ]
+    },
+    {
+      "id": "e5-24",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Long short-term memory-deep reinforcement learning Policy dynamics-based win Deep Q-learning-PG",
+      "bbox": [
+        312.03722110636545,
+        151.583967129321,
+        499.42323795823233,
+        184.659908454728
+      ]
+    },
+    {
+      "id": "e5-25",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Unsupervised DL  Auto-encoder-long short-term memory",
+      "bbox": [
+        166.50698149722402,
+        138.828317876022,
+        445.95757594678753,
+        146.449697633022
+      ]
+    },
+    {
+      "id": "e5-26",
+      "page": 5,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Gated recurrent neural network-convolutional neural network C Long short-term memory-auto-encoder ACWGAN-GP",
+      "bbox": [
+        312.03722110636545,
+        100.561370116125,
+        524.7939648661857,
+        133.694048379723
+      ]
+    },
+    {
+      "id": "e6-1",
+      "page": 6,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Learning methodology  Category",
+      "bbox": [
+        51.023601531000004,
+        705.4067699312399,
+        197.56241063043947,
+        713.0281496882399
+      ]
+    },
+    {
+      "id": "e6-2",
+      "page": 6,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "Supervised DL",
+      "bbox": [
+        166.50698586681503,
+        669.9173916827829,
+        218.26546948822946,
+        677.5387714397829
+      ]
+    },
+    {
+      "id": "e6-3",
+      "page": 6,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "caption",
+      "text": "Fig. 2 Inner architecture of deep supervised models",
+      "bbox": [
+        51.023601531,
+        470.187433708731,
+        146.17906810199435,
+        487.97319360165
+      ]
+    },
+    {
+      "id": "e6-4",
+      "page": 6,
+      "sectionPath": [
+        "2 Categories of deep learning models",
+        "2.1 Deep supervised learning"
+      ],
+      "type": "text",
+      "text": "network, bidirectional long short-term memory, and residual gated recurrent neural network [64–66]. Table 3 shows the advantages and disadvantages of supervised DL models.",
+      "bbox": [
+        51.02359675891469,
+        193.31607429488196,
+        289.1247485136396,
+        239.642163150982
+      ]
+    },
+    {
+      "id": "e6-5",
+      "page": 6,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "Deep unsupervised models have gained significant interest as a mainstream of viable deep learning models. These models are widely used to generate systems that can be trained with few numbers of unlabeled samples [24]. The models can be classified into auto-encoders, restricted",
+      "bbox": [
+        51.02260527102459,
+        81.23449014384944,
+        289.132724249081,
+        140.032757631982
+      ]
+    },
+    {
+      "id": "e6-6",
+      "page": 6,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "Model C-hybrid-generative adversarial networks Joint latent-variational auto-encoder dLASSO-multi-layer perceptron Convolutional neural network–deep neural network Convolutional neural network-long short-term memory Convolutional neural network-constrained naive WaferSegClassNet Spiking-auto-encoder Deep belief neural networks-bidirectional-recurrent neural network SES-convolutional neural network Recurrent neural network-long short-term memory Convolutional neural network-recurrent neural network GoogleNet-AlexNet",
+      "bbox": [
+        312.03722547595646,
+        542.4176360879839,
+        544.2403425271854,
+        713.0281496882399
+      ]
+    },
+    {
+      "id": "e6-7",
+      "page": 6,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "Boltzmann machine, deep belief neural networks, and generative adversarial networks. An auto-encoder (AE) is a type of auto-associative feed-forward neural network that can learn effective representations from the given input in an unsupervised manner [29]. Figure 3A provides a basic architecture of AE. As it can be seen, there are three ele-ments in AE, encoder, latent space, and decoder. Initially, the corresponding input passes through the encoder. The encoder is mostly a fully connected ANN that is able to generate the code. In contrast, the decoder generates the outputs using the codes and has an architecture similar to ANN. The aim of having an encoder and decoder is to present an identical output with the given input. It is",
+      "bbox": [
+        306.1388797707672,
+        81.23747892377558,
+        544.2489994176926,
+        239.64281501237562
+      ]
+    },
+    {
+      "id": "e7-1",
+      "page": 7,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "caption",
+      "text": "Table 3 Advantages and disadvantages of deep supervised learning techniques",
+      "bbox": [
+        51.023601531,
+        722.3008283925899,
+        324.9359898941747,
+        730.1085085436499
+      ]
+    },
+    {
+      "id": "e7-2",
+      "page": 7,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "Learning  Category  Advantage methodology",
+      "bbox": [
+        51.023601531000004,
+        695.9384758131268,
+        239.48507916284842,
+        713.5379353119858
+      ]
+    },
+    {
+      "id": "e7-3",
+      "page": 7,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "Disadvantage",
+      "bbox": [
+        434.5500599433983,
+        705.9165555549858,
+        480.7271530710883,
+        713.5379353119858
+      ]
+    },
+    {
+      "id": "e7-4",
+      "page": 7,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "Deep supervised  Deep neural  Tendency to high nonlinear relationships,  Slow learning,",
+      "bbox": [
+        51.08033746994343,
+        677.1729452114469,
+        484.75886296254146,
+        684.7943249684469
+      ]
+    },
+    {
+      "id": "e7-5",
+      "page": 7,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "learning  networks",
+      "bbox": [
+        57.03348188013343,
+        667.1948654695879,
+        158.41646268763944,
+        674.8162452265879
+      ]
+    },
+    {
+      "id": "e7-6",
+      "page": 7,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "Easy to develop",
+      "bbox": [
+        202.73393915462142,
+        664.4172959581479,
+        258.3632366658677,
+        672.0386757151479
+      ]
+    },
+    {
+      "id": "e7-7",
+      "page": 7,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "Hard for parameter tuning, Insufficient for high-dimensional input space",
+      "bbox": [
+        434.5509067633715,
+        641.6835669629899,
+        527.6985634368152,
+        672.0386757151479
+      ]
+    },
+    {
+      "id": "e7-8",
+      "page": 7,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "Convolutional neural Ability to capture spatial correlations, high potentiality at  Difficult parameter tuning,",
+      "bbox": [
+        121.37994434851146,
+        628.9846546478818,
+        526.8475091572077,
+        636.6060344048818
+      ]
+    },
+    {
+      "id": "e7-9",
+      "page": 7,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "network  generalization",
+      "bbox": [
+        127.38897887691945,
+        619.0065749060228,
+        256.9439665461895,
+        626.6279546630228
+      ]
+    },
+    {
+      "id": "e7-10",
+      "page": 7,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "High computational cost",
+      "bbox": [
+        434.5500599433984,
+        616.2290053945828,
+        519.5292911056029,
+        623.8503851515828
+      ]
+    },
+    {
+      "id": "e7-11",
+      "page": 7,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "Recurrent neural  Sometimes fast converge with minimum parameters, improve the Difficult parameter tuning,",
+      "bbox": [
+        121.37911071352539,
+        603.4733561412838,
+        526.8466755222216,
+        611.0947358982838
+      ]
+    },
+    {
+      "id": "e7-12",
+      "page": 7,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "network  vanishing gradient issues",
+      "bbox": [
+        127.38814524193339,
+        593.4952763994248,
+        295.42263248431493,
+        601.1166561564248
+      ]
+    },
+    {
+      "id": "e7-13",
+      "page": 7,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "caption",
+      "text": "Fig. 3 Inner architecture of deep unsupervised models",
+      "bbox": [
+        51.023601531,
+        262.29460280659,
+        239.94151586908504,
+        270.10228295765
+      ]
+    },
+    {
+      "id": "e7-14",
+      "page": 7,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "notable that the dimensionality of the input and output has to be similar. Additionally, real-world data usually suffer from redundancy and high dimensionality, resulting in lower computational efficiency and hindering the modeling of the representation. Thus, a latent space can address this issue by representing compressed data and learning the features of the data, and facilitating data representations to find patterns. As shown in Table 2, AE consists of several known models, namely, stacked, variational, and convo-lutional AEs [30, 43]. The advantages and disadvantages of these models are presented in Table 4.",
+      "bbox": [
+        51.023599697881636,
+        113.38118127444714,
+        289.1287352650261,
+        246.842160098982
+      ]
+    },
+    {
+      "id": "e7-15",
+      "page": 7,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "The restricted Boltzmann machine (RBM) model, known as Gibbs distribution, is a network of neurons that are connected to each other, as shown in Fig. 3B. In RBM,",
+      "bbox": [
+        51.024594323990726,
+        76.02143219694716,
+        289.13072065590006,
+        109.87534242101454
+      ]
+    },
+    {
+      "id": "e7-16",
+      "page": 7,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "Poor spatial feature representations",
+      "bbox": [
+        434.54922630841236,
+        580.7396271461258,
+        502.0390846716191,
+        598.3390866449848
+      ]
+    },
+    {
+      "id": "e7-17",
+      "page": 7,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "the network consists of two layers, namely, the input or visible layer and the hidden layer. There is no output layer in RBM, while the Boltzmann machines are random and generative neural networks that can solve combinative problems. Some common RBM are presented in Table 2 as shallow restricted Boltzmann machines and convolutional restricted Boltzmann machines. The deep belief network (DBN) is another unsupervised deep neural network that performs in a similar way as the deep feed-forward neural network with inputs and multiple computational layers, known as hidden layers, as illustrated in Fig. 3C. In DBM, there are two main phases that are necessary to be per-formed, pre-train and fine-tuning phases. The pre-train phase consists of several hidden layers; however, fine-",
+      "bbox": [
+        306.1418574523574,
+        76.0244209768733,
+        544.2709054231366,
+        246.84514887890813
+      ]
+    },
+    {
+      "id": "e8-1",
+      "page": 8,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "caption",
+      "text": "Table 4 Advantages and disadvantages of deep unsupervised learning techniques",
+      "bbox": [
+        51.023601531,
+        722.3008283925899,
+        333.3838657380716,
+        730.1085085436499
+      ]
+    },
+    {
+      "id": "e8-2",
+      "page": 8,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "Learning methodology  Category  Advantages",
+      "bbox": [
+        51.023601531000004,
+        705.9165555549858,
+        285.94585472453196,
+        713.5379353119858
+      ]
+    },
+    {
+      "id": "e8-3",
+      "page": 8,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "Disadvantages",
+      "bbox": [
+        407.05465667520957,
+        705.9165555549858,
+        456.4920066989496,
+        713.5379353119858
+      ]
+    },
+    {
+      "id": "e8-4",
+      "page": 8,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "Deep unsupervised  Auto-encoder  Do not need unlabeled data for training  Difficult to tune parameters,",
+      "bbox": [
+        51.080338469191005,
+        687.1510249533059,
+        505.0037868460999,
+        694.7724047103059
+      ]
+    },
+    {
+      "id": "e8-5",
+      "page": 8,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "learning  processes,",
+      "bbox": [
+        57.033482879381005,
+        677.1729452114469,
+        286.48528107565306,
+        684.7943249684469
+      ]
+    },
+    {
+      "id": "e8-6",
+      "page": 8,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "Long processing time,",
+      "bbox": [
+        407.11139796729987,
+        674.3953757000069,
+        484.1974201094814,
+        682.0167554570069
+      ]
+    },
+    {
+      "id": "e8-7",
+      "page": 8,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "Good performance for feature abstractions",
+      "bbox": [
+        245.99034996679305,
+        664.4172959581479,
+        393.11007761939186,
+        672.0386757151479
+      ]
+    },
+    {
+      "id": "e8-8",
+      "page": 8,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "Training can suffer from vanishing the errors",
+      "bbox": [
+        407.11139796729987,
+        651.6616467048489,
+        542.0081259228656,
+        669.2611062037079
+      ]
+    },
+    {
+      "id": "e8-9",
+      "page": 8,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "Restricted Boltzmann  Learn complicated probability distributions, Low robustness for noisy data,",
+      "bbox": [
+        143.32020334229185,
+        638.9059974515499,
+        514.1782351822807,
+        646.5273772085499
+      ]
+    },
+    {
+      "id": "e8-10",
+      "page": 8,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "machine",
+      "bbox": [
+        149.32923787069984,
+        628.9846546478818,
+        178.14652155188983,
+        636.6060344048818
+      ]
+    },
+    {
+      "id": "e8-11",
+      "page": 8,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "Strong representation capability  Limited applications due to binary units",
+      "bbox": [
+        245.99035050875784,
+        626.1503481982509,
+        544.2420374502245,
+        633.7717279552509
+      ]
+    },
+    {
+      "id": "e8-12",
+      "page": 8,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "Deep belief neural network High efficiency for feature extractions,  Unable to process multi-dimensional",
+      "bbox": [
+        143.3202023599806,
+        613.3946989449519,
+        534.4646532147335,
+        621.0160787019519
+      ]
+    },
+    {
+      "id": "e8-13",
+      "page": 8,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "data,",
+      "bbox": [
+        413.06538875711647,
+        603.4733561412838,
+        429.36667323736646,
+        611.0947358982838
+      ]
+    },
+    {
+      "id": "e8-14",
+      "page": 8,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "Unsupervised training",
+      "bbox": [
+        245.9911963464196,
+        600.6390496916529,
+        321.8171504721569,
+        608.2604294486529
+      ]
+    },
+    {
+      "id": "e8-15",
+      "page": 8,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "Slow and inefficient training",
+      "bbox": [
+        407.11224434692645,
+        590.7177068879848,
+        506.1825596014098,
+        598.3390866449848
+      ]
+    },
+    {
+      "id": "e8-16",
+      "page": 8,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "Generative adversarial  Trains only using backpropagations,  Density estimation,",
+      "bbox": [
+        143.32104819764243,
+        577.9620576346858,
+        473.85689989314943,
+        585.5834373916858
+      ]
+    },
+    {
+      "id": "e8-17",
+      "page": 8,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "network",
+      "bbox": [
+        149.33008272605042,
+        567.9839778928268,
+        177.09730964072043,
+        575.6053576498268
+      ]
+    },
+    {
+      "id": "e8-18",
+      "page": 8,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "Operates with small supervisions,  Unstable training process, Computational efficiency  Non-convergence",
+      "bbox": [
+        245.99119536410842,
+        552.4507591280878,
+        496.91411427305457,
+        572.8277881383868
+      ]
+    },
+    {
+      "id": "e8-19",
+      "page": 8,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "tuning phase only is considered a feed-forward neural network to train and classify the data. In addition, DBN has multiple layers with values, while there is a relation between layers but not with the values [31]. Table 2 reviews some of the known DBN models, namely, shallow deep belief neural networks and conditional deep belief neural networks [44, 45].",
+      "bbox": [
+        51.02359323215441,
+        421.27910964138215,
+        289.12474498687925,
+        504.96494757498203
+      ]
+    },
+    {
+      "id": "e8-20",
+      "page": 8,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "The generative adversarial network (GAN) is an another type of unsupervised deep learning model that uses a generator network (GN) and discriminator network (DN) to generate synthetic data to follow similar distribution from the original data, as presented in Fig. 3D. In this context, the GN mimics the distribution of the given data using noise vectors to exhaust the DN to classify between fake and real samples. The DN can be trained to differentiate between fake and real samples by the GN from the original samples. In general, the GN learns to create plausible data, whereas the DN can learn to identify the generator’s fake data from the real ones. Additionally, the discriminator can penalize the generator for generating implausible data [32, 54].",
+      "bbox": [
+        51.022596972179,
+        246.95254288591497,
+        289.1506476540456,
+        417.83005760654737
+      ]
+    },
+    {
+      "id": "e8-21",
+      "page": 8,
+      "sectionPath": [
+        "3 Deep unsupervised learning"
+      ],
+      "type": "text",
+      "text": "The known types of GAN are presented in Table 2 as generative adversarial networks, signal augmented self-taught learning, and Wasserstein generative adversarial networks. As a result of this discussion, Table 4 provides the main advantages and disadvantages of the unsupervised DL categories [56].",
+      "bbox": [
+        51.02259695225385,
+        184.70522336294752,
+        289.13271622292166,
+        255.91888266451497
+      ]
+    },
+    {
+      "id": "e8-22",
+      "page": 8,
+      "sectionPath": [
+        "3 Deep unsupervised learning",
+        "3.1 Deep reinforcement learning"
+      ],
+      "type": "text",
+      "text": "Reinforcement learning (RL) is the science of making decisions with learning the optimal behavior in an envi-ronment to achieve maximum reward. The optimal behavior is achieved through interactions with the envi-ronment. In RL, an agent can make decisions, monitor the",
+      "bbox": [
+        51.023601531,
+        85.03298257684942,
+        289.12674650490055,
+        143.831250064982
+      ]
+    },
+    {
+      "id": "e8-23",
+      "page": 8,
+      "sectionPath": [
+        "3 Deep unsupervised learning",
+        "3.1 Deep reinforcement learning"
+      ],
+      "type": "text",
+      "text": "results, and adjust its technique to provide optimal policy [75, 76]. In particular, RL is applied to assist an agent in learning the optimal policy when the agent has no infor-mation about the surrounding environments. Initially, the agent monitors the current state, takes action, and receives its reward with its new state. In this context, the immediate reward and new state can adjust the agent’s policy; This process is repeated till the agent’s policy is getting close to the optimal policy. To be precise, RL does not need any detailed mathematical model for the system to guarantee optimal control [77]; however, the agent considers the target system as the environment and optimizes the control policy by communicating with it. The agent performs specific steps.",
+      "bbox": [
+        306.1398783918788,
+        334.1438152051015,
+        544.249002468988,
+        504.964543107136
+      ]
+    },
+    {
+      "id": "e8-24",
+      "page": 8,
+      "sectionPath": [
+        "3 Deep unsupervised learning",
+        "3.1 Deep reinforcement learning"
+      ],
+      "type": "text",
+      "text": "During every step, the agent selects an action based on its existing policy, and the environment feeds back a reward and goes to the next state [78–80]. This process is learned by the agent to adjust its policy by ref-erencing the relationships during the state, action, and rewards. The RL agent also can determine an optimal policy related to the maximum cumulative reward. In addition, an RL agent can be modeled as Markov decision process (MDP) [78]. In MDP, when the states and action spaces are finite, the process is known as finite. As it is clear, the RL learning approach may take a huge amount of time to achieve the best policy and discover the knowledge of a whole system; hence, RL is inappropriate for large-scale networks [81].",
+      "bbox": [
+        306.1388838952836,
+        172.2326402630689,
+        544.2509938731573,
+        343.1101549837015
+      ]
+    },
+    {
+      "id": "e8-25",
+      "page": 8,
+      "sectionPath": [
+        "3 Deep unsupervised learning",
+        "3.1 Deep reinforcement learning"
+      ],
+      "type": "text",
+      "text": "In the past few years, deep reinforcement learning (DRL) was proposed as an advanced model of RL in which DL is applied as an effective tool to enhance the learning rate for RL models. The achieved experiences are stored during the real-time learning process, whereas the gener-ated data for training and validating neural networks are applied [82]. In this context, the trained neural network has",
+      "bbox": [
+        306.1388838952836,
+        85.04096347603631,
+        544.2250926909264,
+        168.7268014096363
+      ]
+    },
+    {
+      "id": "e9-1",
+      "page": 9,
+      "sectionPath": [
+        "3 Deep unsupervised learning",
+        "3.1 Deep reinforcement learning"
+      ],
+      "type": "caption",
+      "text": "Fig. 4 Inner architecture of deep reinforcement learning",
+      "bbox": [
+        51.023601531,
+        571.61113112659,
+        246.29097218170023,
+        579.41881127765
+      ]
+    },
+    {
+      "id": "e9-2",
+      "page": 9,
+      "sectionPath": [
+        "3 Deep unsupervised learning",
+        "3.1 Deep reinforcement learning"
+      ],
+      "type": "text",
+      "text": "to be used to assist the agent in making optimal decisions in real-time scenarios. DRL overcomes the main shortcom-ings of RL, such as long processing time to achieve optimal policy, thus opening a new horizon to embrace the DRL [83]. In general, as shown in Fig. 4, DRL uses the deep neural networks’ characteristics to train the learning pro-cess, resulting in increasing the speed and improving the algorithms’ performance. In DRL, within the environment or agent interactions, the deep neural networks keep the internal policy of the agent, which indicates the next action according to the current state of the environment.",
+      "bbox": [
+        51.02260912655075,
+        422.69757865984946,
+        289.1257507921707,
+        556.215344302982
+      ]
+    },
+    {
+      "id": "e9-3",
+      "page": 9,
+      "sectionPath": [
+        "3 Deep unsupervised learning",
+        "3.1 Deep reinforcement learning"
+      ],
+      "type": "text",
+      "text": "DRL can be divided into three methods, value-based, policy-based, and model-based methods. Value-based DRL mainly represents and finds the value functions and their optimal ones. In such methods, the agent learns the state or state-action value and behaves based on the best action in the state. One necessary step of these methods is to explore the environment. Some known instances of value-based DRL are deep Q-learning, double deep Q-learning, and duel deep Q-learning [83–85]. On the contrary, policy-based DRL finds an optimal policy, stochastic or deter-ministic, to better convergence on high-dimensional or continuous action space. These methods are mainly opti-mization techniques in which the maximum policy of function can be found. Some examples of policy-based",
+      "bbox": [
+        51.02161286657534,
+        248.37101190438227,
+        289.13073600080406,
+        419.2485266250147
+      ]
+    },
+    {
+      "id": "e9-4",
+      "page": 9,
+      "sectionPath": [
+        "3 Deep unsupervised learning",
+        "3.1 Deep reinforcement learning"
+      ],
+      "type": "text",
+      "text": "DRL are deep deterministic policy gradient and asyn-chronous advantage actor critic [86]. The third category of DRL, model-based methods, aims at learning the func-tionality of the environment and its dynamics from its previous observations, while these methods attempt a solution using the specific model. For these methods, in the case of having a model, they find the best policy to be efficient, while the process may fail when the state space is huge. In model-based DRL, the model is often updated, and the process is replanned. Instances of model-based DRL are imagination-augmented agents, model-based priors for model-free, and model-based value expansion. Table 5 illustrates the important advantages and disadvantages of these categories [87–89].",
+      "bbox": [
+        306.13888477199237,
+        560.5809555151849,
+        544.2470115911128,
+        731.4016834172199
+      ]
+    },
+    {
+      "id": "e9-5",
+      "page": 9,
+      "sectionPath": [
+        "3 Deep unsupervised learning",
+        "3.2 Hybrid deep learning"
+      ],
+      "type": "text",
+      "text": "Deep learning models have weaknesses and strengths in terms of hyperparameter tuning settings and data explo-rations [45]. Therefore, the highlighted weakness of these models can hinder them from being strong techniques in different applications. Every DL model also has charac-teristics that make it efficient for specific applications; hence, to overcome these shortcomings, hybrid DL models have been proposed based on individual DL models to tackle the shortcomings of specific applications [79–89]. Figure 5 indicates the popular hybrid DL models that are used in the literature. It is observed that convolutional neural networks and recurrent neural networks are widely used in existing studies and have high applicability and potentiality compared to other developed DL models.",
+      "bbox": [
+        306.1387111993051,
+        348.8275146413497,
+        544.2498214638676,
+        519.705029361982
+      ]
+    },
+    {
+      "id": "e9-6",
+      "page": 9,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "In any classification tasks, the metrics are required to evaluate the DL models. It is worth mentioning that various metrics can be used in different fields of studies. It means that the metrics which are used in medical analysis are",
+      "bbox": [
+        306.141693115,
+        249.21527473388204,
+        544.2269055252382,
+        295.54136358998204
+      ]
+    },
+    {
+      "id": "e9-7",
+      "page": 9,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "caption",
+      "text": "Table 5 Advantage and disadvantages of deep reinforcement learning techniques",
+      "bbox": [
+        51.023601531,
+        219.15130751859,
+        333.10018104713345,
+        226.95898766964999
+      ]
+    },
+    {
+      "id": "e9-8",
+      "page": 9,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "Category  Used  Advantage",
+      "bbox": [
+        51.023601531000004,
+        202.767034680986,
+        225.00107134390402,
+        210.388414437986
+      ]
+    },
+    {
+      "id": "e9-9",
+      "page": 9,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "models",
+      "bbox": [
+        142.355676078969,
+        192.788954939127,
+        166.862646097589,
+        200.410334696127
+      ]
+    },
+    {
+      "id": "e9-10",
+      "page": 9,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "Deep reinforcement  Value-  Less computational cost learning  based",
+      "bbox": [
+        51.08034079794592,
+        164.045344595588,
+        271.78194790163,
+        181.644804094447
+      ]
+    },
+    {
+      "id": "e9-11",
+      "page": 9,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "Relatively fast",
+      "bbox": [
+        188.22029332254618,
+        161.267775084148,
+        238.33594619634061,
+        168.889154841148
+      ]
+    },
+    {
+      "id": "e9-12",
+      "page": 9,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "Disadvantage",
+      "bbox": [
+        391.4071171624339,
+        202.767034680986,
+        437.5842102901239,
+        210.388414437986
+      ]
+    },
+    {
+      "id": "e9-13",
+      "page": 9,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "High variance per-sample Not efficient for offline learning",
+      "bbox": [
+        391.4071244641392,
+        161.267775084148,
+        503.1644969159124,
+        181.644804094447
+      ]
+    },
+    {
+      "id": "e9-14",
+      "page": 9,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "Learns directly the optimal policy",
+      "bbox": [
+        188.22029332254618,
+        148.51212583084902,
+        306.3559139143353,
+        156.13350558784902
+      ]
+    },
+    {
+      "id": "e9-15",
+      "page": 9,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "Policy-  Able to find the best stochastic policy  High variance",
+      "bbox": [
+        142.3556767648932,
+        135.75562975757703,
+        440.00104179477114,
+        143.37700951457703
+      ]
+    },
+    {
+      "id": "e9-16",
+      "page": 9,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "based",
+      "bbox": [
+        148.36471129330118,
+        125.83428695390903,
+        167.66373847797118,
+        133.45566671090901
+      ]
+    },
+    {
+      "id": "e9-17",
+      "page": 9,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "Efficient for high-dimensional dataset  Slow convergence",
+      "bbox": [
+        188.2194465025732,
+        122.99998050427803,
+        454.56211123050616,
+        130.62136026127803
+      ]
+    },
+    {
+      "id": "e9-18",
+      "page": 9,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "Model-  Number of the interactions between the agent and the  Model accuracy has a huge impact on",
+      "bbox": [
+        142.35482994492014,
+        110.24433125097903,
+        524.0318343287661,
+        117.86571100797903
+      ]
+    },
+    {
+      "id": "e9-19",
+      "page": 9,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "based  environment",
+      "bbox": [
+        148.36386447332814,
+        100.32298844731103,
+        237.10551672389013,
+        107.94436820431103
+      ]
+    },
+    {
+      "id": "e9-20",
+      "page": 9,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "learning tasks High dependence on the transitional models",
+      "bbox": [
+        391.40627764416615,
+        87.56733919401204,
+        544.2098608004798,
+        107.94436820431103
+      ]
+    },
+    {
+      "id": "e10-1",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "caption",
+      "text": "Fig. 5 Review of popular hybrid models",
+      "bbox": [
+        51.023601531,
+        713.9667916197309,
+        161.54376979547763,
+        731.7525515126499
+      ]
+    },
+    {
+      "id": "e10-2",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "mostly different with other domains, such as cybersecurity or computer visions. For this reason, we provide a short descriptions and a mathematical equations of the most",
+      "bbox": [
+        51.023601531,
+        360.38984540791466,
+        289.09187831978034,
+        394.243755631982
+      ]
+    },
+    {
+      "id": "e10-3",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "TP",
+      "bbox": [
+        370.658203125,
+        384.225180273,
+        380.063648928,
+        394.073651187982
+      ]
+    },
+    {
+      "id": "e10-4",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "Recall ¼  \u0003 100  ð3Þ",
+      "bbox": [
+        319.8609441879664,
+        377.985316078254,
+        544.2317330902116,
+        387.9381872979272
+      ]
+    },
+    {
+      "id": "e10-5",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "T þ F",
+      "bbox": [
+        358.809387207,
+        371.182215493254,
+        386.9226807789892,
+        381.1348526475
+      ]
+    },
+    {
+      "id": "e10-6",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "P  N",
+      "bbox": [
+        364.30859375,
+        370.618887548,
+        391.936173995,
+        376.895307548
+      ]
+    },
+    {
+      "id": "e10-7",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "• F1-Score: It is calculated from the precision and recall",
+      "bbox": [
+        306.1415478564554,
+        352.476079408137,
+        544.1898988376405,
+        362.239427167057
+      ]
+    },
+    {
+      "id": "e10-8",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "common metrics in different domains, as following:",
+      "bbox": [
+        51.023601531,
+        347.9176667758821,
+        264.18139303595325,
+        356.8840065544821
+      ]
+    },
+    {
+      "id": "e10-9",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "• Accuracy: It is mainly used in classification problems to",
+      "bbox": [
+        51.023601531,
+        329.28959775585287,
+        289.0888890800005,
+        339.05294551477283
+      ]
+    },
+    {
+      "id": "e10-10",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "indicate the correct predictions made by a DL model. This metric is calculated, as shown in Eq. (1), where TP is the true positive, T is true negative, F is the false",
+      "bbox": [
+        64.74309765223342,
+        292.017620247382,
+        289.0649791180293,
+        325.8734223002063
+      ]
+    },
+    {
+      "id": "e10-11",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "N  P",
+      "bbox": [
+        153.014099121,
+        291.192099218,
+        240.88254236,
+        297.468519218
+      ]
+    },
+    {
+      "id": "e10-12",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "positive, and FN is the false negative.",
+      "bbox": [
+        64.74411549420279,
+        278.719687108,
+        219.72488649959257,
+        288.51178139394943
+      ]
+    },
+    {
+      "id": "e10-13",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "of the test, where the precision is defined as Eq. (2), and recall is presented in Eq. (3). This metric is calculated as shown in Eq. (4):",
+      "bbox": [
+        319.86104397768884,
+        315.2059937284231,
+        544.2138101244981,
+        349.11669077108826
+      ]
+    },
+    {
+      "id": "e10-14",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "2TP",
+      "bbox": [
+        402.689697265,
+        298.959097509,
+        417.027424562,
+        308.750866763982
+      ]
+    },
+    {
+      "id": "e10-15",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "F1 - Score ¼  \u0003 100  ð4Þ",
+      "bbox": [
+        319.86104288180286,
+        292.719324868254,
+        544.2326215433067,
+        302.6730432378911
+      ]
+    },
+    {
+      "id": "e10-16",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "2TP þ Fp þ FN",
+      "bbox": [
+        379.672393798,
+        285.352682714,
+        440.06849821400004,
+        295.8120377055
+      ]
+    },
+    {
+      "id": "e10-17",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "T þ T  • Area under the receiver operating characteristics curve",
+      "bbox": [
+        139.577896118,
+        264.03261832525396,
+        544.2017464526108,
+        275.49897119346497
+      ]
+    },
+    {
+      "id": "e10-18",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "P  N",
+      "bbox": [
+        145.077102661,
+        263.52599204,
+        172.081193526,
+        269.80241204000004
+      ]
+    },
+    {
+      "id": "e10-19",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "Accuracy ¼  \u0003 100  ð1Þ",
+      "bbox": [
+        64.74369735014277,
+        257.229517739254,
+        289.11444724246894,
+        267.1825258186434
+      ]
+    },
+    {
+      "id": "e10-20",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "T þ T þ F þ F",
+      "bbox": [
+        116.333801269,
+        250.42631034125398,
+        190.25509308398918,
+        260.3789474955
+      ]
+    },
+    {
+      "id": "e10-21",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "P  N  P  N",
+      "bbox": [
+        121.889801025,
+        249.919684057,
+        195.268586715,
+        256.196104057
+      ]
+    },
+    {
+      "id": "e10-22",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "• Precision: It refers to the number of the true positives",
+      "bbox": [
+        51.02426200871275,
+        231.720281069137,
+        289.05368423280044,
+        241.483628828057
+      ]
+    },
+    {
+      "id": "e10-23",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "divided by the total number of the positive predictions, including true positive and false positive. This metric can be measured as following:",
+      "bbox": [
+        64.74375812994614,
+        194.45019538942296,
+        289.1134592783303,
+        228.36089243208818
+      ]
+    },
+    {
+      "id": "e10-24",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "TP",
+      "bbox": [
+        126.538597106,
+        178.429983739,
+        135.88733362,
+        188.22175299498198
+      ]
+    },
+    {
+      "id": "e10-25",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "Precision ¼  \u0003 100  ð2Þ",
+      "bbox": [
+        64.74375812994614,
+        172.190119545254,
+        289.1143578184989,
+        182.14439217328217
+      ]
+    },
+    {
+      "id": "e10-26",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "TP þ FP",
+      "bbox": [
+        115.199996948,
+        164.823691015,
+        147.169239748,
+        175.28295445350003
+      ]
+    },
+    {
+      "id": "e10-27",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "• Recall (detection rate): It measures the number of the",
+      "bbox": [
+        51.0241725847427,
+        146.680882875137,
+        289.12034266680996,
+        156.444230634057
+      ]
+    },
+    {
+      "id": "e10-28",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "positive samples that are classified correctly to the total number of the positive samples. This metric, as measuring in Eq. (3), can indicate the model’s ability to classify positive samples among other samples.",
+      "bbox": [
+        64.7436687059761,
+        96.9386185633904,
+        289.1063965875265,
+        143.26470741949038
+      ]
+    },
+    {
+      "id": "e10-29",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "(AUC): AUC is one of the important metrics in classification problems. Receiver operating characteris-tic (ROC) helps to visualize the tradeoff between sensitivity and specificity in DL models. The AUC curve is a plot of true-positive rate (TPR) to false-positive rate (FPR). A good DL model has an AUC value near to 1. This metric is measured, as shown in Eq. (5), where x is the varying AUC parameter.",
+      "bbox": [
+        319.8619324307839,
+        166.21821823186352,
+        544.251559873217,
+        262.3194479788984
+      ]
+    },
+    {
+      "id": "e10-30",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "1  ! Z  \u0012  \u0013",
+      "bbox": [
+        405.63836196067035,
+        153.126226156,
+        528.1238123983296,
+        162.82768947
+      ]
+    },
+    {
+      "id": "e10-31",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "\u00041",
+      "bbox": [
+        501.4487,
+        149.467083626,
+        509.46240751999994,
+        155.737207226
+      ]
+    },
+    {
+      "id": "e10-32",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "T  F",
+      "bbox": [
+        430.015686035,
+        144.769691344,
+        480.535154756,
+        152.731854544
+      ]
+    },
+    {
+      "id": "e10-33",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "P  P",
+      "bbox": [
+        434.947906494,
+        143.941915242,
+        484.050266159,
+        149.590675242
+      ]
+    },
+    {
+      "id": "e10-34",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "Area Under Curve ¼  ð Þx dx",
+      "bbox": [
+        319.861297607,
+        138.30906867,
+        536.6427890383297,
+        147.26650227
+      ]
+    },
+    {
+      "id": "e10-35",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "T þ F  F þ T",
+      "bbox": [
+        419.300689697,
+        132.12956427499998,
+        489.957179368,
+        141.08699787499998
+      ]
+    },
+    {
+      "id": "e10-36",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "P  N  P  N x¼0",
+      "bbox": [
+        402.68958808400004,
+        125.599192165752,
+        494.4465492,
+        137.345085033
+      ]
+    },
+    {
+      "id": "e10-37",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "ð5Þ",
+      "bbox": [
+        531.552612304,
+        111.245310585254,
+        544.2330092708912,
+        121.1979477395
+      ]
+    },
+    {
+      "id": "e10-38",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "• False Alarm Rate: This metric is also known as false-",
+      "bbox": [
+        306.14282403713503,
+        91.5751536309564,
+        544.2031282530313,
+        101.3385013898764
+      ]
+    },
+    {
+      "id": "e10-39",
+      "page": 10,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "positive rate, which is the probability of a false alarm",
+      "bbox": [
+        319.86232015836845,
+        79.19263839670981,
+        544.2071152995501,
+        88.1589781753098
+      ]
+    },
+    {
+      "id": "e11-1",
+      "page": 11,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "will be raised. It means, a positive result will be given when a true value is negative. This metric can be measured as shown in Eq. (6):",
+      "bbox": [
+        64.743301391,
+        697.7691858353166,
+        289.10304049259435,
+        731.679882877982
+      ]
+    },
+    {
+      "id": "e11-2",
+      "page": 11,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "F",
+      "bbox": [
+        161.461395263,
+        682.69448345643,
+        167.578431511956,
+        691.541272037982
+      ]
+    },
+    {
+      "id": "e11-3",
+      "page": 11,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "p",
+      "bbox": [
+        167.640899658,
+        681.692862157,
+        171.127799658,
+        687.969282157
+      ]
+    },
+    {
+      "id": "e11-4",
+      "page": 11,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "False Alarm Rate ¼  \u0003 100  ð6Þ",
+      "bbox": [
+        64.74329975713367,
+        675.3963268212541,
+        289.11412448238747,
+        685.3498089819803
+      ]
+    },
+    {
+      "id": "e11-5",
+      "page": 11,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "TN þ FP",
+      "bbox": [
+        149.725997924,
+        668.02977622,
+        182.88573144699998,
+        678.5458633895
+      ]
+    },
+    {
+      "id": "e11-6",
+      "page": 11,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "• Misdetection Rate: It is a metric that shows the",
+      "bbox": [
+        51.02393924863128,
+        649.887090151137,
+        289.12011149725515,
+        659.6504379100571
+      ]
+    },
+    {
+      "id": "e11-7",
+      "page": 11,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "percentage of misclassified samples. This metric can be defined as the percentage of the samples that are not detected. It is also measured, as shown in Eq. (7):",
+      "bbox": [
+        64.74343536986468,
+        612.617004471423,
+        289.0802606098625,
+        646.5277015140883
+      ]
+    },
+    {
+      "id": "e11-8",
+      "page": 11,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "FN",
+      "bbox": [
+        164.692901611,
+        596.596792821,
+        175.822892745,
+        606.388562076982
+      ]
+    },
+    {
+      "id": "e11-9",
+      "page": 11,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "Misdetection Rate ¼  \u0003 100  ð7Þ",
+      "bbox": [
+        64.74343357659671,
+        590.300196450254,
+        289.1145299079248,
+        600.2544144366844
+      ]
+    },
+    {
+      "id": "e11-10",
+      "page": 11,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "T þ F",
+      "bbox": [
+        153.694503784,
+        583.497095864254,
+        181.80779735598918,
+        593.4497330185
+      ]
+    },
+    {
+      "id": "e11-11",
+      "page": 11,
+      "sectionPath": [
+        "4 Evaluation metrics"
+      ],
+      "type": "text",
+      "text": "P  N",
+      "bbox": [
+        159.193695068,
+        582.9904695790001,
+        186.82129057199998,
+        589.266889579
+      ]
+    },
+    {
+      "id": "e11-12",
+      "page": 11,
+      "sectionPath": [
+        "5 Learning classification in deep learning"
+      ],
+      "type": "text",
+      "text": "models",
+      "bbox": [
+        63.609930811,
+        521.004042535,
+        102.296634411,
+        532.0027345350001
+      ]
+    },
+    {
+      "id": "e11-13",
+      "page": 11,
+      "sectionPath": [
+        "5 Learning classification in deep learning"
+      ],
+      "type": "text",
+      "text": "Learning strategies, as shown in Fig. 6, include online learning, transfer learning, and federated learning. In this section, these learning strategies are discussed in brief.",
+      "bbox": [
+        51.023601531,
+        471.5079489719147,
+        289.09088151063645,
+        505.36185919598205
+      ]
+    },
+    {
+      "id": "e11-14",
+      "page": 11,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "Conventional machine learning models mostly employ batch learning methods, in which a collection of training data is provided in advance to the model. This learning",
+      "bbox": [
+        51.023601531,
+        396.7866354079147,
+        289.1008438614251,
+        430.64054563198204
+      ]
+    },
+    {
+      "id": "e11-15",
+      "page": 11,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "caption",
+      "text": "Fig. 6 Review of learning classification in deep learning models",
+      "bbox": [
+        51.023601531,
+        354.250282800063,
+        154.39068127679553,
+        381.95738549665
+      ]
+    },
+    {
+      "id": "e11-16",
+      "page": 11,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "method requires the whole training dataset to be made accessible ahead to the training, which lead to high mem-ory usage and poor scalability. On the other hand, online learning is a machine learning category where data are processed in sequential order, and the model is updated accordingly [90]. The purpose of online learning is to maximize the accuracy of the prediction model using the ground truth of previous predictions [91]. Unlike batch or offline machine learning approaches, which require the complete training dataset to be available to be trained on [92], online learning models use sequential stream of data to update their parameters after each data instance. Online learning is mainly optimal when the entire dataset is unavailable or the environment is dynamically changing [92–96].",
+      "bbox": [
+        306.1388822116042,
+        548.102585511568,
+        544.2490013682701,
+        731.3954920456357
+      ]
+    },
+    {
+      "id": "e11-17",
+      "page": 11,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "On the other hand, batch learning is easier to maintain and less complex; it requires all the data to be available to be trained on it and does not update its model. Table 6 shows the advantages and disadvantages of batch learning and online learning.",
+      "bbox": [
+        306.13788595162885,
+        498.27065780203543,
+        544.2121397491804,
+        557.0689252901681
+      ]
+    },
+    {
+      "id": "e11-18",
+      "page": 11,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "An online model aims to learn a hypothesis H : X ! Y Where X is the input space, and Y is the output space. At each time stept, a new data instance xt 2 X is received, and an output or prediction y^ is generated using the mapping",
+      "bbox": [
+        306.13688969165344,
+        448.49000183938205,
+        544.2211061535864,
+        495.48909995071864
+      ]
+    },
+    {
+      "id": "e11-19",
+      "page": 11,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "t",
+      "bbox": [
+        409.03930664,
+        446.897885648,
+        410.99894444,
+        453.090620048
+      ]
+    },
+    {
+      "id": "e11-20",
+      "page": 11,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "function Hðxt; wtÞ ¼ y^, where wt is the weights’ vector of",
+      "bbox": [
+        306.1422062097578,
+        435.27578481800003,
+        544.2157835200518,
+        445.6513626565
+      ]
+    },
+    {
+      "id": "e11-21",
+      "page": 11,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "t",
+      "bbox": [
+        397.133789062,
+        434.42538198600005,
+        399.093426862,
+        440.618116386
+      ]
+    },
+    {
+      "id": "e11-22",
+      "page": 11,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "the online model at the time stept. The true class label y is",
+      "bbox": [
+        306.142526161085,
+        423.545115853382,
+        544.253865850164,
+        432.51168984094943
+      ]
+    },
+    {
+      "id": "e11-23",
+      "page": 11,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "t",
+      "bbox": [
+        532.289611816,
+        421.952969876,
+        534.249249616,
+        428.14570427599995
+      ]
+    },
+    {
+      "id": "e11-24",
+      "page": 11,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "then utilized to calculate the loss and update the weights of the model wtþ1, which is illustrated in Fig. 7 [97].",
+      "bbox": [
+        306.142750429687,
+        397.60831139699997,
+        544.2160083967209,
+        420.09606381854724
+      ]
+    },
+    {
+      "id": "e12-1",
+      "page": 12,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "caption",
+      "text": "Table 6 Advantages and",
+      "bbox": [
+        51.023601531,
+        723.9448713615899,
+        136.7514213942752,
+        731.7525515126499
+      ]
+    },
+    {
+      "id": "e12-2",
+      "page": 12,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "Learning technique  Advantage  Disadvantage",
+      "bbox": [
+        178.582634523909,
+        719.2390927716289,
+        422.50404315701826,
+        726.8604725286289
+      ]
+    },
+    {
+      "id": "e12-3",
+      "page": 12,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "disadvantages of batch learning and online learning",
+      "bbox": [
+        51.023601531000004,
+        704.0454488160628,
+        160.53690084434578,
+        721.5881713767309
+      ]
+    },
+    {
+      "id": "e12-4",
+      "page": 12,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "Batch learning  Low-cost learning,  Requires data availability,",
+      "bbox": [
+        178.6393714621,
+        700.5302991081398,
+        466.83930149820037,
+        708.1525256851129
+      ]
+    },
+    {
+      "id": "e12-5",
+      "page": 12,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "Easier to maintain,  High memory, Less complex  Poor scalability",
+      "bbox": [
+        269.40407548495205,
+        675.0190006015418,
+        430.13134941197615,
+        695.3968764318139
+      ]
+    },
+    {
+      "id": "e12-6",
+      "page": 12,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "Online learning  More efficient.  High training cost,",
+      "bbox": [
+        178.63936655054414,
+        662.2641981682159,
+        441.1992815475219,
+        669.8855779252159
+      ]
+    },
+    {
+      "id": "e12-7",
+      "page": 12,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "Better scalability.  Previously acquired knowledge can be forgotten Adapts to data changes,  Difficult to maintain,",
+      "bbox": [
+        269.4040705733962,
+        636.7528996616179,
+        544.2479571902204,
+        657.1299286719169
+      ]
+    },
+    {
+      "id": "e12-8",
+      "page": 12,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "caption",
+      "text": "Fig. 7 Online machine learning process",
+      "bbox": [
+        51.023601531,
+        505.33711379259,
+        189.05187010853206,
+        513.14479394365
+      ]
+    },
+    {
+      "id": "e12-9",
+      "page": 12,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "The number of mistakes committed by the online model across T time steps is defined as MT for y^ 6¼ yt [55]. The",
+      "bbox": [
+        51.0237669099726,
+        467.76077017,
+        289.1528148237459,
+        489.94135748698204
+      ]
+    },
+    {
+      "id": "e12-10",
+      "page": 12,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "t",
+      "bbox": [
+        224.560592651,
+        466.910367337,
+        226.520230451,
+        473.103101737
+      ]
+    },
+    {
+      "id": "e12-11",
+      "page": 12,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "goal of an online learning model is to minimize the total loss of the online model performance compared to the best model in hindsight, which is defined as [35]",
+      "bbox": [
+        51.02324172198999,
+        431.1427649688821,
+        289.10745800146776,
+        464.99667519294945
+      ]
+    },
+    {
+      "id": "e12-12",
+      "page": 12,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "T  T",
+      "bbox": [
+        80.277198791,
+        417.587582914,
+        151.704640139,
+        423.78031731399994
+      ]
+    },
+    {
+      "id": "e12-13",
+      "page": 12,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "X  X R ¼  l ðw Þ \u0004 min  l ðwÞ  ð8Þ",
+      "bbox": [
+        51.02323418030198,
+        405.084498207254,
+        289.1139899621418,
+        424.724116510088
+      ]
+    },
+    {
+      "id": "e12-14",
+      "page": 12,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "T  t  t  t",
+      "bbox": [
+        57.146499633,
+        404.661557523,
+        163.647839704,
+        410.96587272299996
+      ]
+    },
+    {
+      "id": "e12-15",
+      "page": 12,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "w",
+      "bbox": [
+        131.130706787,
+        400.203780192,
+        135.775257587,
+        406.487173992
+      ]
+    },
+    {
+      "id": "e12-16",
+      "page": 12,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "t¼1  t¼1",
+      "bbox": [
+        76.989052091,
+        395.057327254,
+        155.537440619,
+        402.024153454
+      ]
+    },
+    {
+      "id": "e12-17",
+      "page": 12,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "where the first term is the sum of the loss function at time step t, and the second term is the loss function of the best model after seeing all the instances [98, 99]. While training the online model, different approaches can be adopted regarding data that the model has already trained on; full memory, in which the model preserves all training data instances; partial memory, where the model retains only some of the training data instances; and no memory, in which it remembers none. Two main techniques are uti-lized to remove training data instances: passive forgetting and active forgetting [107–109]",
+      "bbox": [
+        51.023804728385585,
+        252.33592625897535,
+        289.1149986247768,
+        385.79690508351
+      ]
+    },
+    {
+      "id": "e12-18",
+      "page": 12,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "– Passive forgetting only considers the amount of time",
+      "bbox": [
+        51.023808593874335,
+        233.74073381813434,
+        289.10503608964024,
+        242.70707359673435
+      ]
+    },
+    {
+      "id": "e12-19",
+      "page": 12,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "that has passed since the training data instances were received by the model, which implies that the signif-icance of data diminishes over time. – Active forgetting, on the other hand, requires additional",
+      "bbox": [
+        51.02380859387435,
+        183.9655929271995,
+        289.10005527622707,
+        230.29168178329954
+      ]
+    },
+    {
+      "id": "e12-20",
+      "page": 12,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "information from the utilized training data in order to determine which objects to remove. The density-based forgetting and error-based forgetting are two active forgetting techniques.",
+      "bbox": [
+        65.19660300391475,
+        134.13366521766687,
+        289.1179881971181,
+        180.4597540737669
+      ]
+    },
+    {
+      "id": "e12-21",
+      "page": 12,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "Online learning techniques can be classified into three categories: online learning with full feedback, online learning with partial feedback, and online learning with no feedback. Online learning with full feedback is when all",
+      "bbox": [
+        51.02380859387435,
+        78.0651500621303,
+        289.1140022488865,
+        124.39123891823027
+      ]
+    },
+    {
+      "id": "e12-22",
+      "page": 12,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "More complex",
+      "bbox": [
+        376.38368081411033,
+        623.9972504083189,
+        426.7965675501177,
+        631.6186301653189
+      ]
+    },
+    {
+      "id": "e12-23",
+      "page": 12,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.1 Online learning"
+      ],
+      "type": "text",
+      "text": "training data instances x have a corresponding true label y which is always disclosed to the model at the end of each online learning round. Online learning with partial feed-back is when only partial feedback information is received that shows if the prediction is correct or not, rather than the corresponding true label explicitly. In this category, the online learning model is required to make online updates by seeking to maintain a balance between the exploitation of revealed knowledge and the exploration of unknown information with the environment [2]. On the other hand, online learning with no feedback is when only the training data are fed to the model without the ground truth or feedback. This category includes online clustering and dimension reduction [99–111].",
+      "bbox": [
+        306.14008144978794,
+        319.06840253243706,
+        544.2402399125054,
+        489.9459172530694
+      ]
+    },
+    {
+      "id": "e12-24",
+      "page": 12,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "Training deep learning models from scratch needs exten-sive computational and memory resources and large amounts of labeled datasets. However, for some types of scenarios, huge, annotated datasets are not always avail-able. Additionally, developing such datasets requires a great deal of time and is a costly operation. Transfer learning (TL) has been proposed as an alternative for training deep learning models [112]. In TL, the obtained knowledge from another domain can be easily transferred to target another classification problem. TL saves com-puting resources and increases efficiency in training new deep learning models. TL can also help train deep learning models on available annotated datasets before validating them on unlabeled data [113, 114]. Figure 8 illustrates a simple visualization of the deep transfer learning, which",
+      "bbox": [
+        306.141693115,
+        94.90043459591453,
+        544.2438419505188,
+        278.193341129982
+      ]
+    },
+    {
+      "id": "e13-1",
+      "page": 13,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "caption",
+      "text": "Fig. 8 Visualization of deep transfer learning",
+      "bbox": [
+        51.023601531,
+        490.03001540459,
+        208.93012184461162,
+        497.83769555565004
+      ]
+    },
+    {
+      "id": "e13-2",
+      "page": 13,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "caption",
+      "text": "Fig. 9 Categories of deep transfer learning",
+      "bbox": [
+        51.023601531,
+        456.921228874731,
+        140.42323290057453,
+        474.70698876765005
+      ]
+    },
+    {
+      "id": "e13-3",
+      "page": 13,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "can transfer valuable knowledge by further using the learning ability of neural networks.",
+      "bbox": [
+        51.023601531,
+        155.6714334363494,
+        289.11977256344943,
+        177.109951846982
+      ]
+    },
+    {
+      "id": "e13-4",
+      "page": 13,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "In this survey, the deep transfer learning techniques are classified based on the generalization viewpoints between deep learning models and domains into four categories, namely, instance, feature representation, model parameter, and relational knowledge-based techniques. In the",
+      "bbox": [
+        51.023601531,
+        93.424113913382,
+        289.1217653779246,
+        152.16559458291678
+      ]
+    },
+    {
+      "id": "e13-5",
+      "page": 13,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "following, we briefly discuss these categories with their categorizations, as illustrated in Fig. 9.",
+      "bbox": [
+        306.14087473155496,
+        155.67242969632477,
+        544.1742816896027,
+        177.11094810695738
+      ]
+    },
+    {
+      "id": "e13-6",
+      "page": 13,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "5.2.1 Instance-based",
+      "bbox": [
+        306.1408724800074,
+        130.893451588176,
+        390.1803825813481,
+        139.96937996407
+      ]
+    },
+    {
+      "id": "e13-7",
+      "page": 13,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "Instance-based TL techniques are performed based on the selected instance or on selecting different weights for instances. In such techniques, the TL aims at training a",
+      "bbox": [
+        306.1408724800074,
+        80.950939021374,
+        544.2430210666106,
+        114.86163606403917
+      ]
+    },
+    {
+      "id": "e14-1",
+      "page": 14,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "more accurate model under a transfer scenario, in which the difference between a source and a target comes from the different marginal probability distributions or condi-tional probability distributions [62]. Instance-based TL presents the labeled samples that are only limited to training a classification model in the target domain. This technique can directly margin the source data into the target data, resulting in decreasing the target model per-formance and a negative transfer during training [109–111]. The main goal of instance-based TL is to single out the instances in the source domains. Such a process can have positive impact on the training of the models in target as well as augmenting the target data through particular weighting techniques. In this context, a viable solution is to learn the weights of the source domains’ instances auto-matically in an objective function.",
+      "bbox": [
+        51.02260898707431,
+        535.6312894108817,
+        289.131732123186,
+        731.396374576982
+      ]
+    },
+    {
+      "id": "e14-2",
+      "page": 14,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "The objective function is given by:",
+      "bbox": [
+        51.022608987074314,
+        523.2158975974469,
+        289.11379920611046,
+        544.5976291894817
+      ]
+    },
+    {
+      "id": "e14-3",
+      "page": 14,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "S",
+      "bbox": [
+        90.084999084,
+        511.255811064215,
+        92.5756490225,
+        515.6792053549909
+      ]
+    },
+    {
+      "id": "e14-4",
+      "page": 14,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "XN 1",
+      "bbox": [
+        72.623596191,
+        502.91511170238203,
+        96.180856981498,
+        515.432734676088
+      ]
+    },
+    {
+      "id": "e14-5",
+      "page": 14,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "s  s s  \u0005",
+      "bbox": [
+        114.746398925,
+        500.67602990299997,
+        174.869498876,
+        507.642856103
+      ]
+    },
+    {
+      "id": "e14-6",
+      "page": 14,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "# ¼  WiR ðfðx ; y Þ þ # ðf Xð Þ; YÞ  ð9Þ",
+      "bbox": [
+        51.022608987074314,
+        495.37026724000003,
+        289.1146955741034,
+        505.75046396870954
+      ]
+    },
+    {
+      "id": "e14-7",
+      "page": 14,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "s  i i",
+      "bbox": [
+        77.0457,
+        492.875760404,
+        148.340741315,
+        500.25899666299995
+      ]
+    },
+    {
+      "id": "e14-8",
+      "page": 14,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "C",
+      "bbox": [
+        70.0721743940006,
+        489.4287404153922,
+        76.7072658301646,
+        498.2755289969442
+      ]
+    },
+    {
+      "id": "e14-9",
+      "page": 14,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "i¼1",
+      "bbox": [
+        83.622001647,
+        485.765721065,
+        94.47881348700001,
+        492.732547265
+      ]
+    },
+    {
+      "id": "e14-10",
+      "page": 14,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "where Wi is the weighting coefficient of the given source",
+      "bbox": [
+        51.024510340347206,
+        466.797086087,
+        289.07628376141275,
+        476.50561480051
+      ]
+    },
+    {
+      "id": "e14-11",
+      "page": 14,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "s",
+      "bbox": [
+        97.6819,
+        459.767056791,
+        100.366813,
+        465.959791191
+      ]
+    },
+    {
+      "id": "e14-12",
+      "page": 14,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "instance, C represents the risks function of the selected",
+      "bbox": [
+        51.023947557900804,
+        455.06632630238204,
+        289.04500205974625,
+        464.03299111094947
+      ]
+    },
+    {
+      "id": "e14-13",
+      "page": 14,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "\u0005",
+      "bbox": [
+        142.7527,
+        447.32803795999996,
+        146.2396,
+        454.29486416
+      ]
+    },
+    {
+      "id": "e14-14",
+      "page": 14,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "source instance, and # is the second risk function related to the target task or the parameter regularization.",
+      "bbox": [
+        51.02355009788701,
+        430.17843722134944,
+        289.06429271827176,
+        451.71690026508725
+      ]
+    },
+    {
+      "id": "e14-15",
+      "page": 14,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "The weighting coefficient of the given source instance can be computed as the ratio of the marginal probability distribution between source and target domains. Instance-based TL can be categorized into two subcategories, weight estimation and heuristic re-weighting-based techniques [63]. A weight estimation method can focus on scenarios in which there are limited labeled instances in the target domain, converting the instance transfer problem into the weight estimation problem using kernel embedding tech-niques. In contrast, a heuristic re-weighting technique is more effective for developing deep TL tasks that have labeled instances and are available in the target domains [64]. This technique aims at detecting negative source instances by applying instance re-weighting approaches in a heuristic manner.",
+      "bbox": [
+        51.0219236037011,
+        243.37969183384968,
+        289.1320428192659,
+        426.67259836791686
+      ]
+    },
+    {
+      "id": "e14-16",
+      "page": 14,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "One of the known instance re-weight-ing approaches is the transfer adaptive boosting algorithm, in which the weights of the source and target instances are updated via several iterations [116].",
+      "bbox": [
+        51.0219236037011,
+        206.01994275634965,
+        289.109128963348,
+        252.34603161244968
+      ]
+    },
+    {
+      "id": "e14-17",
+      "page": 14,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "5.2.2 Feature representation-based",
+      "bbox": [
+        51.02192360370108,
+        181.24196090817628,
+        193.94139462896493,
+        190.31788928407028
+      ]
+    },
+    {
+      "id": "e14-18",
+      "page": 14,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "Feature representation-based TL models can share or learn a common feature representation between a target and a source domain. This category uses models with the ability to transfer knowledge by learning similar representations at the feature space level. Its main aim is to learn the mapping function as a bridge to transfer raw data in source and target domains from various feature spaces to a latent",
+      "bbox": [
+        51.02192360370108,
+        81.52530371041489,
+        289.1250688835531,
+        165.21114164401487
+      ]
+    },
+    {
+      "id": "e14-19",
+      "page": 14,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "feature space [109]. From a general perspective, feature representation-based TL covers two transfer styles with or without adapting to the target domain [110]. Techniques without adapting to the target domain can extract repre-sentations as inputs for the target models; however, the techniques with adapting to the target domain can extract feature representations across various domains via domain adaption techniques [112]. In general, techniques of adapting to the target domain are hard to implement, and their assumptions are weak to be justified in most of cases. On the contrary, techniques of adapting to the target domain are easy to implement, and their assumptions can be strong in different scenarios [111].",
+      "bbox": [
+        306.1391944630451,
+        572.9962536104542,
+        544.236362238118,
+        731.4015896990545
+      ]
+    },
+    {
+      "id": "e14-20",
+      "page": 14,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "One important challenge in feature representation TL with domain adaptation is the estimation of representing invariance between source and target domains. There are three techniques to build representation invariance, lever-aging discrepancy-based, adversarial-based, and recon-struction-based. Leveraging discrepancy-based can improve the learning transferable ability representations and decrease the discrepancy based on distance metrics between a given source and target, while the adversarial-based is inspired by GANs and provides the neural network with the ability to learn domain-invariant representations. In construction-based, the auto-encoder neural networks with specific task classifiers are combined to optimize the encoder architecture, which takes domain-specific repre-sentations and shares an encoder that learns representations between different domains [113].",
+      "bbox": [
+        306.1391990956541,
+        373.78211640951963,
+        544.2473261542355,
+        569.5472015756195
+      ]
+    },
+    {
+      "id": "e14-21",
+      "page": 14,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "5.2.3 Model parameter-based",
+      "bbox": [
+        306.13919684410655,
+        348.9473477427484,
+        426.7653582231279,
+        358.0232761186424
+      ]
+    },
+    {
+      "id": "e14-22",
+      "page": 14,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "Model parameter-based TL can share the neural network architecture and parameters between target and source domains. This category can convey the assumptions that can share in common between the source and target domains. In such a technique, transferable knowledge is embedded into the pre-trained source model. This pre-trained source model has a particular architecture with some parameters in the target model [99]. The aim of this process is to use a section of the pre-trained model in the source domain, which can improve the learning process in the target domain. These techniques are performed based on the assumption that labeled instances in the target domain are available during the training of the target model [99–103]. Model parameter-based TL is divided into two categories, sequential and joint training.",
+      "bbox": [
+        306.1382071295592,
+        149.62262568454418,
+        544.2483197388943,
+        332.9155322186116
+      ]
+    },
+    {
+      "id": "e14-23",
+      "page": 14,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "In sequential training, the target deep model can be established by pre-training a model on an auxiliary domain. However, joint training focuses on developing the source and target tasks at the same time. There are two methods to perform joint training [104]. The first method is hard parameter sharing, which shares the hidden layers directly while maintaining",
+      "bbox": [
+        306.1382071295592,
+        74.90312752954421,
+        544.2194351136916,
+        158.58896546314418
+      ]
+    },
+    {
+      "id": "e15-1",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "caption",
+      "text": "Table 7 Advantage and disadvantage of instance-, feature representation-, and model parameter-based techniques",
+      "bbox": [
+        51.023601531,
+        722.3008283925899,
+        445.9745091450561,
+        730.1085085436499
+      ]
+    },
+    {
+      "id": "e15-2",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "Category  Advantage",
+      "bbox": [
+        51.023601531000004,
+        705.9165555549858,
+        159.49192422561805,
+        713.5379353119858
+      ]
+    },
+    {
+      "id": "e15-3",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "Disadvantage",
+      "bbox": [
+        447.2489625539496,
+        705.9165555549858,
+        493.4260556816396,
+        713.5379353119858
+      ]
+    },
+    {
+      "id": "e15-4",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "Instance-based  Works based on the selection of instances or re-weight techniques, applications using this Selection of instances may",
+      "bbox": [
+        51.0794867884714,
+        687.1510249533059,
+        540.231493336364,
+        694.7724047103059
+      ]
+    },
+    {
+      "id": "e15-5",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "technique are found in probabilistic forecasting, which increases the accuracy in the target  not be proper",
+      "bbox": [
+        128.74896615607747,
+        677.1729452114469,
+        499.9347180495047,
+        684.7943249684469
+      ]
+    },
+    {
+      "id": "e15-6",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "domain",
+      "bbox": [
+        128.74896615607747,
+        667.1948654695879,
+        154.22977914364748,
+        674.8162452265879
+      ]
+    },
+    {
+      "id": "e15-7",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "Feature  Shares or even learns the common feature representation between the target and source  Common feature",
+      "bbox": [
+        51.08031776444278,
+        654.4392162162889,
+        505.27305541019814,
+        662.0605959732889
+      ]
+    },
+    {
+      "id": "e15-8",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "representation-  domains based",
+      "bbox": [
+        57.03346217463278,
+        634.5397936707618,
+        157.49171382717364,
+        652.1392531696208
+      ]
+    },
+    {
+      "id": "e15-9",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "representation must be chosen correctly",
+      "bbox": [
+        453.2605257968837,
+        634.5397936707618,
+        531.5786709997802,
+        652.1392531696208
+      ]
+    },
+    {
+      "id": "e15-10",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "Model parameter- Shares the neural network architecture and parameters between target and source domains Sharing neural network",
+      "bbox": [
+        51.081995551918965,
+        621.7841444174628,
+        528.3116229161284,
+        629.4055241744628
+      ]
+    },
+    {
+      "id": "e15-11",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "based",
+      "bbox": [
+        57.035139962108964,
+        611.8060646756038,
+        76.33416714677897,
+        619.4274444326038
+      ]
+    },
+    {
+      "id": "e15-12",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.2 Deep transfer learning"
+      ],
+      "type": "text",
+      "text": "the task-specific layers independently [99–118]. The sec-ond method is soft parameter sharing which changes the weight coefficient of the source and target tasks and adds regularization to the risk function. Table 7 shows the advantages and disadvantages of the three categories, instance-based, future representation-based, and model parameter-based.",
+      "bbox": [
+        51.02359444759159,
+        484.435023948382,
+        289.12175693008834,
+        568.120861881982
+      ]
+    },
+    {
+      "id": "e15-13",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "In traditional centralized DL, the collected data have to be stored on local devices, such as personal computers [74–87]. In general, traditional centralized DL can store the user data on the central server and apply it for training and testing purposes, as illustrated in Fig. 10A, while this process may deal with several shortcomings, such as high computational power, low security, and privacy. In such models, the efficiency and accuracy of the models heavily depend on the computational power and training process of the given data on a centralized server. As a result, cen-tralized DL models not only provide low privacy and high risks of data leakage but also indicate the high demands on",
+      "bbox": [
+        51.0226052710246,
+        297.6333831354148,
+        289.11877682224656,
+        443.566540591982
+      ]
+    },
+    {
+      "id": "e15-14",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "caption",
+      "text": "Fig. 10 Centralized and federated learning process flow",
+      "bbox": [
+        51.023601531,
+        75.15139907159,
+        245.10457750290706,
+        82.95907922265
+      ]
+    },
+    {
+      "id": "e15-15",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "architecture can be tricky",
+      "bbox": [
+        453.2613489567067,
+        611.8060646756038,
+        541.6354813389783,
+        619.4274444326038
+      ]
+    },
+    {
+      "id": "e15-16",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "storage and computing capacities of the several machines which train the models in parallel. Therefore, federated learning (FL) was proposed as an emerging technology to address such challenges [104–119].",
+      "bbox": [
+        306.1398806633515,
+        521.7968561605768,
+        544.2081567186254,
+        568.1229450166769
+      ]
+    },
+    {
+      "id": "e15-17",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "FL provides solutions to keep the users’ privacy by decentralizing data from the corresponding central server to devices and enabling artificial intelligence (AI) methods to discipline the data. Figure 10B summarizes the main process in an FL model. In particular, the unavailability of sufficient data, high computational power, and a limited level of privacy using local data are three major benefits of FL AI over centralized AI [115–119]. For this purpose, FL models aim at training a global model which can be trained on data distributed on several devices while they can pro-tect the data. In this context, FL finds an optimal global model, known as h, can minimize the aggregated local loss",
+      "bbox": [
+        306.1398806633515,
+        372.3578598505771,
+        544.2430261237259,
+        518.2910173071442
+      ]
+    },
+    {
+      "id": "e15-18",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "k",
+      "bbox": [
+        361.700714111,
+        363.38915762100004,
+        364.818002711,
+        369.58189202100004
+      ]
+    },
+    {
+      "id": "e15-19",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "function, f (h ), as shown in Eq. (10).",
+      "bbox": [
+        306.1398841402989,
+        358.291607063382,
+        462.6953196085972,
+        367.566787434356
+      ]
+    },
+    {
+      "id": "e15-20",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "k",
+      "bbox": [
+        349.568389892,
+        356.69946035500004,
+        352.685678492,
+        362.892194755
+      ]
+    },
+    {
+      "id": "e15-21",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "n",
+      "bbox": [
+        362.210906982,
+        346.21127065800005,
+        365.697806982,
+        352.40400505800005
+      ]
+    },
+    {
+      "id": "e15-22",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "Xk 1  \u0004  \u0005",
+      "bbox": [
+        349.681793212,
+        340.660106819382,
+        417.2338003710642,
+        353.177638240088
+      ]
+    },
+    {
+      "id": "e15-23",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "k  k",
+      "bbox": [
+        326.947998046,
+        338.954556791,
+        412.15659524,
+        345.147291191
+      ]
+    },
+    {
+      "id": "e15-24",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "f ðh Þ ¼  l x ; y ; h  ð10Þ",
+      "bbox": [
+        306.1410361881568,
+        333.5376339814488,
+        544.2320386629584,
+        343.4907486435
+      ]
+    },
+    {
+      "id": "e15-25",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "ðkÞ  i i",
+      "bbox": [
+        308.976287841,
+        332.46823571399995,
+        399.206830182,
+        339.43506191399996
+      ]
+    },
+    {
+      "id": "e15-26",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "nk",
+      "bbox": [
+        347.75403015960103,
+        326.25536855800004,
+        355.91718484,
+        336.0205241139442
+      ]
+    },
+    {
+      "id": "e15-27",
+      "page": 15,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "i",
+      "bbox": [
+        364.36529541,
+        323.98757681,
+        366.32493321,
+        330.18031121
+      ]
+    },
+    {
+      "id": "e16-1",
+      "page": 16,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "XC\u0005k",
+      "bbox": [
+        98.4758613138574,
+        723.365696651,
+        112.79211716035539,
+        730.8087930753143
+      ]
+    },
+    {
+      "id": "e16-2",
+      "page": 16,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "n \u0004 \u0005",
+      "bbox": [
+        114.406303405,
+        718.41109722543,
+        149.0768929328666,
+        729.4484512280881
+      ]
+    },
+    {
+      "id": "e16-3",
+      "page": 16,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "k  k",
+      "bbox": [
+        119.395202636,
+        716.585996,
+        143.999185572,
+        723.742475517
+      ]
+    },
+    {
+      "id": "e16-4",
+      "page": 16,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "min fðhÞ ¼  fk h  ð11Þ h  n",
+      "bbox": [
+        51.023601531,
+        704.80465191343,
+        289.1141838550168,
+        721.1221573345
+      ]
+    },
+    {
+      "id": "e16-5",
+      "page": 16,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "k¼1",
+      "bbox": [
+        99.552156988,
+        701.085103031,
+        111.656581648,
+        708.051929231
+      ]
+    },
+    {
+      "id": "e16-6",
+      "page": 16,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "where X denotes the data feature, y is the data label, n is",
+      "bbox": [
+        51.0239986212606,
+        682.858353478507,
+        289.13579334016396,
+        691.824780338982
+      ]
+    },
+    {
+      "id": "e16-7",
+      "page": 16,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "k",
+      "bbox": [
+        275.357391357,
+        682.116696683,
+        278.474679957,
+        688.3094310829999
+      ]
+    },
+    {
+      "id": "e16-8",
+      "page": 16,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "the local data size, C is the ratio in which the local clients do not participate in every round of the models’ updates, l",
+      "bbox": [
+        51.02467791968698,
+        657.9708701149145,
+        289.1527296988941,
+        679.3526017069494
+      ]
+    },
+    {
+      "id": "e16-9",
+      "page": 16,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "P",
+      "bbox": [
+        255.57179339409922,
+        659.3088472618767,
+        266.0524483353072,
+        660.7932746252228
+      ]
+    },
+    {
+      "id": "e16-10",
+      "page": 16,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "C\u0005k",
+      "bbox": [
+        266.059814453,
+        648.70114587,
+        277.567281833,
+        655.66797207
+      ]
+    },
+    {
+      "id": "e16-11",
+      "page": 16,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "is the loss function, k is the client index, and  nk",
+      "bbox": [
+        51.02467791968698,
+        642.715085355,
+        288.509378443,
+        652.4236945718874
+      ]
+    },
+    {
+      "id": "e16-12",
+      "page": 16,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "k¼1",
+      "bbox": [
+        266.059117073,
+        641.04740037,
+        278.220029513,
+        648.01422657
+      ]
+    },
+    {
+      "id": "e16-13",
+      "page": 16,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "shows the total number of sample pairs. FL can be classi-fied based on the characteristics of the data distribution among the clients into two types, namely, vertical and horizontal FL models, as discussed in the following:",
+      "bbox": [
+        51.023601531,
+        593.3413669724798,
+        289.1237582095353,
+        639.6106690099821
+      ]
+    },
+    {
+      "id": "e16-14",
+      "page": 16,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "5.3.1 Horizontal federated learning",
+      "bbox": [
+        51.023601531,
+        568.5065983057087,
+        194.92040353702808,
+        577.5825266816026
+      ]
+    },
+    {
+      "id": "e16-15",
+      "page": 16,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "Horizontal FL, homogeneous FL, shows the cases in which the given training data of the participating clients share a similar feature space; however, these corresponding data have various sample spaces [76]. Client one and Client two have several data rows with similar features, whereas each row shows specific data for a unique client. A typical common algorithm, namely, federated averaging (FedAvg), is usually used as a horizontal FL algorithm. FedAvg is one of the most efficient algorithms for dis-tributing training data with multiple clients. In such an algorithm, clients keep the data local for protecting their privacy, while central parameters are applied to commu-nicate between different clients [69–122].",
+      "bbox": [
+        51.023601531,
+        394.0704429529475,
+        289.1137945152403,
+        552.4757790415473
+      ]
+    },
+    {
+      "id": "e16-16",
+      "page": 16,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "In addition, horizontal FL provides efficient solutions to avoid leaking private local data. This can happen since the global and local model parameters are only permitted to communicate between the servers and clients, whereas all the given training data are stored on the client devices without being accessed by any other parties [14, 119–133]. Despite such advantages, constant downloading and uploading in horizontal FL may consume huge amounts of communication resources. In deep learning models, the situation is getting worse due to the needing huge amounts of computation and memory resources. To address such issues, several studies have been performed to decrease the computational efficiency of horizontal FL models [134]. These studies proposed methods to reduce communication costs using multi-objective evolutionary algorithms, model quantization, and sub-sampling techniques.",
+      "bbox": [
+        51.022608170141154,
+        194.79951893341502,
+        289.1207692490769,
+        390.5646040995149
+      ]
+    },
+    {
+      "id": "e16-17",
+      "page": 16,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "In these stud-ies, however, no private data can be accessed directly by any third party, the uploaded model parameters or gradients may still leak the data for every client [135].",
+      "bbox": [
+        51.022608170141154,
+        157.439769855915,
+        289.11479404295847,
+        203.76585871201502
+      ]
+    },
+    {
+      "id": "e16-18",
+      "page": 16,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "5.3.2 Vertical federated learning",
+      "bbox": [
+        51.022608170141126,
+        132.66178800774162,
+        183.58994161240412,
+        141.73771638363561
+      ]
+    },
+    {
+      "id": "e16-19",
+      "page": 16,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "Vertical FL, heterogeneous FL, is one of the types of FL in which users’ training data can share the same sample space while they have multiple different feature spaces. Client",
+      "bbox": [
+        51.022608170141126,
+        82.72027170091503,
+        289.08590280580756,
+        116.63096874358021
+      ]
+    },
+    {
+      "id": "e16-20",
+      "page": 16,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "one and Client two have similar data samples with different feature spaces, and all clients have their own local data that are mostly assumed to one client keeps all the data classes. Such clients with data labels are known as guest parties or active parties, and clients without labels are known as host parties [136]. In particular, in vertical FL, the common data between unrelated domains are mainly applied to train global DL models [137]. In this context, participants may use intermediate third-party resources to indicate encryp-tion logic to guarantee the data stats are kept. Although it is not necessary to use third parties in this process, studies have demonstrated that vertical FL models with third par-ties using encryption techniques provide more accept-able results [14, 89–138].",
+      "bbox": [
+        306.1398794678396,
+        560.5862951377896,
+        544.2490026115528,
+        731.4070230398247
+      ]
+    },
+    {
+      "id": "e16-21",
+      "page": 16,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "In contrast with horizontal FL, training parametric models in vertical FL has two benefits. Firstly, trained models in vertical FL have a similar performance as cen-tralized models. As a matter of fact, the computed loss function in vertical FL is the same as the loss function in centralized models. Secondly, vertical FL often consumes fewer communication resources compared to horizontal FL [138]. Vertical FL only consumes more communication resources than horizontal FL if and only if the data size is huge. In vertical FL, privacy preservation is the main challenge. For this purpose, several studies have been conducted to investigate privacy preservation in vertical FL, using identity resolution schemes, protocols, and ver-tical decision learning schemes.",
+      "bbox": [
+        306.13788694788883,
+        386.2029415637246,
+        544.2470097837577,
+        557.0804562843571
+      ]
+    },
+    {
+      "id": "e16-22",
+      "page": 16,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "Although these approaches improve the vertical FL models, there are still some main slight differences between horizontal and vertical FL [100–143].",
+      "bbox": [
+        306.13788694788883,
+        348.84319248622467,
+        544.2380433793815,
+        395.1692813423246
+      ]
+    },
+    {
+      "id": "e16-23",
+      "page": 16,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "Horizontal FL includes a server for aggregation of the global models. In contrast, the vertical FL does not have a central server and global model [14, 122–130]. As a result, the output of the local model’s aggregation is done based on the guest client to build a proper loss function. Another difference is the model parameters or gradients between servers and clients in horizontal FL. Local model param-eters in vertical FL depend on the local data feature spaces, while the guest client receives model outputs from the connected host clients [143]. In this process, the interme-diate gradient values are sent back for updating local models [105].",
+      "bbox": [
+        306.13689068791336,
+        199.38185673331677,
+        544.2360508632264,
+        345.3941404513899
+      ]
+    },
+    {
+      "id": "e16-24",
+      "page": 16,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "Ultimately, the server and the clients com-municate with one another once in a communication round in horizontal FL; however, the guest and host clients have to send and receive data several times in a communication round in vertical FL [14, 106–128]. Table 8 summarizes the main advantages and disadvantages of vertical and horizontal FL and compares these FL learning categories with central learning.",
+      "bbox": [
+        306.1422935945466,
+        112.24696676488195,
+        544.2245200831484,
+        208.34819651191677
+      ]
+    },
+    {
+      "id": "e17-1",
+      "page": 17,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "caption",
+      "text": "Table 8 Advantages and disadvantages of vertical and horizontal federated and centralized learning [77–143]",
+      "bbox": [
+        51.023601531,
+        722.3008283925899,
+        432.3237613597074,
+        730.1085085436499
+      ]
+    },
+    {
+      "id": "e17-2",
+      "page": 17,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "Learning technique  Advantage",
+      "bbox": [
+        51.022744837106075,
+        705.9165555549858,
+        181.5448017941941,
+        713.5379353119858
+      ]
+    },
+    {
+      "id": "e17-3",
+      "page": 17,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "Central learning  High accuracy Federated  Horizontal Avoiding data leakage learning",
+      "bbox": [
+        51.079481775297076,
+        664.4172959581479,
+        222.65621523954513,
+        694.7724047103059
+      ]
+    },
+    {
+      "id": "e17-4",
+      "page": 17,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "Disadvantage",
+      "bbox": [
+        434.7194126340865,
+        705.9165555549858,
+        480.8965057617765,
+        713.5379353119858
+      ]
+    },
+    {
+      "id": "e17-5",
+      "page": 17,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "Data leakage Consume a huge amount of communication and memory resources",
+      "bbox": [
+        434.7202634659876,
+        654.4392162162889,
+        539.8393950755138,
+        694.7724047103059
+      ]
+    },
+    {
+      "id": "e17-6",
+      "page": 17,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "Vertical  High performance, like centralized learning, consuming less communication  No server or global model",
+      "bbox": [
+        99.94946105374692,
+        641.6835669629899,
+        526.6628922167131,
+        649.3049467199899
+      ]
+    },
+    {
+      "id": "e17-7",
+      "page": 17,
+      "sectionPath": [
+        "5 Learning classification in deep learning",
+        "5.3 Deep federated learning"
+      ],
+      "type": "text",
+      "text": "resources compared to horizontal federated learning",
+      "bbox": [
+        150.80269407234292,
+        631.7622241593218,
+        331.1016751387277,
+        639.3836039163218
+      ]
+    },
+    {
+      "id": "e17-8",
+      "page": 17,
+      "sectionPath": [
+        "6 Challenges and future directions"
+      ],
+      "type": "text",
+      "text": "Deep learning models, while powerful and versatile, face several significant challenges. Addressing these challenges requires a multidisciplinary approach involving data col-lection and preprocessing techniques, algorithmic enhancements, fairness-aware model training, inter-pretability methods, safe learning, robust models to adversarial attacks, and collaboration with domain experts and affected communities to push the boundaries of deep learning and realize its full potential. A brief description of each of these challenges is given below.",
+      "bbox": [
+        51.023601531,
+        440.7256654958821,
+        289.13471717947095,
+        561.771252506982
+      ]
+    },
+    {
+      "id": "e17-9",
+      "page": 17,
+      "sectionPath": [
+        "6 Challenges and future directions",
+        "6.1 Data availability and quality"
+      ],
+      "type": "text",
+      "text": "Deep learning models require large amounts of labeled training data to learn effectively. However, obtaining suf-ficient and high-quality labeled data can be expensive, time-consuming, or challenging, particularly in specialized domains or when dealing with sensitive data such cyber-security. Although there are several approaches, such as data augmentation, to generate high amounts of data, it can sometimes be cumbersome to generate enough training data and satisfy the requirements of DL models. In addi-tion, having a small dataset may lead to overfitting issues where DL models perform well on the training data but fail to generalize to unseen data. Balancing model complexity and regularization techniques to avoid overfitting while achieving good generalization is a challenge in deep learning.",
+      "bbox": [
+        51.023601531,
+        216.56337433931697,
+        289.1516533102171,
+        399.913067691982
+      ]
+    },
+    {
+      "id": "e17-10",
+      "page": 17,
+      "sectionPath": [
+        "6 Challenges and future directions",
+        "6.1 Data availability and quality"
+      ],
+      "type": "text",
+      "text": "In addition, exploring techniques to improve data efficiency, such as few-shot learning, active learning, or semi-supervised learning, remains an active area of research.",
+      "bbox": [
+        51.023601531,
+        179.20362526181694,
+        289.09685894696264,
+        225.52971411791697
+      ]
+    },
+    {
+      "id": "e17-11",
+      "page": 17,
+      "sectionPath": [
+        "6 Challenges and future directions",
+        "6.2 Ethics and fairness"
+      ],
+      "type": "text",
+      "text": "The challenge of ethics and fairness in deep learning underscores the critical need to address biases, discrimi-nation, and social implications embedded within these models. Deep learning systems learn patterns from vast and potentially biased datasets, which can perpetuate and",
+      "bbox": [
+        51.023601531,
+        79.59038614384941,
+        289.1028363889874,
+        138.38865363198198
+      ]
+    },
+    {
+      "id": "e17-12",
+      "page": 17,
+      "sectionPath": [
+        "6 Challenges and future directions",
+        "6.2 Ethics and fairness"
+      ],
+      "type": "text",
+      "text": "amplify societal prejudices, leading to unfair or unjust outcomes. The ethical dilemma lies in the potential for these models to unintentionally marginalize certain groups or reinforce systemic disparities. As deep learning is increasingly integrated into decision-making processes across domains such as hiring, lending, and criminal jus-tice, ensuring fairness and transparency becomes para-mount. Striving for ethical deep learning involves not only detecting and mitigating biases but also establishing guidelines and standards that prioritize equitable treatment, encompassing a multidisciplinary effort to foster respon-sible AI innovation for the betterment of society.",
+      "bbox": [
+        306.14087473155496,
+        442.0855689434739,
+        544.2490013720756,
+        588.0187264000413
+      ]
+    },
+    {
+      "id": "e17-13",
+      "page": 17,
+      "sectionPath": [
+        "6 Challenges and future directions",
+        "6.3 Interpretability and explainability"
+      ],
+      "type": "text",
+      "text": "Interpretability and explainability of deep learning pose significant challenges in understanding the inner workings of complex models. As deep neural networks become more intricate, with numerous layers and parameters, their decision-making processes often resemble ‘‘black boxes,’’ making it difficult to discern how and why specific pre-dictions are made. This lack of transparency hinders the trust and adoption of these models, especially in high-stakes applications like health care and finance. Striking a balance between model performance and comprehensibil-ity is crucial to ensure that stakeholders, including researchers, regulators, and end-users, can gain meaningful insights into the model’s reasoning, enabling informed decisions and accountability while navigating the intricate landscape of modern deep learning.",
+      "bbox": [
+        306.141693115,
+        217.92405520091478,
+        544.2378649322332,
+        401.216961734982
+      ]
+    },
+    {
+      "id": "e17-14",
+      "page": 17,
+      "sectionPath": [
+        "6 Challenges and future directions",
+        "6.4 Robustness to adversarial attacks"
+      ],
+      "type": "text",
+      "text": "Deep learning models are susceptible to adversarial attacks, a concerning vulnerability that highlights the fragility of their decision boundaries. Adversarial attacks involve making small, carefully crafted perturbations to input data, often imperceptible to humans, which can lead to mis-classification or erroneous outputs from the model. These attacks exploit the model’s sensitivity to subtle changes in its input space, revealing a lack of robustness in real-world",
+      "bbox": [
+        306.141693115,
+        80.9519352813494,
+        544.2189357228834,
+        177.109951846982
+      ]
+    },
+    {
+      "id": "e18-1",
+      "page": 18,
+      "sectionPath": [
+        "6 Challenges and future directions",
+        "6.4 Robustness to adversarial attacks"
+      ],
+      "type": "text",
+      "text": "scenarios. Adversarial attacks not only challenge the reli-ability of deep learning systems in critical applications such as autonomous vehicles and security systems but also underscore the need for developing advanced defense mechanisms and more resilient models that can withstand these intentional manipulations. Therefore, developing robust models that can withstand such attacks and main-taining model security and data is of high importance.",
+      "bbox": [
+        51.023601531,
+        635.2383580113492,
+        289.11578800621584,
+        731.396374576982
+      ]
+    },
+    {
+      "id": "e18-2",
+      "page": 18,
+      "sectionPath": [
+        "6 Challenges and future directions",
+        "6.5 Catastrophic forgetting"
+      ],
+      "type": "text",
+      "text": "Catastrophic forgetting, or catastrophic interference, is a phenomenon that can occur in online deep learning, where a model forgets or loses previously learned information when it learns new information. This can lead to a degra-dation in performance on tasks that were previously well-learned as the model adjusts to new data. This catastrophic forgetting is particularly problematic because deep neural networks often have a large number of parameters and complex representations. When a neural network is trained on new data, the optimization process may adjust the weights and connections in a way that erases the knowl-edge the network had about previous tasks. Therefore, there is a need for models that address this phenomenon.",
+      "bbox": [
+        51.023601531,
+        436.021006750382,
+        289.12475459492,
+        594.426342838982
+      ]
+    },
+    {
+      "id": "e18-3",
+      "page": 18,
+      "sectionPath": [
+        "6 Challenges and future directions",
+        "6.6 Safe learning"
+      ],
+      "type": "text",
+      "text": "Safe deep learning models are designed and trained with a focus on ensuring safety, reliability, and robustness. These models are built to minimize risks associated with uncer-tainty, hazards, errors, and other potential failures that can arise in the deployment and operation of artificial intelli-gence systems. DL models without safety and risks con-siderations in ground or aerial robots can lead to unsafe outcomes, serious damage, and even casualties. The safety properties include estimating risks, dealing with uncer-tainty in data, and detecting abnormal system behaviors and unforeseen events to ensure safety and avoid catas-trophic failures and hazards. The research in this area is still at a very early stage.",
+      "bbox": [
+        51.023601531,
+        236.74543301938215,
+        289.13172822852675,
+        395.150769107982
+      ]
+    },
+    {
+      "id": "e18-4",
+      "page": 18,
+      "sectionPath": [
+        "6 Challenges and future directions",
+        "6.7 Transfer learning and adaptation"
+      ],
+      "type": "text",
+      "text": "Transfer learning and adaptation present complex chal-lenges in the realm of deep learning. While pretraining models on large datasets can capture valuable features and representations, effectively transferring this knowledge to new tasks or domains requires overcoming hurdles related to differences in data distributions, semantic gaps, and contextual variations. Adapting pre-trained models to specific target tasks demands careful fine-tuning, domain adaptation, or designing novel architectures that can accommodate varying input modalities and semantics. The",
+      "bbox": [
+        51.023601531,
+        74.88637106188199,
+        289.0958627497017,
+        195.93195807298198
+      ]
+    },
+    {
+      "id": "e18-5",
+      "page": 18,
+      "sectionPath": [
+        "6 Challenges and future directions",
+        "6.7 Transfer learning and adaptation"
+      ],
+      "type": "text",
+      "text": "challenge lies in striking a balance between leveraging the knowledge gained from pretraining and tailoring the model to extract meaningful insights from the new data, ensuring that the transferred representations are both relevant and accurate. Successfully addressing the intricacies of transfer learning and adaptation in deep learning holds the key to unlocking the full potential of AI across diverse applica-tions and domains.",
+      "bbox": [
+        306.14087473155496,
+        635.2387474567956,
+        544.2699230101687,
+        731.3967640224284
+      ]
+    },
+    {
+      "id": "e18-6",
+      "page": 18,
+      "sectionPath": [
+        "7 Conclusions"
+      ],
+      "type": "text",
+      "text": "In recent years, deep learning has emerged as a prominent data-driven approach across diverse fields. Its significance lies in its capacity to reshape entire industries and tackle complex problems that were once challenging or insur-mountable. While numerous surveys have been published on deep learning, its models, and applications, a notable proportion of these surveys has predominantly focused on supervised techniques and their potential use cases. In contrast, there has been a relative lack of emphasis on deep unsupervised and deep reinforcement learning methods. Motivated by these gaps, this survey offers a comprehensive exploration of key learning para-digms, encompassing supervised, unsupervised, reinforce-ment, and hybrid learning, while also describing prominent models within each category.",
+      "bbox": [
+        306.141693115,
+        398.6610241949148,
+        544.2498197517149,
+        581.9539307289821
+      ]
+    },
+    {
+      "id": "e18-7",
+      "page": 18,
+      "sectionPath": [
+        "7 Conclusions"
+      ],
+      "type": "text",
+      "text": "Furthermore, it delves into cutting-edge facets of deep learning, including transfer learning, online learning, and federated learning. The sur-vey finishes by outlining critical challenges and charting prospective pathways, thereby illuminating forthcoming research trends across diverse domains.",
+      "bbox": [
+        306.141693115,
+        336.41370467194747,
+        544.2239169334657,
+        407.6273639735148
+      ]
+    }
+  ],
+  "figures": [
+    {
+      "id": "fig1",
+      "label": "Figure 1",
+      "page": 4,
+      "captionEvidenceId": "e4-6",
+      "cropOk": false
+    },
+    {
+      "id": "fig2",
+      "label": "Figure 2",
+      "page": 6,
+      "captionEvidenceId": "e6-3",
+      "cropOk": false
+    },
+    {
+      "id": "fig3",
+      "label": "Figure 3",
+      "page": 7,
+      "captionEvidenceId": "e7-13",
+      "cropOk": false
+    },
+    {
+      "id": "fig4",
+      "label": "Figure 4",
+      "page": 9,
+      "captionEvidenceId": "e9-1",
+      "cropOk": false
+    },
+    {
+      "id": "fig5",
+      "label": "Figure 5",
+      "page": 10,
+      "captionEvidenceId": "e10-1",
+      "cropOk": false
+    },
+    {
+      "id": "fig6",
+      "label": "Figure 6",
+      "page": 11,
+      "captionEvidenceId": "e11-15",
+      "cropOk": false
+    },
+    {
+      "id": "fig7",
+      "label": "Figure 7",
+      "page": 12,
+      "captionEvidenceId": "e12-8",
+      "cropOk": false
+    },
+    {
+      "id": "fig8",
+      "label": "Figure 8",
+      "page": 13,
+      "captionEvidenceId": "e13-1",
+      "cropOk": false
+    },
+    {
+      "id": "fig9",
+      "label": "Figure 9",
+      "page": 13,
+      "captionEvidenceId": "e13-2",
+      "cropOk": false
+    },
+    {
+      "id": "fig10",
+      "label": "Figure 10",
+      "page": 15,
+      "captionEvidenceId": "e15-14",
+      "cropOk": false
+    }
+  ],
+  "warnings": []
+}
