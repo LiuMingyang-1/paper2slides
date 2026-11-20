@@ -52,6 +52,12 @@ export function slideValidator(constraints: SlideConstraints): Validator<Slide> 
     const value = parseRule(schema, record ?? input, "slide");
     const { layout, notes } = value;
     const definitions = LAYOUTS[layout].slots;
+    // Observed with mimo-v2.5: figureId written inside slots instead of at the top level.
+    const misplaced = (value.slots as Record<string, unknown> | undefined)?.figureId;
+    if (value.figureId === undefined && typeof misplaced === "string") {
+      value.figureId = misplaced;
+      warnings.push("slots.figureId 上移为 figureId");
+    }
     const normalizedSlots = normalizeRecord(value.slots, definitions, "slots", warnings);
     if (normalizedSlots) {
       for (const [key, slot] of Object.entries(normalizedSlots)) {

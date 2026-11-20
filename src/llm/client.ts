@@ -23,6 +23,8 @@ export interface LlmClientOptions {
 
 // Duplicate keys found by the last successful parse; reported as normalizations.
 let lastDuplicates: string[] = [];
+// Structural repairs applied by the last parseJson call; reported as normalizations.
+let lastRepairs: string[] = [];
 
 function tryParse(text: string): { value: unknown } | undefined {
   try {
@@ -72,6 +74,18 @@ function parseJson(text: string): unknown {
           if (parsed) return parsed.value;
         }
       }
+    }
+  }
+  // Observed with mimo-v2.5: a complete slide object missing only its final "}" while
+  // stopReason was endTurn (src/llm/fixtures/slide-bert-mimo-missing-brace.raw.txt).
+  // Append the missing closers ONLY when the text ends on a finished value ("}", "]" or
+  // a closed string). Never when it ends on a bare number: that may be a truncated value
+  // (e.g. "81.6" cut to "81."), and silently "completing" it would corrupt a fact.
+  if (start >= 0 && closes.length && !quoted && /["}\]]\s*$/.test(text)) {
+    const parsed = tryParse(text.slice(start).trimEnd() + closes.reverse().join(""));
+    if (parsed) {
+      lastRepairs.push(`补全缺失的闭合符号（${closes.length} 个）`);
+      return parsed.value;
     }
   }
   throw new LlmError("invalid_output", "未找到格式正确的 JSON。");
@@ -144,7 +158,9 @@ export function createLlmClient(host: AnnaHost, options: LlmClientOptions = {}) 
           throw new LlmError("truncated", "输出达到 token 上限。缩短每个字段，并确保完整闭合 JSON。");
         }
         lastDuplicates = [];
+        lastRepairs = [];
         const parsed = parseJson(result.content.text);
+        normalizations.push(...lastRepairs);
         for (const path of lastDuplicates) normalizations.push(`丢弃重复键 ${path}（保留首个值）`);
         validation = validate(parsed, normalizations);
       } catch (error) {
