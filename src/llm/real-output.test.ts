@@ -1,24 +1,26 @@
-// Regression tests built from raw outputs captured on the first real end-to-end run
-// (BERT, platform model xiaomi/mimo-v2.5, 2026-11-20). Each fixture made a step fail.
+// Regression tests built from failed BERT calls to the platform model xiaomi/mimo-v2.5.
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 import type { AnnaHost } from "../anna";
 import { PROMPTS } from "../prompts/generated";
-import { slideValidator } from "../schema/slide";
+import { slideValidator, type SlideConstraints } from "../schema/slide";
 import type { LlmCallLog } from "../types";
 import { createLlmClient } from "./client";
 import { fakeHost, reply } from "./test-fixtures";
 
 const fixture = (name: string) => readFileSync(join(__dirname, "fixtures", name), "utf8");
 const vars = { language: "zh", outline_item: "s", paper_metadata: "BERT", figures: "fig2", layouts: "…", evidence_blocks: "…" };
-const ids = new Set(["e3-31", "e3-44", "e4-14", "e4-15", "e4-16", "e5-21", "e4-9", "e4-2", "e5-23", "e5-26"]);
+const ids = new Set([
+  "e3-31", "e3-44", "e4-14", "e4-15", "e4-16", "e5-21", "e4-9", "e4-2", "e5-23", "e5-26",
+  "e3-1", "e3-19", "e4-4",
+]);
 
-function run(raw: string, outlineId: string) {
+function run(raw: string, outlineId: string, figures?: Pick<SlideConstraints, "figureIds" | "preferredFigureId">) {
   const complete = vi.fn<AnnaHost["llm"]["complete"]>().mockResolvedValue(reply(raw));
   const logs: LlmCallLog[] = [];
   const client = createLlmClient(fakeHost(complete), { onCall: (log) => logs.push(log) });
-  const validator = slideValidator({ outlineId, titlePage: false, evidenceIds: ids, figureIds: new Set(["fig2"]) });
+  const validator = slideValidator({ outlineId, titlePage: false, evidenceIds: ids, figureIds: new Set(["fig2"]), ...figures });
   return { result: client.complete(PROMPTS.slide!, vars, validator), complete, logs };
 }
 
@@ -37,6 +39,44 @@ describe("real model output regressions", () => {
     await expect(result).resolves.toMatchObject({ id: "s3", layout: "bullets_figure", figureId: "fig2" });
     expect(complete).toHaveBeenCalledTimes(1);
     expect(logs[0]!.normalizations).toContain("slots.figureId 上移为 figureId");
+  });
+
+  it("wraps the s4 takeaway from run5 in a one-element array", async () => {
+    const raw = fixture("slide-bert-mimo-run5-s4-attempt1.raw.txt");
+    const original = JSON.parse(raw);
+    const { result, complete, logs } = run(raw, "s4");
+    await expect(result).resolves.toMatchObject({
+      id: "s4", layout: "bullets", slots: { takeaway: [original.slots.takeaway] },
+    });
+    expect(complete).toHaveBeenCalledTimes(1);
+    expect(logs[0]!.normalizations).toEqual(["slots.takeaway 单对象包装为数组"]);
+  });
+
+  it("wraps the s5 takeaway and caption from run5 and hoists the explicit figure", async () => {
+    const raw = fixture("slide-bert-mimo-run5-s5-attempt1.raw.txt");
+    const original = JSON.parse(raw);
+    const { result, complete, logs } = run(raw, "s5", {
+      figureIds: new Set(["fig1", "fig2"]), preferredFigureId: "fig1",
+    });
+    await expect(result).resolves.toMatchObject({
+      id: "s5", layout: "bullets_figure", figureId: "fig2",
+      slots: { takeaway: [original.slots.takeaway], caption: [original.slots.caption] },
+    });
+    expect(complete).toHaveBeenCalledTimes(1);
+    expect(logs[0]!.normalizations).toEqual([
+      "slots.figureId 上移为 figureId", "丢弃字段 slots.figureId", "截断 slots.bullets：4 项保留前 3 项",
+      "slots.takeaway 单对象包装为数组", "slots.caption 单对象包装为数组",
+    ]);
+  });
+
+  it("fills the missing figureId in the s5 retry from run5 using the outline preference", async () => {
+    const raw = fixture("slide-bert-mimo-run5-s5-attempt2.raw.txt");
+    const { result, complete, logs } = run(raw, "s5", {
+      figureIds: new Set(["fig1", "fig2"]), preferredFigureId: "fig2",
+    });
+    await expect(result).resolves.toMatchObject({ id: "s5", layout: "bullets_figure", figureId: "fig2" });
+    expect(complete).toHaveBeenCalledTimes(1);
+    expect(logs[0]!.normalizations).toEqual(["figureId 缺失，补全为 fig2"]);
   });
 
   it("does not 'complete' JSON that was cut inside a number", async () => {

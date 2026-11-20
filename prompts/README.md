@@ -48,6 +48,12 @@
 - 指标前后值：封面生成成功率 0/2 → 回归测试通过。
 - fixture 路径、失败样本与后续动作：`src/llm/real-output.test.ts`（cover title length）。
 
+### slide v4（2026-11-21）
+
+- 提示词 ID 与版本：`slide@4`。
+- 改动与原因：BERT run5 的 s4 和 s5 曾将 `takeaway` 或 `caption` 写成对象，s5 重试时遗漏了 `figureId`。模板明确所有 Point 槽位使用数组，并加入顶层 `figureId` 和单元素槽位的配图示例。
+- 验证：离线回放 `src/llm/fixtures/slide-bert-mimo-run5-*.raw.txt` 的三份失败输出。真实模型调用 0 次。
+
 ### v<版本>（<日期>）
 
 - 提示词 ID 与版本：
