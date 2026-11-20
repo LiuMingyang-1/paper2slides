@@ -1,7 +1,7 @@
 import type { Evidence, Point, PointVerification, Slide } from "../types";
 import { tokenize } from "../retrieval/bm25";
 import { crossLanguageTerms, indexLanguage, type LanguageIndex } from "./crosslingual";
-import { type ExtractedNumber, extractNumbers, numbersMatch } from "./numbers";
+import { type ExtractedNumber, extractNumbers, extractWrittenNumbers, numbersMatch } from "./numbers";
 
 // With 70% weight on vocabulary recall, a reordered claim can still pass.
 // The 30% phrase weight rewards a contiguous anchor. A 0.60 cutoff lets
@@ -22,6 +22,7 @@ interface AttributedNumber extends ExtractedNumber {
 
 interface IndexedEvidence {
   tokens: string[];
+  numericTokens?: string[];
   numbers: AttributedNumber[];
   language: LanguageIndex;
 }
@@ -57,13 +58,12 @@ function parallelOwners(text: string, numbers: ExtractedNumber[], owners: OwnerM
   return paired;
 }
 
-function resultNumbers(text: string): AttributedNumber[] {
+function resultNumbers(text: string, values: ExtractedNumber[]): AttributedNumber[] {
   const boundaries = [...text.matchAll(CLAUSE_BOUNDARY)];
   const owners: OwnerMarker[] = [
     ...Array.from(text.matchAll(BASELINE), ({ index }) => ({ index: index!, owner: "baseline" as const })),
     ...Array.from(text.matchAll(PAPER), ({ index }) => ({ index: index!, owner: "paper" as const })),
   ].sort((a, b) => a.index - b.index);
-  const values = extractNumbers(text);
   const paired = parallelOwners(text, values, owners);
   return values.map((number, i) => {
     const centralValue = number.uncertainty ? values[i - 1] : undefined;
@@ -90,8 +90,7 @@ function resultNumbers(text: string): AttributedNumber[] {
   });
 }
 
-function indexText(text: string): IndexedEvidence {
-  const numbers = resultNumbers(text);
+function tokenizeWithNumbers(text: string, numbers: ExtractedNumber[]): { tokens: string[]; prose: string } {
   const tokens: string[] = [];
   const prose: string[] = [];
   let start = 0;
@@ -104,7 +103,22 @@ function indexText(text: string): IndexedEvidence {
   const tail = text.slice(start);
   tokens.push(...tokenize(tail));
   prose.push(tail);
-  return { tokens, numbers, language: indexLanguage(prose.join(" ")) };
+  return { tokens, prose: prose.join(" ") };
+}
+
+function indexText(text: string, side: "point" | "evidence"): IndexedEvidence {
+  const digits = extractNumbers(text);
+  const written = side === "evidence" ? extractWrittenNumbers(text) : [];
+  const values = written.length ? [...digits, ...written].sort((a, b) => a.index - b.index) : digits;
+  const { tokens, prose } = tokenizeWithNumbers(text, digits);
+  return {
+    tokens,
+    // Keep the original words for prose matches and also allow “11 tasks” to
+    // share a contiguous numeric phrase with “eleven tasks”.
+    numericTokens: written.length ? tokenizeWithNumbers(text, values).tokens : undefined,
+    numbers: resultNumbers(text, values),
+    language: indexLanguage(prose),
+  };
 }
 
 function longestCommonRun(claim: string[], source: string[]): number {
@@ -119,23 +133,30 @@ function longestCommonRun(claim: string[], source: string[]): number {
   return longest;
 }
 
-function lexicalSupport(claim: string[], sources: IndexedEvidence[]): number {
+function lexicalSupport(claim: string[], sources: string[][]): number {
   if (!claim.length) return 0;
   const remaining = new Map<string, number>();
   for (const token of claim) remaining.set(token, (remaining.get(token) ?? 0) + 1);
   let overlap = 0;
   let longest = 0;
   for (const source of sources) {
-    for (const token of source.tokens) {
+    for (const token of source) {
       const count = remaining.get(token) ?? 0;
       if (count > 0) {
         remaining.set(token, count - 1);
         overlap++;
       }
     }
-    longest = Math.max(longest, longestCommonRun(claim, source.tokens));
+    longest = Math.max(longest, longestCommonRun(claim, source));
   }
   return (TOKEN_WEIGHT * overlap + PHRASE_WEIGHT * longest) / ((TOKEN_WEIGHT + PHRASE_WEIGHT) * claim.length);
+}
+
+function sameLanguageSupport(claim: IndexedEvidence, sources: IndexedEvidence[]): number {
+  const original = lexicalSupport(claim.tokens, sources.map(({ tokens }) => tokens));
+  if (!claim.numbers.length || !sources.some(({ numericTokens }) => numericTokens)) return original;
+  const normalized = lexicalSupport(claim.tokens, sources.map(({ tokens, numericTokens }) => numericTokens ?? tokens));
+  return Math.max(original, normalized);
 }
 
 function verifyPoint(
@@ -152,7 +173,7 @@ function verifyPoint(
   }
 
   const evidenceNumbers = sources.flatMap((source) => source.numbers);
-  const claim = indexText(point.text);
+  const claim = indexText(point.text, "point");
   const numbers = claim.numbers.map((claim) => {
     const matching = evidenceNumbers.filter((candidate) => numbersMatch(claim, candidate));
     const found = matching.some((candidate) => !claim.owner || !candidate.owner || claim.owner === candidate.owner);
@@ -164,7 +185,7 @@ function verifyPoint(
   const anchorCount = crossLanguage ? crossLanguage.total + numbers.length : 0;
   const matchScore = crossLanguage
     ? (crossLanguage.matched + numbers.length - missingNumbers.length) / Math.max(1, anchorCount)
-    : lexicalSupport(claim.tokens, sources);
+    : sameLanguageSupport(claim, sources);
   const reasonPrefix = crossLanguage ? CROSS_LANGUAGE_REASON : "";
   const details = { matchScore, missingEvidenceIds, numbers: numbers.map(({ value, found }) => ({ value, found })) };
 
@@ -207,7 +228,7 @@ export function verifyDeck(
       const evidence = "get" in evidenceById && typeof evidenceById.get === "function"
         ? evidenceById.get(id)
         : Object.hasOwn(evidenceById, id) ? (evidenceById as Readonly<Record<string, Evidence>>)[id] : undefined;
-      cache.set(id, evidence && indexText(evidence.text));
+      cache.set(id, evidence && indexText(evidence.text, "evidence"));
     }
     return cache.get(id);
   };

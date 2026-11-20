@@ -1,4 +1,5 @@
 import { tokenize } from "../retrieval/bm25";
+import { isEnglishNumberWord } from "./number-words";
 
 type Language = "zh" | "en";
 
@@ -25,7 +26,8 @@ export function indexLanguage(text: string): LanguageIndex {
     const atSentenceStart = latinWords === 0 || SENTENCE_BOUNDARY.test(normalized.slice(previousEnd, match.index));
     latinWords++;
     previousEnd = match.index + term.length;
-    if (!distinctive && tokenize(key).length === 0) continue;
+    // Spelled-out numbers are evidence-side values, never required Latin anchors.
+    if (isEnglishNumberWord(key) || (!distinctive && tokenize(key).length === 0)) continue;
     latinTerms.add(key);
     // Acronyms and identifiers are distinctive even at the start of a sentence.
     // Other title case suggests a name only away from ordinary sentence capitalization.
