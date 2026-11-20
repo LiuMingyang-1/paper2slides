@@ -1,7 +1,8 @@
 import { check, literal, optional, pipe, undefined_, unknown, type GenericSchema } from "valibot";
 import type { LayoutId, Point, Slide, SlotValue } from "../types";
 import { LAYOUT_IDS, LAYOUTS } from "./layouts";
-import { choiceRule, collectMissing, listRule, parseRule, pointRule, recordRule, textRule } from "./rules";
+import { normalizePoints, normalizeRecord } from "./normalize";
+import { choiceRule, collectMissing, listRule, modelTextRule, parseRule, pointRule, recordRule, textRule } from "./rules";
 import { requireValid, type Validator } from "./validation";
 
 export interface SlideConstraints {
@@ -21,7 +22,7 @@ function requireCells(text: string, path: string, min: number, max: number): num
 function slotsRule(layout: LayoutId) {
   const entries: Record<string, GenericSchema<unknown, SlotValue | undefined>> = {};
   for (const [key, slot] of Object.entries(LAYOUTS[layout].slots)) {
-    const rule = slot.type === "string" ? textRule(slot.maxChars)
+    const rule = slot.type === "string" ? modelTextRule(slot.maxChars)
       : listRule(pointRule(slot.maxChars), slot.minItems, slot.maxItems);
     entries[key] = slot.required ? rule : optional(rule);
   }
@@ -31,7 +32,7 @@ function slotsRule(layout: LayoutId) {
 export function slideValidator(constraints: SlideConstraints): Validator<Slide> {
   const { outlineId, titlePage, evidenceIds, figureIds } = constraints;
   const idRule = literal(outlineId, "应与大纲项 ID 一致");
-  const schema = recordRule({
+  const fields = {
     id: idRule,
     outlineId: idRule,
     layout: pipe(
@@ -40,15 +41,27 @@ export function slideValidator(constraints: SlideConstraints): Validator<Slide> 
     ),
     slots: unknown(),
     figureId: optional(unknown()),
-    notes: optional(textRule(240)),
-  });
+    notes: optional(modelTextRule(240)),
+  };
+  const schema = recordRule(fields);
   const requiredFigure = pipe(textRule(64), check((id) => figureIds.has(id), "应引用本页可用原图"));
   const forbiddenFigure = undefined_("此版式应省略 figureId");
 
-  return (input) => {
-    const value = parseRule(schema, input, "slide");
+  return (input, warnings = []) => {
+    const record = normalizeRecord(input, fields, "", warnings);
+    const value = parseRule(schema, record ?? input, "slide");
     const { layout, notes } = value;
-    const rawSlots = parseRule(slotsRule(layout), value.slots, "slots", "slots");
+    const definitions = LAYOUTS[layout].slots;
+    const normalizedSlots = normalizeRecord(value.slots, definitions, "slots", warnings);
+    if (normalizedSlots) {
+      for (const [key, slot] of Object.entries(normalizedSlots)) {
+        const definition = definitions[key]!;
+        if (definition.type === "points") {
+          normalizedSlots[key] = normalizePoints(slot, definition.maxItems, `slots.${key}`, warnings);
+        }
+      }
+    }
+    const rawSlots = parseRule(slotsRule(layout), normalizedSlots ?? value.slots, "slots", "slots");
     const slots: Record<string, SlotValue> = {};
     const missing = new Set<string>();
     for (const [key, slot] of Object.entries(rawSlots)) {

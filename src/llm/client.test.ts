@@ -74,6 +74,35 @@ describe("Anna completion client", () => {
     expect(logs[0]?.missingEvidenceIds).toEqual(["e99-0"]);
   });
 
+  it("keeps raw output and normalization warnings for each attempt", async () => {
+    const { run, complete, logs } = setup();
+    const modelOutput = (evidenceId: string) => JSON.stringify({
+      ...understanding,
+      modules: [{ kind: "method", title: "CNN", points: [
+        { text: "The paper uses a CNN.", type: "fact", evidence_ids: evidenceId },
+      ] }],
+    });
+    const invalidOutput = modelOutput("Figure 2");
+    const validOutput = `\`\`\`json\n${modelOutput("e3-5")}\n\`\`\`\n${"𠀀".repeat(8000)}`;
+    complete.mockResolvedValueOnce(reply(invalidOutput)).mockResolvedValueOnce(reply(validOutput));
+    await expect(run()).resolves.toEqual(understanding);
+    expect(logs).toMatchObject([
+      { ok: false, rawOutput: invalidOutput, error: expect.stringContaining("evidenceIds[0]") },
+      { ok: true, rawOutput: Array.from(validOutput).slice(0, 8000).join("") },
+    ]);
+    for (const log of logs) {
+      expect(log.normalizations).toEqual([
+        "丢弃字段 modules[0].title",
+        "字段 modules[0].points[0].type 映射为 kind",
+        "字段 modules[0].points[0].evidence_ids 映射为 evidenceIds",
+        "modules[0].points[0].evidenceIds 转为数组",
+      ]);
+    }
+    const feedback = complete.mock.calls[1]![0].messages[1]?.content;
+    expect(feedback).toContain(logs[0]?.error);
+    expect(feedback).toContain("只输出约定字段、不要添加其他字段");
+  });
+
   it.each(["quota_exceeded", "invalid_arg", "not_implemented"])("does not retry host error %s", async (code) => {
     const { run, complete, logs } = setup();
     complete.mockRejectedValueOnce(Object.assign(new Error("HostRpcError"), { code }));

@@ -55,6 +55,10 @@ export function textRule(maxChars: number) {
   );
 }
 
+export function modelTextRule(maxChars: number) {
+  return textRule(maxChars * 2);
+}
+
 export function listRule<T extends v.GenericSchema>(item: T, min: number, max: number) {
   const message = arrayMessage(min, max);
   return v.pipe(v.array(item, message), v.minLength(min, message), v.maxLength(max, message));
@@ -64,17 +68,18 @@ export function choiceRule<T extends string>(allowed: readonly T[]) {
   return v.picklist(allowed, `应为 ${allowed.join(" / ")} 之一`);
 }
 
-const POINT_KINDS = ["fact", "summary", "opinion"] as const;
+export const POINT_KINDS = ["fact", "summary", "opinion"] as const;
+export const MAX_EVIDENCE_IDS = 4;
 const EVIDENCE_ID = /^e[1-9]\d*-\d+$/;
 const EVIDENCE_RULE = "应为 e{页码}-{块序号}";
 const citationsRule = v.pipe(
-  listRule(v.pipe(v.string(EVIDENCE_RULE), v.regex(EVIDENCE_ID, EVIDENCE_RULE)), 1, 4),
+  listRule(v.pipe(v.string(EVIDENCE_RULE), v.regex(EVIDENCE_ID, EVIDENCE_RULE)), 1, MAX_EVIDENCE_IDS),
   v.check((ids) => new Set(ids).size === ids.length, "证据 ID 不得重复"),
 );
 
 export function pointRule(maxChars: number) {
   return recordRule({
-    text: textRule(maxChars),
+    text: modelTextRule(maxChars),
     kind: choiceRule(POINT_KINDS),
     evidenceIds: citationsRule,
   });

@@ -126,6 +126,7 @@ export function createLlmClient(host: AnnaHost, options: LlmClientOptions = {}) 
       let result: LlmCompleteResult | undefined;
       let validation: Validation<T> | undefined;
       let failure: LlmError | undefined;
+      const normalizations: string[] = [];
       try {
         result = await completeWithTimeout(host, {
           ...baseArgs,
@@ -134,11 +135,12 @@ export function createLlmClient(host: AnnaHost, options: LlmClientOptions = {}) 
         if (result.stopReason === "maxTokens") {
           throw new LlmError("truncated", "输出达到 token 上限。缩短每个字段，并确保完整闭合 JSON。");
         }
-        validation = validate(parseJson(result.content.text));
+        validation = validate(parseJson(result.content.text), normalizations);
       } catch (error) {
         failure = normalizeError(error);
       }
 
+      const rawOutput = result?.content?.text;
       onCall?.({
         promptId: prompt.id,
         promptVersion: prompt.version,
@@ -152,6 +154,8 @@ export function createLlmClient(host: AnnaHost, options: LlmClientOptions = {}) 
         attempt,
         ...(failure ? { error: failure.message } : {}),
         ...(validation?.missingEvidenceIds.length ? { missingEvidenceIds: validation.missingEvidenceIds } : {}),
+        ...(normalizations.length ? { normalizations } : {}),
+        ...(typeof rawOutput === "string" ? { rawOutput: Array.from(rawOutput).slice(0, 8000).join("") } : {}),
       });
       if (validation) return validation.value;
       if (!failure) throw new Error("LLM 调用未返回结果。");
@@ -161,7 +165,7 @@ export function createLlmClient(host: AnnaHost, options: LlmClientOptions = {}) 
         case "truncated":
           if (corrected) throw failure;
           corrected = true;
-          feedback = `上次输出未通过校验：${failure.message} 请按原要求重新生成完整 JSON。`;
+          feedback = `上次输出未通过校验：${failure.message} 请按原要求重新生成完整 JSON，只输出约定字段、不要添加其他字段。`;
           break;
         case "timeout":
         case "network":
