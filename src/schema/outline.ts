@@ -11,7 +11,7 @@ export function outlineValidator(
   /** Allow the user to remove content pages in the confirmation step. */
   edited = false,
 ): Validator<Outline> {
-  const maxItems = 8;
+  const maxItems = 10;
   const itemFields = {
     id: textRule(32),
     title: modelTextRule(150),
@@ -44,8 +44,17 @@ export function outlineValidator(
       });
     }
     const value = parseRule(schema, record ?? input, "outline");
+    if (!edited && value.items.length === 5) {
+      warnings.push("大纲只有 5 页，低于 6 页目标，保留简版以兼容已有输出");
+    }
+    const titles = new Set<string>();
     const items = value.items.map(({ figureId, ...item }, index) => {
       const path = `items[${index}]`;
+      if (!edited) {
+        const title = item.title.normalize("NFKC").trim().replace(/\s+/g, " ").toLowerCase();
+        requireValid(!titles.has(title), `${path}.title`, "标题不得重复，请使用该页的具体结论");
+        titles.add(title);
+      }
       requireValid(edited ? /^s[1-9]\d*$/.test(item.id) : item.id === `s${index + 1}`,
         `${path}.id`, "应为有效的页面编号");
       requireValid(index === 0 ? item.modules.length === 0 : item.modules.length > 0,

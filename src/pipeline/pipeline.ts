@@ -93,11 +93,13 @@ export function createPipeline(paper: Paper, options: PipelineOptions) {
   });
   const blocksById = new Map(paper.blocks.map((block) => [block.id, block]));
   const allEvidenceIds = new Set(blocksById.keys());
+  const evidenceText = new Map(paper.blocks.map(({ id, text }) => [id, text]));
   const figures = paper.figures.filter((figure) =>
     figure.cropOk && figure.imageDataUrl && blocksById.get(figure.captionEvidenceId)?.type === "caption");
   const figureIds = new Set(figures.map(({ id }) => id));
   const figureMetadata = figures.map(({ id, label, page, captionEvidenceId }) => ({
     id, label, page, captionEvidenceId,
+    caption: Array.from(blocksById.get(captionEvidenceId)!.text).slice(0, 200).join(""),
   }));
   const paperMetadata = JSON.stringify({ title: paper.title, authors: paper.authors });
   // One in-flight request per identical step, including when a cache adapter is absent.
@@ -232,13 +234,22 @@ export function createPipeline(paper: Paper, options: PipelineOptions) {
       const ids = new Set(evidence.map(({ id }) => id));
       const available = titlePage ? [] : figureMetadata.filter(({ captionEvidenceId }) => ids.has(captionEvidenceId));
       const rules = slideValidator({
-        outlineId: item.id, titlePage, evidenceIds: ids, figureIds: new Set(available.map(({ id }) => id)),
+        outlineId: item.id, titlePage, evidenceIds: ids, evidenceText, figureIds: new Set(available.map(({ id }) => id)),
       });
-      slides.push(completed(await step("slide", {
+      const result = await step("slide", {
         language, outline_item: JSON.stringify(item), paper_metadata: paperMetadata,
         figures: JSON.stringify(available), evidence_blocks: formatEvidence(evidence),
         layouts: JSON.stringify(LAYOUTS),
-      }, rules), { phase: "slides", completed: slides.length + 1, total, outlineId: item.id }));
+      }, rules);
+      const slide = completed(result, { phase: "slides", completed: slides.length + 1, total, outlineId: item.id });
+      if (titlePage && language === "zh") {
+        const maxChars = LAYOUTS.title.slots.subtitle!.maxChars;
+        const chars = Array.from(understanding.oneLiner.trim());
+        const subtitle = chars.length <= maxChars ? chars.join("") : chars.slice(0, maxChars - 1).join("").trimEnd() + "…";
+        slides.push({ ...slide, slots: { ...slide.slots, subtitle } });
+      } else {
+        slides.push(slide);
+      }
     }
     return slides;
   }
@@ -246,7 +257,7 @@ export function createPipeline(paper: Paper, options: PipelineOptions) {
   async function compressSlide(slide: Slide, overflowingSlots: readonly string[], language: OutputLanguage): Promise<Slide> {
     if (overflowingSlots.length === 0) return slide;
     const rules = slideValidator({
-      outlineId: slide.outlineId, titlePage: slide.layout === "title", evidenceIds: allEvidenceIds, figureIds,
+      outlineId: slide.outlineId, titlePage: slide.layout === "title", evidenceIds: allEvidenceIds, evidenceText, figureIds,
     });
     const original = rules(slide).value;
     const slots = [...new Set(overflowingSlots)].sort();
