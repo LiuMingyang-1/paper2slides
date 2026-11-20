@@ -106,7 +106,7 @@ function tokenizeWithNumbers(text: string, numbers: ExtractedNumber[]): { tokens
   return { tokens, prose: prose.join(" ") };
 }
 
-function indexText(text: string, side: "point" | "evidence"): IndexedEvidence {
+function indexText(text: string, side: "point" | "evidence", sectionPath?: readonly string[]): IndexedEvidence {
   const splits = extractSlashSplits(text);
   const digits = extractNumbers(text).filter(({ index }) =>
     !splits.some((split) => index >= split.index && index < split.index + split.raw.length));
@@ -126,7 +126,7 @@ function indexText(text: string, side: "point" | "evidence"): IndexedEvidence {
     // share a contiguous numeric phrase with “eleven tasks”.
     numericTokens: written.length ? tokenizeWithNumbers(text, values).tokens : undefined,
     numbers,
-    language: indexLanguage(prose),
+    language: indexLanguage(prose, sectionPath),
   };
 }
 
@@ -237,7 +237,7 @@ export function verifyDeck(
       const evidence = "get" in evidenceById && typeof evidenceById.get === "function"
         ? evidenceById.get(id)
         : Object.hasOwn(evidenceById, id) ? (evidenceById as Readonly<Record<string, Evidence>>)[id] : undefined;
-      cache.set(id, evidence && indexText(evidence.text, "evidence"));
+      cache.set(id, evidence && indexText(evidence.text, "evidence", evidence.sectionPath));
     }
     return cache.get(id);
   };

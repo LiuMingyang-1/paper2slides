@@ -9,17 +9,19 @@ export interface LanguageIndex {
   latinTerms: Set<string>;
   namedTerms: Set<string>;
   translatedTerms: Set<number>;
+  sectionTerms: Set<string>;
 }
 
-const LATIN_TERM = /\p{Script=Latin}[\p{Script=Latin}\p{M}\d]*(?:-[\p{Script=Latin}\p{M}\d]+)*/gu;
+const LATIN_TERM = /\b[vV]\d+(?:\.\d+)+(?!\w|\.\d)|\b[A-Z][A-Z0-9]*(?:_[A-Z][A-Z0-9]*)+(?!\w)|\p{Script=Latin}[\p{Script=Latin}\p{M}\d]*(?:-[\p{Script=Latin}\p{M}\d]+)*/gu;
 const DISTINCTIVE_NAME = /\d|\p{Lu}.*\p{Lu}|\p{Ll}.*\p{Lu}/u;
+const QUESTION_ANSWERING = /\bques-?tion answering\b/iu;
 const SENTENCE_BOUNDARY = /[.!?。！？]\s*$/u;
 
 // Match specific technical phrases, allowing the discretionary hyphens left
 // by PDF extraction in English evidence.
 const TECHNICAL_PHRASES: readonly (readonly [RegExp, RegExp])[] = [
   [/词元级任务/u, /\btoken[- ]level tasks?\b/iu],
-  [/问答/u, /\bques-?tion answering\b/iu],
+  [/问答/u, QUESTION_ANSWERING],
   [/双向上下文/u, /\bcontext from both directions\b|\bbidirectional context\b/iu],
   [/标准条件语言模型/u, /\bstandard conditional language models?\b/iu],
   [/双向条件/u, /\bbidirec-?tional conditioning\b/iu],
@@ -27,14 +29,19 @@ const TECHNICAL_PHRASES: readonly (readonly [RegExp, RegExp])[] = [
   [/输入表示/u, /\binput representations?\b/iu],
   [/词元[、，,]\s*句段与位置三类嵌入/u, /\btoken, segment, and position embeddings\b/iu],
   [/嵌入相加/u, /\bsumming\b[^.!?;]*\bembeddings\b/iu],
-  [/除输出层外架构相同/u, /\bapart from output layers, the same architec-?tures\b/iu],
-  [/同一预训练参数初始化/u, /\bthe same pre-trained model parameters are used to initialize\b/iu],
+  [/除输出层外[^。！？；]{0,24}(?:架构相同|复用同一架构)/u, /\bapart from output layers, the same architec-?tures\b/iu],
+  [/同一预训练参数初始化|复用同一[^。！？；]{0,10}预训练参数/u, /\bthe same pre-trained model parameters are used to initialize\b/iu],
   [/不同下游任务/u, /\bdifferent down-?stream tasks\b/iu],
   [/换输入输出/u, /\bswapping out the appropriate inputs and outputs\b/iu],
-  [/全部参数一起更新/u, /\ball parameters are fine-tuned\b/iu],
+  [/全部参数(?:一起更新|参与训练)/u, /\ball parameters are fine-tuned\b/iu],
 ];
 
-export function indexLanguage(text: string): LanguageIndex {
+function latinTermKey(term: string): string {
+  // PDF text may flatten a subscript that the claim spells with an underscore.
+  return term.replaceAll("_", "").toLowerCase();
+}
+
+export function indexLanguage(text: string, sectionPath: readonly string[] = []): LanguageIndex {
   const normalized = text.normalize("NFKC").replace(/[‐‑−]/g, "-");
   const latinTerms = new Set<string>();
   const namedTerms = new Set<string>();
@@ -42,7 +49,7 @@ export function indexLanguage(text: string): LanguageIndex {
   let previousEnd = 0;
   for (const match of normalized.matchAll(LATIN_TERM)) {
     const term = match[0];
-    const key = term.toLowerCase();
+    const key = latinTermKey(term);
     const distinctive = DISTINCTIVE_NAME.test(term);
     const atSentenceStart = latinWords === 0 || SENTENCE_BOUNDARY.test(normalized.slice(previousEnd, match.index));
     latinWords++;
@@ -67,7 +74,13 @@ export function indexLanguage(text: string): LanguageIndex {
       if (pair[language === "zh" ? 0 : 1].test(normalized)) translatedTerms.add(index);
     });
   }
-  return { language, latinTerms, namedTerms, translatedTerms };
+  if (language === "en" && QUESTION_ANSWERING.test(normalized)) latinTerms.add("qa");
+  const sectionTerms = new Set(sectionPath.flatMap((heading) =>
+    [...heading.normalize("NFKC").matchAll(LATIN_TERM)]
+      .map(([term]) => term)
+      .filter((term) => DISTINCTIVE_NAME.test(term))
+      .map(latinTermKey)));
+  return { language, latinTerms, namedTerms, translatedTerms, sectionTerms };
 }
 
 export function crossLanguageTerms(
@@ -89,6 +102,9 @@ export function crossLanguageTerms(
     ? claim.latinTerms
     // In English prose, use recognizable names and terms explicitly carried over into the Chinese evidence.
     : new Set([...claim.namedTerms, ...[...claim.latinTerms].filter((term) => evidenceTerms.has(term))]);
-  const matched = [...anchors].filter((term) => evidenceTerms.has(term)).length;
+  // A heading can identify the subject of a cited passage with a body anchor.
+  const sectionTerms = new Set(sources.flatMap((source) =>
+    [...anchors].some((term) => source.latinTerms.has(term)) ? [...source.sectionTerms] : []));
+  const matched = [...anchors].filter((term) => evidenceTerms.has(term) || sectionTerms.has(term)).length;
   return { matched, total: anchors.size };
 }

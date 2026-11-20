@@ -176,6 +176,80 @@ describe("deck citation verification", () => {
     expect(missingNumber?.numbers).toEqual([{ value: "99", found: false }]);
   });
 
+  it("accepts QA as a term anchor for question answering", () => {
+    const claim = "单向预训练削弱双向上下文，对 QA 等词元级任务危害尤大。";
+    const [full, missing] = verify([
+      fact(claim, "e4-1"), fact(claim, "e4-2"),
+    ], evidence("e4-1", "Unidirectional pre-training hurts token-level tasks such as ques-tion answering."),
+      evidence("e4-2", "Unidirectional pre-training hurts token-level tasks such as named entity recognition."));
+    expect([full?.status, missing?.status]).toEqual(["supported", "partial"]);
+  });
+
+  it("uses a section name to identify a subject when the same cited body has a matching term", () => {
+    const source = {
+      ...evidence("e4-1", "We replace 15% of the SubwordLex tokens at random."),
+      sectionPath: ["3 ROBERTA"],
+    };
+    const [full, wrongName, headingOnly, wrongNumber] = verify([
+      fact("RoBERTa 随机替换 15% 的 SubwordLex 词元。", source.id),
+      fact("DeBERTa 随机替换 15% 的 SubwordLex 词元。", source.id),
+      fact("RoBERTa 可用于问答。", source.id),
+      fact("RoBERTa 随机替换 17% 的 SubwordLex 词元。", source.id),
+    ], source);
+    expect([full?.status, wrongName?.status, headingOnly?.status, wrongNumber?.status])
+      .toEqual(["supported", "partial", "partial", "unsupported"]);
+  });
+
+  it("matches an underscored model variant with its flattened PDF spelling", () => {
+    const source = evidence("e4-1", "For NETLARGE we ran random restarts and selected the best model on the Dev set.");
+    const [full, wrongVariant, wrongCount] = verify([
+      fact("NET_LARGE 多次随机重启，并在 Dev 集选最优模型。", source.id),
+      fact("NET_BASE 多次随机重启，并在 Dev 集选最优模型。", source.id),
+      fact("NET_LARGE 随机重启 17 次，并在 Dev 集选最优模型。", source.id),
+    ], source);
+    expect([full?.status, wrongVariant?.status, wrongCount?.status]).toEqual(["supported", "partial", "unsupported"]);
+  });
+
+  it("recognizes equivalent summaries of architecture and parameter reuse", () => {
+    const claim = "除输出层外，预训练与微调复用同一架构与预训练参数，微调时全部参数参与训练。";
+    const common = "Apart from output layers, the same architec-tures are used in pre-training and fine-tuning. "
+      + "The same pre-trained model parameters are used to initialize downstream models.";
+    const [full, missing] = verify([
+      { ...fact(claim, "e4-1"), kind: "summary" }, { ...fact(claim, "e4-2"), kind: "summary" },
+    ], evidence("e4-1", common + " All parameters are fine-tuned."),
+      evidence("e4-2", common + " Only the classification head is fine-tuned."));
+    expect([full?.status, missing?.status]).toEqual(["supported", "partial"]);
+  });
+
+  it("checks percentage-point differences against the same value and unit", () => {
+    const points = evidence("e4-1", "Accuracy reached 80.5% (7.7% point absolute improvement).");
+    const percent = evidence("e4-2", "Accuracy reached 80.5% (7.7% relative improvement).");
+    const [full, wrongValue, wrongUnit] = verify([
+      fact("准确率为 80.5%，提升 7.7 个百分点。", points.id),
+      fact("准确率为 80.5%，提升 7.9 个百分点。", points.id),
+      fact("准确率为 80.5%，提升 7.7 个百分点。", percent.id),
+    ], points, percent);
+    expect(full).toMatchObject({ status: "supported", numbers: [
+      { value: "80.5%", found: true }, { value: "7.7 个百分点", found: true },
+    ] });
+    expect([wrongValue?.status, wrongUnit?.status]).toEqual(["unsupported", "unsupported"]);
+  });
+
+  it("checks improvement values separately from dotted version identifiers", () => {
+    const named = evidence("e4-1", "On NewBench v2.0 we observe a +5.1 F1 improvement.");
+    const unnamed = evidence("e4-2", "We observe a +5.1 F1 improvement.");
+    const [full, missingName, wrongVersion, wrongScore, metadataAsScore] = verify([
+      fact("在 NewBench v2.0 上提升 +5.1 F1。", named.id),
+      fact("在 NewBench v2.0 上提升 +5.1 F1。", unnamed.id),
+      fact("在 NewBench v2.1 上提升 +5.1 F1。", named.id),
+      fact("在 NewBench v2.0 上提升 +5.3 F1。", named.id),
+      fact("在 NewBench v2.0 上提升 0 F1。", named.id),
+    ], named, unnamed);
+    expect(full).toMatchObject({ status: "supported", numbers: [{ value: "+5.1", found: true }] });
+    expect([missingName?.status, wrongVersion?.status, wrongScore?.status, metadataAsScore?.status])
+      .toEqual(["partial", "partial", "unsupported", "unsupported"]);
+  });
+
   it("keeps translated opinions partial even with recognized phrases", () => {
     const source = evidence("e4-1", "The input representation is formed by summing token, segment, and position embeddings.");
     const [check] = verify([
@@ -200,6 +274,28 @@ describe("deck citation verification", () => {
     expect([swapped, invented, repeated, plainCounts].map((result) => result?.status))
       .toEqual(Array(4).fill("unsupported"));
     expect(withUnknownTerm?.status).toBe("partial");
+  });
+
+  it("requires each ordered share in an expanded multiway split", () => {
+    const full = evidence("e4-1", "We use (1) [MASK] 80% of the time (2) a random token 10% of the time (3) the original token 10% of the time.");
+    const incomplete = evidence("e4-2", "We use [MASK] 80% of the time and a random token 10% of the time.");
+    const separate = evidence("e4-3", "We use [MASK] 80% of the time. Elsewhere, we use a random token 10% of the time and the original token 10% of the time.");
+    const expansion = " 掩码分配：80% 换成 [MASK]、10% 换随机词、10% 保留原词。";
+    const [correct, invented, swapped, missing, disconnected] = verify([
+      fact("80/10/10" + expansion, full.id),
+      fact("70/20/10" + expansion, full.id),
+      fact("10/80/10" + expansion, full.id),
+      fact("80/10/10" + expansion, incomplete.id),
+      fact("80/10/10" + expansion, separate.id),
+    ], full, incomplete, separate);
+    expect(correct).toMatchObject({ status: "supported", numbers: [
+      { value: "80/10/10", found: true }, { value: "80%", found: true },
+      { value: "10%", found: true }, { value: "10%", found: true },
+    ] });
+    for (const check of [invented, swapped, missing, disconnected]) {
+      expect(check?.status).toBe("unsupported");
+      expect(check?.numbers[0]?.found).toBe(false);
+    }
   });
 
   it("keeps regular lexical matching when the citations include prose in the point's language", () => {

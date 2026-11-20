@@ -18,6 +18,20 @@ describe("academic number extraction", () => {
     expect(numbersMatch(firstNumber(a), firstNumber(b))).toBe(true);
   });
 
+  it("normalizes percentage-point notation while keeping the explicit unit", () => {
+    const claim = firstNumber("准确率提高 7.7 个百分点。");
+    expect(claim.raw).toBe("7.7 个百分点");
+    expect(numbersMatch(claim, firstNumber("Accuracy rose by 7.7 percentage points."))).toBe(true);
+    expect(numbersMatch(claim, firstNumber("Accuracy rose by 7.7% point."))).toBe(true);
+    expect(numbersMatch(claim, firstNumber("Accuracy rose by 7.7."))).toBe(false);
+    expect(numbersMatch(claim, firstNumber("Accuracy rose by 7.7%."))).toBe(false);
+  });
+
+  it("retains measurements next to versions and ignores fractional pieces of the labels", () => {
+    expect(extractNumbers("NewBench v2.0. Version V1.2.3 improved F1 by +5.1; error was .05.")
+      .map(({ raw }) => raw)).toEqual(["+5.1", ".05"]);
+  });
+
   it("preserves plus/minus pairing and inherits percentage units", () => {
     const a = extractNumbers("在五次重复实验中，准确率为 81.5 ± 0.4%。");
     const b = extractNumbers("Across five runs, mean accuracy was 0.815±0.004.");
