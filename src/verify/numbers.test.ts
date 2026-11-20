@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { extractNumbers, numbersMatch } from "./numbers";
+import { extractNumbers, extractWrittenNumbers, numbersMatch } from "./numbers";
 
 const firstNumber = (text: string) => extractNumbers(text)[0]!;
 
@@ -57,5 +57,37 @@ describe("academic number extraction", () => {
 
   it("keeps a measurement immediately after a compact figure reference", () => {
     expect(extractNumbers("Fig.3: 在图4中，3.2% 的样本被误分类。").map(({ raw }) => raw)).toEqual(["3.2%"]);
+  });
+
+  it.each([
+    ["The evaluation spans eleven natural language processing tasks.", "11 tasks", "eleven"],
+    ["We annotated twenty‑five datasets.", "25 datasets", "twenty‑five"],
+    ["We recruited two hundred participants.", "200 participants", "two hundred"],
+    ["共有十一项任务。", "11 项任务", "十一"],
+    ["共招募了两百名受试者。", "200 名受试者", "两百"],
+    ["The index contains one billion records.", "1B records", "one billion"],
+    ["The corpus includes two million three hundred thousand documents.", "2,300,000 documents", "two million three hundred thousand"],
+    ["The final set contained two hundred and sixty-four samples.", "264 samples", "two hundred and sixty-four"],
+    ["There were zero failures.", "0 failures", "zero"],
+    ["错误率为百分之十一。", "11%", "百分之十一"],
+    ["共收集一千零八条记录。", "1008 records", "一千零八"],
+  ])("reads evidence-side cardinals in %s", (text, digits, spelling) => {
+    const written = extractWrittenNumbers(text);
+    expect(written.map(({ raw }) => raw)).toEqual([spelling]);
+    expect(written[0]?.index).toBe(text.indexOf(spelling));
+    expect(numbersMatch(firstNumber(digits), written[0]!)).toBe(true);
+  });
+
+  it("ignores pronouns, ordinals, and numeric document references in evidence", () => {
+    const text = "One of the best models was selected. No one disagreed. One can see why in Figure eleven. "
+      + "The first and second runs were logged on page seven. The twenty-first run used the best one.";
+    expect(extractWrittenNumbers(text)).toEqual([]);
+    expect(extractWrittenNumbers("图十一和§二十二介绍了第二项实验。")).toEqual([]);
+    expect(extractWrittenNumbers("Only one model was retrained.").map(({ raw }) => raw)).toEqual(["one"]);
+  });
+
+  it("keeps evidence-side spellings out of normal digit extraction", () => {
+    expect(extractNumbers("BERT was one of the best models on eleven tasks.")).toEqual([]);
+    expect(extractNumbers("模型在十一项任务上进行了评估。")).toEqual([]);
   });
 });

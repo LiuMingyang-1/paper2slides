@@ -1,3 +1,5 @@
+import { extractNumberWords } from "./number-words";
+
 export interface ExtractedNumber {
   /** Original spelling, suitable for the verification UI. */
   raw: string;
@@ -107,4 +109,11 @@ export function numbersMatch(claim: ExtractedNumber, evidence: ExtractedNumber):
   return claim.canonical === evidence.canonical
     && claim.uncertainty === evidence.uncertainty
     && (claim.uncertaintyValue === undefined || claim.uncertaintyValue === evidence.uncertaintyValue);
+}
+
+/** Additional numeric spellings used by the evidence index only. */
+export function extractWrittenNumbers(text: string): ExtractedNumber[] {
+  return extractNumberWords(text).map(({ raw, index, value, percent }) => ({
+    raw, index, canonical: canonicalNumber("", String(value), percent ? EXPONENTS["%"]! : 0), uncertainty: false,
+  }));
 }

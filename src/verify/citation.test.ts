@@ -165,6 +165,56 @@ describe("deck citation verification", () => {
     expect(wrong?.reason).toContain("基线");
   });
 
+  it("verifies the Chinese BERT slide against the English spelled-out number", () => {
+    const source = evidence("e5-1", "BERT obtains new state-of-the-art results on eleven natural language processing tasks.");
+    const [result] = verify([fact("BERT 在 11 项任务上取得最优结果", source.id)], source);
+    expect(result).toMatchObject({ status: "supported", matchScore: 1, numbers: [{ value: "11", found: true }] });
+  });
+
+  it("keeps original wording and normalized number tokens available for same-language matches", () => {
+    const source = evidence("e5-1", "Twenty-five datasets.");
+    const [digit, written] = verify([
+      fact("25 datasets.", source.id),
+      fact("Twenty-five datasets.", source.id),
+    ], source);
+    expect(digit).toMatchObject({ status: "supported", matchScore: 1, numbers: [{ value: "25", found: true }] });
+    expect(written).toMatchObject({ status: "supported", matchScore: 1, numbers: [] });
+  });
+
+  it("skips claim-side numerals and pronouns even when cross-language anchors are checked", () => {
+    const source = evidence("e5-1", "BERT achieved the best accuracy on the benchmark.");
+    const [english, chinese, mixed] = verify([
+      fact("BERT was one of the best models and was tested on eleven tasks.", source.id),
+      fact("BERT 在十一项任务上取得最高准确率。", source.id),
+      fact("BERT 在 eleven 项任务上取得最高准确率。", source.id),
+    ], source);
+    expect(english?.status).not.toBe("unsupported");
+    expect(english?.numbers).toEqual([]);
+    expect(chinese).toMatchObject({ status: "supported", numbers: [] });
+    expect(mixed).toMatchObject({ status: "supported", numbers: [] });
+  });
+
+  it("does not use pronouns or ordinals as evidence for a digit", () => {
+    const source = evidence("e5-1", "BERT was one of the best models. No one favored the previous baseline. The first and second runs were successful.");
+    const [one, two] = verify([
+      fact("BERT 评估了 1 项任务。", source.id),
+      fact("BERT 评估了 2 项任务。", source.id),
+    ], source);
+    expect(one).toMatchObject({ status: "unsupported", numbers: [{ value: "1", found: false }] });
+    expect(two).toMatchObject({ status: "unsupported", numbers: [{ value: "2", found: false }] });
+  });
+
+  it("checks spelled-out counts against the attributed result", () => {
+    const source = evidence("e5-1", "基线完成了十一项任务，本文模型完成了二十五项任务。");
+    const [wrong, correct] = verify([
+      fact("本文模型完成了 11 项任务。", source.id),
+      fact("本文模型完成了 25 项任务。", source.id),
+    ], source);
+    expect(wrong).toMatchObject({ status: "unsupported", numbers: [{ value: "11", found: false }] });
+    expect(wrong?.reason).toContain("基线");
+    expect(correct).toMatchObject({ status: "supported", numbers: [{ value: "25", found: true }] });
+  });
+
   it("checks all citable slots across slides and accepts an ID-keyed record", () => {
     const slides: Slide[] = [
       { id: "s1", outlineId: "o1", layout: "title", slots: { title: "ImageNet experiment" } },
