@@ -1,0 +1,1388 @@
+{
+  "id": "e521f285c9aa43a691b5e207c028bfaf76226dfbe309f232f918d124ec5b9fd9",
+  "title": "Ten simple rules for developing visualization tools in genomics",
+  "authors": [
+    "Eloi Durant",
+    "Mathieu Rouard",
+    "Eric W. Ganko",
+    "Cedric Muller",
+    "Alan M. Cleary",
+    "Andrew D. Farmer",
+    "Matthieu Conte",
+    "Francois Sabot"
+  ],
+  "pageCount": 11,
+  "bodyPageCount": 8,
+  "blocks": [
+    {
+      "id": "e1-1",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "IntroductionAU : Pleaseconfirmthatallheadinglevelsarerepresentedcorrectly: Visualization is key for expanding and communicating knowledge to both specialized and broad audiences—after all, “a picture is worth a thousand words,” right? That much has become clear during the Severe Acute Respiratory Syndrome Coronavirus 2 (SARS-CoV-2) outbreak when “Flatten the curve!” [1] turned into a catchier watchword than the usual “Wash",
+      "bbox": [
+        200.0119999999999,
+        431.25499999999994,
+        580.07043282,
+        500.6902702636719
+      ]
+    },
+    {
+      "id": "e1-2",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "a1111111111  your hands!,” by referring to the related graphics rather than the health discourses themselves. a1111111111  Coronavirus Disease 2019 (COVID-19) visualizations, good and bad [2], became omnipresent",
+      "bbox": [
+        36,
+        405.54,
+        573.742,
+        428.27199999999993
+      ]
+    },
+    {
+      "id": "e1-3",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "in the public debates, with interactive and dynamic visualization platforms like Nextstrain [3] gaining a lot of popularity.",
+      "bbox": [
+        200.01199999999986,
+        380.198,
+        570.2750000000002,
+        402.181
+      ]
+    },
+    {
+      "id": "e1-4",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "We are now used to seeing graphs and charts in our everyday lives and creating them for scientific papers as part of research. Unfortunately, most of the time, classic visual representa-",
+      "bbox": [
+        200.01199999999977,
+        354.176,
+        571.2499999999995,
+        376.215
+      ]
+    },
+    {
+      "id": "e1-5",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "OPEN ACCESS",
+      "bbox": [
+        47.622,
+        347.70270869140626,
+        104.581288,
+        356.6400969726563
+      ]
+    },
+    {
+      "id": "e1-6",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "tions are insufficient to effectively communicate data complexity, and as O’Donoghue puts it,",
+      "bbox": [
+        200.01199999999977,
+        341.193,
+        569.98,
+        350.193
+      ]
+    },
+    {
+      "id": "e1-7",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "Citation: Durant E, Rouard M, Ganko EW, Muller C,",
+      "bbox": [
+        36.00054527,
+        331.57422280000003,
+        187.2922541,
+        338.7741328
+      ]
+    },
+    {
+      "id": "e1-8",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "“often dedicated communication approaches need to be developed to address specific data chal-",
+      "bbox": [
+        200.01199999999977,
+        327.28099999999995,
+        567.6599999999996,
+        337.28099999999995
+      ]
+    },
+    {
+      "id": "e1-9",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "Cleary AM, Farmer AD, et al. (2022) Ten simple",
+      "bbox": [
+        36.000545270000025,
+        320.57596028000006,
+        175.22520494000008,
+        327.77587028000005
+      ]
+    },
+    {
+      "id": "e1-10",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "lenges, especially when conveying complex or unfamiliar ideas” [4]. Given the gap between cre-",
+      "bbox": [
+        200.01199999999977,
+        314.298,
+        570.163,
+        324.298
+      ]
+    },
+    {
+      "id": "e1-11",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "rules for developing visualization tools in",
+      "bbox": [
+        36.00054527000004,
+        309.57769776000004,
+        155.77904802000012,
+        316.77760776
+      ]
+    },
+    {
+      "id": "e1-12",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "ating static figures and building a visualization tool from the ground up, it can be easy to get",
+      "bbox": [
+        200.01199999999977,
+        302.18899999999996,
+        564.4729999999997,
+        311.18899999999996
+      ]
+    },
+    {
+      "id": "e1-13",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "genomics. PLoS Comput Biol 18(11): e1010622.",
+      "bbox": [
+        36.00054527000004,
+        298.57943524000007,
+        180.16994313000023,
+        305.77934524000005
+      ]
+    },
+    {
+      "id": "e1-14",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "https://doi.org/10.1371/journal.pcbi.1010622  lost in this nontrivial journey.",
+      "bbox": [
+        36.000545270000025,
+        287.58037273,
+        318.1899999999999,
+        298.20599999999996
+      ]
+    },
+    {
+      "id": "e1-15",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "Our following 10 simple rules are dedicated to biologists and bioinformaticians who, while",
+      "bbox": [
+        211.9739999999998,
+        276.224,
+        571.5210000000001,
+        285.224
+      ]
+    },
+    {
+      "id": "e1-16",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "Editor: Scott Markel, Dassault Systemes BIOVIA,",
+      "bbox": [
+        36.000545270000025,
+        270.57258533000004,
+        180.2675419100001,
+        277.77249533
+      ]
+    },
+    {
+      "id": "e1-17",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "already being at the crossroads of many fields, want to venture further into the land of Data",
+      "bbox": [
+        200.01199999999977,
+        263.185,
+        561.6909999999996,
+        272.185
+      ]
+    },
+    {
+      "id": "e1-18",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "UNITED STATES",
+      "bbox": [
+        36.000545270000025,
+        259.57432281,
+        85.70232399000001,
+        266.77423281
+      ]
+    },
+    {
+      "id": "e1-19",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "Visualization (“datavis” or “dataviz” for short). They combine tips and advice that we would",
+      "bbox": [
+        200.01199999999986,
+        250.20199999999994,
+        564.6999999999998,
+        259.20199999999994
+      ]
+    },
+    {
+      "id": "e1-20",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "Published: November 10, 2022",
+      "bbox": [
+        36.000545270000025,
+        242.56653541000003,
+        129.57857553000002,
+        249.76644541000002
+      ]
+    },
+    {
+      "id": "e1-21",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "have wanted when we first started our own journeys, gathered from our experiences in build-",
+      "bbox": [
+        200.01199999999986,
+        237.21899999999994,
+        570.0389999999996,
+        246.21899999999994
+      ]
+    },
+    {
+      "id": "e1-22",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "Copyright: © 2022 Durant et al. This is an open  ing genomic and/or datavis tools, and the time spent with related communities. Additionally,",
+      "bbox": [
+        36.000545270000025,
+        224.17999999999995,
+        569.4960000000003,
+        234.48301145531252
+      ]
+    },
+    {
+      "id": "e1-23",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "access article distributed under the terms of the",
+      "bbox": [
+        36.00054527000004,
+        214.56048549000005,
+        176.72358620999998,
+        221.76039549000004
+      ]
+    },
+    {
+      "id": "e1-24",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "they address current challenges in computational biology and the needs of the community.",
+      "bbox": [
+        200.01199999999977,
+        211.19699999999995,
+        559.8969999999999,
+        220.19699999999995
+      ]
+    },
+    {
+      "id": "e1-25",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "Creative Commons Attribution License, which",
+      "bbox": [
+        36.000545270000025,
+        203.56222297000005,
+        171.03085737000023,
+        210.76213297000004
+      ]
+    },
+    {
+      "id": "e1-26",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "We aim these rules at bioinfo-to-datavis novices looking for guidelines, particularly regard-",
+      "bbox": [
+        211.9739999999998,
+        198.21499999999992,
+        574.0760000000004,
+        207.21499999999992
+      ]
+    },
+    {
+      "id": "e1-27",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "permits unrestricted use, distribution, and",
+      "bbox": [
+        36.000545270000025,
+        192.56396045000005,
+        159.82379746000012,
+        199.76387045000004
+      ]
+    },
+    {
+      "id": "e1-28",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "ing genomics visualization tools, but experienced practitioners may find it useful to see them",
+      "bbox": [
+        200.01199999999986,
+        185.17599999999993,
+        568.4070000000004,
+        194.17599999999993
+      ]
+    },
+    {
+      "id": "e1-29",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "reproduction in any medium, provided the original",
+      "bbox": [
+        36.000545270000025,
+        181.56569793000006,
+        183.92909614000007,
+        188.76560793000004
+      ]
+    },
+    {
+      "id": "e1-30",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "author and source are credited.  gathered in one place too.",
+      "bbox": [
+        36.000545270000025,
+        170.56743541000003,
+        302.3109999999998,
+        181.19299999999993
+      ]
+    },
+    {
+      "id": "e1-31",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "For better reading comfort, we organized the rules chronologically depending on when",
+      "bbox": [
+        211.97399999999985,
+        159.20999999999992,
+        557.3679999999999,
+        168.20999999999992
+      ]
+    },
+    {
+      "id": "e1-32",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "Funding: This work was supported by a CIFRE",
+      "bbox": [
+        36.00054527000003,
+        153.55964801000002,
+        173.2924291000001,
+        160.75955801
+      ]
+    },
+    {
+      "id": "e1-33",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "they would matter the most during a visualization tool’s life cycle, starting with the design",
+      "bbox": [
+        200.01199999999977,
+        146.2279999999999,
+        555.429,
+        155.2279999999999
+      ]
+    },
+    {
+      "id": "e1-34",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "doctoral grant (2018/1475 to ED). The funders had",
+      "bbox": [
+        36.00054527000004,
+        142.56058550000003,
+        186.01547006000004,
+        149.76049550000002
+      ]
+    },
+    {
+      "id": "e1-35",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "no role in study design, data collection and  (Rules 1 to 5) then development (Rules 5 to 8-ish) phases until it is shared with the rest of the analysis, decision to publish, or preparation of the  world. Please note, however, that they are still relevant during the whole gestation and that cre-manuscript.  ating a visualization tool is rarely a fully linear process—it does not even end after the initial",
+      "bbox": [
+        36.00054527000004,
+        107.22299999999991,
+        576.0029999999998,
+        142.18799999999987
+      ]
+    },
+    {
+      "id": "e1-36",
+      "page": 1,
+      "sectionPath": [],
+      "type": "text",
+      "text": "Competing interests: The authors have declared  release, as continued development and support is a cyclic process to be sustained over the that no competing interests exist.  years.",
+      "bbox": [
+        36.00054527000005,
+        81.20099999999992,
+        554.1610000000001,
+        103.18399999999993
+      ]
+    },
+    {
+      "id": "e2-1",
+      "page": 2,
+      "sectionPath": [
+        "Rule 1: Articulate the need for new visualization tools"
+      ],
+      "type": "text",
+      "text": "For the past few decades, most genomics data have been visualized through genome browsers (JBrowse [5], Ensembl [6], IGV [7], etc.). With the advent of Next Generation Sequencing technologies, the number of draft or high-quality assembled reference genomes exploded, and the need to federate (gen)omic data across assemblies within and between species and to visu-alize them has become a major challenge.",
+      "bbox": [
+        200.012,
+        635.259,
+        572.8049999999998,
+        696.302
+      ]
+    },
+    {
+      "id": "e2-2",
+      "page": 2,
+      "sectionPath": [
+        "Rule 1: Articulate the need for new visualization tools"
+      ],
+      "type": "text",
+      "text": "All these data types and tools lead to critical questions, such as “What am I trying to visual-ize?” and “Why?”.",
+      "bbox": [
+        200.01200000000006,
+        608.3639999999999,
+        575.5770000000002,
+        631.346
+      ]
+    },
+    {
+      "id": "e2-3",
+      "page": 2,
+      "sectionPath": [
+        "Rule 1: Articulate the need for new visualization tools"
+      ],
+      "type": "text",
+      "text": "More specifically: What data do I have? Am I interested in structural variations? In epige-netic changes? At genome scale or at a defined locus? Are there gene annotations available? Can I get sequence alignments? Is there already a tool fulfilling all my expectations?. . .",
+      "bbox": [
+        200.01200000000006,
+        570.289,
+        566.6680000000007,
+        605.254
+      ]
+    },
+    {
+      "id": "e2-4",
+      "page": 2,
+      "sectionPath": [
+        "Rule 1: Articulate the need for new visualization tools"
+      ],
+      "type": "text",
+      "text": "Such questions must drive your quest for the appropriate datavis tool. A good first step would be to explore the related bibliography and tool reviews. Some reviews focus on the use cases [8] or layouts [9] of genomic visualization tools in general, while other reviews are spe-cific to certain subjects, such as structural variations [10] or Hi-C data [11]. Your data and visualization needs may already be compatible with an existing tool or additional development of an existing tool could bring the feature you need. Getting a feature added to a tool can be done, for example, with GitHub by making a feature request or even adding the feature your-self with a pull request—consulting the dev team beforehand is usually a good idea, to be sure that what you propose is in line with their vision and community.",
+      "bbox": [
+        200.012,
+        453.27599999999995,
+        574.6220000000003,
+        566.306
+      ]
+    },
+    {
+      "id": "e2-5",
+      "page": 2,
+      "sectionPath": [
+        "Rule 1: Articulate the need for new visualization tools"
+      ],
+      "type": "text",
+      "text": "Alternatively, some visuali-zation tools allows the development of extensions or plugins, as exemplified by MetaPGN [12] which is built on top of a Cytoscape [13] plugin or the JBrowse plugin store (https://jbrowse. org/jb2/plugin_store).",
+      "bbox": [
+        200.01200000000006,
+        414.27099999999996,
+        573.154,
+        462.27599999999995
+      ]
+    },
+    {
+      "id": "e2-6",
+      "page": 2,
+      "sectionPath": [
+        "Rule 1: Articulate the need for new visualization tools"
+      ],
+      "type": "text",
+      "text": "If after all these steps nothing matches your needs, it then appears necessary to develop a new visualization tool. If so, your big challenge will be to clearly identify the scope of your visualization tool and to keep your end goal in mind.",
+      "bbox": [
+        200.01200000000006,
+        375.26699999999994,
+        562.5080000000003,
+        410.28899999999993
+      ]
+    },
+    {
+      "id": "e2-7",
+      "page": 2,
+      "sectionPath": [
+        "Rule 2: Involve others early on"
+      ],
+      "type": "text",
+      "text": "There are many “others” that you could and often should work with when creating a datavis tool. Sedlmair and colleagues [14] identified 6 non-mutually exclusive collaborator roles of interest for design studies of such tools, with one of the main roles being the front-line analysts.",
+      "bbox": [
+        200.01199999999994,
+        302.188,
+        571.8899999999999,
+        337.209
+      ]
+    },
+    {
+      "id": "e2-8",
+      "page": 2,
+      "sectionPath": [
+        "Rule 2: Involve others early on"
+      ],
+      "type": "text",
+      "text": "Front-line analysts are your end users, people who will use your tool and need it to com-plete certain tasks, and who should therefore be handled with particular care. It is crucial to engage them in discussion as early as possible since they are the ones who will (hopefully) adopt your tool. Front-line analysts can help you to properly define the tool tasks (i.e., both high- and low-level tasks that your tool should achieve) and provide test data as well as valu-able feedback during both the design and development phases. There are many good ways to engage with your end users, including face-to-face interviews, surveys, design sprints, and even hands-on sessions that can often reveal edge cases and sometimes bugs that would have been hard to find on your own—beta-testing at its finest.",
+      "bbox": [
+        200.01199999999986,
+        185.174,
+        567.4660000000003,
+        298.205
+      ]
+    },
+    {
+      "id": "e2-9",
+      "page": 2,
+      "sectionPath": [
+        "Rule 2: Involve others early on"
+      ],
+      "type": "text",
+      "text": "Moreover, there are fields dedicated to datavis: understanding how they are perceived by the human brain (visual perception and cognitive vision science), improving how they can be used with machines (Human Computer Interaction), and growing communities of datavis designers, full of people who could help build a visualization tool. They can be rather general-ist, like the Data Visualization Society (https://www.datavisualizationsociety.org), or more dedicated to the visualization of life sciences data, such as the BioVis community (http:// biovis.net), which regularly organizes conferences on related topics. Look around, there might be someone there willing to give you a hand!",
+      "bbox": [
+        200.01199999999994,
+        81.2,
+        573.4040000000005,
+        181.192
+      ]
+    },
+    {
+      "id": "e3-1",
+      "page": 3,
+      "sectionPath": [
+        "Rule 3: Think about visual scalability and resolution"
+      ],
+      "type": "text",
+      "text": "If the history of genomics teaches us one thing, it is that what was once a huge dataset can be considered a toy set 5 years later [15]. The exponential growth of genomic datasets leaves us no choice but to consider the scalability of our tools’ design and the efficiency of their visual encodings (i.e., how well the chosen visual representations reflect the underlying data). Some designs might be good visual representations for small datasets, but scale poorly for larger datasets.",
+      "bbox": [
+        200.012,
+        622.2760000000001,
+        568.153,
+        696.302
+      ]
+    },
+    {
+      "id": "e3-2",
+      "page": 3,
+      "sectionPath": [
+        "Rule 3: Think about visual scalability and resolution"
+      ],
+      "type": "text",
+      "text": "For example, Venn diagrams are fine for up to 3 sets, but with more sets they become messy at best and a nightmare in worst case scenario. UpSet bypasses this issue by focusing on the set intersections and presenting them in an ordered “table,” but it still suffers a loss of read-ability with increasing sets (there is simply too much to see) and is not designed for visualizing hundreds of sets [16]. Similarly, networks and graphs do not adapt well to big datasets with many nodes and edges, resulting in the infamous “hairball effect” [17]. Your chosen visual encoding’s clarity can depend on your dataset, with different behaviors between simulated or real data of limited scope and larger, more complex data (Fig 1). Your data will come with edge cases that you need to anticipate if you want your design to work properly at scale [18].",
+      "bbox": [
+        200.01200000000006,
+        492.28,
+        575.9300000000003,
+        618.294
+      ]
+    },
+    {
+      "id": "e3-3",
+      "page": 3,
+      "sectionPath": [
+        "Rule 3: Think about visual scalability and resolution"
+      ],
+      "type": "text",
+      "text": "Try varied configurations (good ol’ pen and paper are still useful to quickly draft multiple layouts), get familiar with your design’s limitations, and offer alternatives if you have the resources for it.",
+      "bbox": [
+        200.01199999999994,
+        466.258,
+        574.797,
+        501.28
+      ]
+    },
+    {
+      "id": "e3-4",
+      "page": 3,
+      "sectionPath": [
+        "Rule 3: Think about visual scalability and resolution"
+      ],
+      "type": "text",
+      "text": "Genomic data has specificities and layers that you need to consider at different resolutions. Your organism(s) may have multiple chromosomes (linear or circular) to consider, heterozy-gosity or even polyploidy, and may present macro structural rearrangements at a chromosome level that will not interest you at the nucleotide sequence level. Along with the genomic sequences, you may also have access to additional data types, such as Hi-C, epigenomic signa-tures, or detections of transcription factor binding sites, all of which can blur the respective message in all-in-one visualizations. Instead, consider different visual representations for each data type and how they can complement each other through comparisons and interactions.",
+      "bbox": [
+        200.01199999999986,
+        362.28399999999993,
+        574.929,
+        462.27599999999995
+      ]
+    },
+    {
+      "id": "e3-5",
+      "page": 3,
+      "sectionPath": [
+        "Rule 3: Think about visual scalability and resolution"
+      ],
+      "type": "caption",
+      "text": "Fig 1. The readability of a visual encoding depends on the data provided.",
+      "bbox": [
+        72,
+        102.818018,
+        312.0785989800002,
+        110.017928
+      ]
+    },
+    {
+      "id": "e3-6",
+      "page": 3,
+      "sectionPath": [
+        "Rule 3: Think about visual scalability and resolution"
+      ],
+      "type": "text",
+      "text": "https://doi.org/10.1371/journal.pcbi.1010622.g001",
+      "bbox": [
+        71.99999999999997,
+        87.34141145999999,
+        222.49811875000012,
+        94.54132145999999
+      ]
+    },
+    {
+      "id": "e4-1",
+      "page": 4,
+      "sectionPath": [
+        "Rule 4: Be creative, be bold"
+      ],
+      "type": "text",
+      "text": "To develop a successful visualization application, you will have to find the right mix of technol-ogy, usability, and aesthetics.",
+      "bbox": [
+        200.012,
+        674.263,
+        575.9680000000003,
+        696.302
+      ]
+    },
+    {
+      "id": "e4-2",
+      "page": 4,
+      "sectionPath": [
+        "Rule 4: Be creative, be bold"
+      ],
+      "type": "text",
+      "text": "Regarding technology, you can envision that scientists will soon have access to equipment similar to what Tom Cruise used in Minority Report, which will interact with virtual screens to perform multidimensional genomic data analysis. Virtual reality headsets and augmented real-ity devices offer a first, more affordable step in this unfamiliar 3D environment for datavis— some have already been put to use for GWAS [19] and visualization of 3D structure of chroma-tin [20] or genome graphs [21]. However, while technically feasible, such technologies are not popularized yet and that choice would likely reduce the number of end users. Some tools com-promise by projecting a 3D space onto a 2D computer screen, like Graphia [22] that uses per-spective views and shading to simulate depth perception.",
+      "bbox": [
+        200.01200000000006,
+        557.306,
+        575.9610000000005,
+        670.2810000000001
+      ]
+    },
+    {
+      "id": "e4-3",
+      "page": 4,
+      "sectionPath": [
+        "Rule 4: Be creative, be bold"
+      ],
+      "type": "text",
+      "text": "There are plenty of technology options available and you will need to keep up to date, but make sure that your audience can effectively and correctly use them!",
+      "bbox": [
+        200.01200000000014,
+        531.2850000000001,
+        565.7550000000007,
+        566.306
+      ]
+    },
+    {
+      "id": "e4-4",
+      "page": 4,
+      "sectionPath": [
+        "Rule 4: Be creative, be bold"
+      ],
+      "type": "text",
+      "text": "As for aesthetic and artistic ways to present data, it is partly subjective. Something nice and eye-pleasing to one person may not be appreciated and understood the same way by another person. However, there is a good amount of literature providing advice for efficient datavis design [23–25]. One example is to pay special attention to how you use colors [26]. Make your tool more accessible by accommodating visually impaired people [27], who make up more than 3% of the global population [28], and consider providing a way to let users customize their visualizations with their own color patterns.",
+      "bbox": [
+        200.01200000000017,
+        440.29299999999995,
+        573.3000000000009,
+        527.302
+      ]
+    },
+    {
+      "id": "e4-5",
+      "page": 4,
+      "sectionPath": [
+        "Rule 4: Be creative, be bold"
+      ],
+      "type": "text",
+      "text": "Overall, be creative, do not be afraid to create designs that will not make it to the final cut, and test different graphical strategies following user experience (UX) design processes [29]. Finally, even though too much novelty could be a barrier to adoption, a smart and beautiful design will encourage your users to engage more by offering them visual clarity of their data. If art is really your thing, though, you could totally find a place among the “Xenographics” (https://xeno.graphics) or create your own science-inspired pieces in your free time (check out Martin Krzywinski’s π-art gallery: http://mkweb.bcgsc.ca/pi/art)!",
+      "bbox": [
+        200.01200000000014,
+        336.262,
+        561.8450000000005,
+        436.30999999999995
+      ]
+    },
+    {
+      "id": "e4-6",
+      "page": 4,
+      "sectionPath": [
+        "Rule 5: Make data complexity intelligible"
+      ],
+      "type": "text",
+      "text": "A familiar way of making complex data accessible is to compute derived measures and statis-tics or to apply dimension reduction techniques. Still, visualization is recommended to detect patterns that would not be found with these means alone, as illustrated in Anscombe’s quartet [30], and the more recent Datasaurus Dozen [31]—based on Alberto Cairo’s eponymous data-set—which inspired the Fig 2. Unfortunately, the human mind cannot make sense of every-thing that it perceives at once, and our attention is instead focused on fragments of what we see.",
+      "bbox": [
+        200.01199999999994,
+        211.19699999999997,
+        574.1100000000001,
+        298.205
+      ]
+    },
+    {
+      "id": "e4-7",
+      "page": 4,
+      "sectionPath": [
+        "Rule 5: Make data complexity intelligible"
+      ],
+      "type": "text",
+      "text": "In practice, our understanding of graphical representations comes in part from the immedi-ate identification of salient elements that visually “pop out” (i.e., preattentive processing [32]), but it mainly comes from active exploration [33]. Therefore, a key component of datavis is to make exploration easier and to reduce the workload for a user’s brain starting with careful design as to relieve their working memory [24].",
+      "bbox": [
+        200.01200000000014,
+        146.227,
+        575.9070000000005,
+        207.214
+      ]
+    },
+    {
+      "id": "e4-8",
+      "page": 4,
+      "sectionPath": [
+        "Rule 5: Make data complexity intelligible"
+      ],
+      "type": "text",
+      "text": "A universally praised rule of thumb to this end is Shneiderman’s mantra: “Overview first, zoom and filter, then details-on-demand” [34]. This approach encourages visualization devel-opers to make clever use of the main advantage of visualization tools over visual representa-tions: interactivity. With such a divide and conquer approach it becomes easier to make sense of the displayed visual information as a user. For example, adding details with dynamic tooltips",
+      "bbox": [
+        200.012,
+        81.20100000000001,
+        575.9490000000004,
+        142.258
+      ]
+    },
+    {
+      "id": "e5-1",
+      "page": 5,
+      "sectionPath": [
+        "Rule 5: Make data complexity intelligible"
+      ],
+      "type": "caption",
+      "text": "Fig 2. A good datavis makes pattern identification easier (feat. the Datasaurus).",
+      "bbox": [
+        72,
+        541.395018,
+        334.1655228899999,
+        548.594928
+      ]
+    },
+    {
+      "id": "e5-2",
+      "page": 5,
+      "sectionPath": [
+        "Rule 5: Make data complexity intelligible"
+      ],
+      "type": "text",
+      "text": "https://doi.org/10.1371/journal.pcbi.1010622.g002",
+      "bbox": [
+        72,
+        525.8616121700001,
+        222.49811875000017,
+        533.06152217
+      ]
+    },
+    {
+      "id": "e5-3",
+      "page": 5,
+      "sectionPath": [
+        "Rule 5: Make data complexity intelligible"
+      ],
+      "type": "text",
+      "text": "or including dedicated linked views enables users to build a deep understanding of the data provided without hiding the overall patterns.",
+      "bbox": [
+        200.012,
+        491.145,
+        561.1420000000005,
+        513.184
+      ]
+    },
+    {
+      "id": "e5-4",
+      "page": 5,
+      "sectionPath": [
+        "Rule 6: Let your inner nerd shine if needed"
+      ],
+      "type": "text",
+      "text": "Technology matters, but it is not an end in itself. If you can design and produce an efficient tool using reliable methods instead of the latest and trendiest ones, there is no reason not to. Using the latest framework or published method can be interesting when they add significant advantages, but they may come with stability issues and will not always be the safest option for a robust and long-term tool (as an example, we can think of the infatuation with Objective-C in the mid-2000s leading to the creation of the BioCocoa framework (http://bioinformatics. org/biococoa), without any evolution since 2011). Moreover, accumulating niche technologies and methods would make it difficult to find someone with the exact skillset needed to maintain or help develop your tool; consider the consequences of that choice carefully.",
+      "bbox": [
+        200.012,
+        341.194,
+        575.91,
+        454.224
+      ]
+    },
+    {
+      "id": "e5-5",
+      "page": 5,
+      "sectionPath": [
+        "Rule 6: Let your inner nerd shine if needed"
+      ],
+      "type": "text",
+      "text": "On the other hand, it is also important to recognize that software technologies evolve quickly, and once-common approaches to user interface development may lose favor or become inviable (consider applets and other rich-client alternatives to browser-based develop-ment or the genomic visualization tool Gobe [35] that unfortunately came out after the first signs of Adobe Flash’s downfall). Sometimes a well-conceived and popular tool may need to be completely overhauled in order to remain relevant and usable. This is what happened with genome browsers whose implementations transitioned from HTML image-maps generated server-side to client-side JavaScript frameworks.",
+      "bbox": [
+        200.01200000000006,
+        237.22,
+        575.8590000000004,
+        337.21099999999996
+      ]
+    },
+    {
+      "id": "e5-6",
+      "page": 5,
+      "sectionPath": [
+        "Rule 6: Let your inner nerd shine if needed"
+      ],
+      "type": "text",
+      "text": "You will need to use relevant technologies for your tool: using LaTeX to produce pange-nomics visualizations is fun but needlessly complicated [36] and there are better, dedicated technologies out there. Common tools in datavis differ from common tools in bioinformatics in general, and you will have to try and get accustomed to unfamiliar technologies and con-cepts. For web-based visualization, you should first familiarize yourself with the differences between Scalable Vector Graphics (SVG, geometrically defined images) versus HTML5 Can-vas (dynamic pixel-defined images) elements. A must-know library for working with visualiza-tion is D3.js, which enables the manipulation of (graphic) elements on a webpage.",
+      "bbox": [
+        200.01200000000028,
+        133.18899999999996,
+        575.9190000000006,
+        233.18
+      ]
+    },
+    {
+      "id": "e5-7",
+      "page": 5,
+      "sectionPath": [
+        "Rule 6: Let your inner nerd shine if needed"
+      ],
+      "type": "text",
+      "text": "Finally, if your goal is to display numerous elements at a time (say thousands or millions), you should consider working with WebGL (an API using the graphic card for faster display)—check out the Three.js library or the GenomeSpy [37] or Gosling [38] visualization grammars if interested.",
+      "bbox": [
+        200.01200000000028,
+        81.20200000000001,
+        567.5200000000004,
+        142.18899999999996
+      ]
+    },
+    {
+      "id": "e6-1",
+      "page": 6,
+      "sectionPath": [
+        "Rule 7: Benchmark with diverse datasets"
+      ],
+      "type": "text",
+      "text": "While it is important to have a well-thought-out design, you cannot ignore performance, as a smooth user experience is key for your tool’s adoption [39]. Benchmarking with different data-sets is critical for your visualization tool, and each type has its own use.",
+      "bbox": [
+        200.01199999999986,
+        661.2810000000001,
+        575.981,
+        696.302
+      ]
+    },
+    {
+      "id": "e6-2",
+      "page": 6,
+      "sectionPath": [
+        "Rule 7: Benchmark with diverse datasets"
+      ],
+      "type": "text",
+      "text": "• Small simulated datasets can and should be used during development, as they are better suited for fast iteration while debugging. Make sure that what you see is faithful to the data you have. Handcrafted files can be useful to make extra sure that the resulting visuals match your expectations.",
+      "bbox": [
+        200.01199999999983,
+        603.284,
+        571.0360000000003,
+        651.289
+      ]
+    },
+    {
+      "id": "e6-3",
+      "page": 6,
+      "sectionPath": [
+        "Rule 7: Benchmark with diverse datasets"
+      ],
+      "type": "text",
+      "text": "• Big simulated datasets are meant to be used for stress tests, to assess scalability and perfor-mance: how much data can you feed to your tool until it breaks? Until the tool starts slowing down too noticeably? Performance is an important aspect of your tool that should be deter-mined, at least to let users know what to expect if they want to use their data with your tool.",
+      "bbox": [
+        200.01199999999977,
+        545.288,
+        574.1119999999999,
+        593.292
+      ]
+    },
+    {
+      "id": "e6-4",
+      "page": 6,
+      "sectionPath": [
+        "Rule 7: Benchmark with diverse datasets"
+      ],
+      "type": "text",
+      "text": "• Real data, finally, to make sure that your tool is working properly with real-life data. Look out for unexpected behaviors and edge cases related to your design or data format loopholes that may hinder the user experience.",
+      "bbox": [
+        200.01199999999986,
+        500.27399999999994,
+        572.6139999999997,
+        535.296
+      ]
+    },
+    {
+      "id": "e6-5",
+      "page": 6,
+      "sectionPath": [
+        "Rule 7: Benchmark with diverse datasets"
+      ],
+      "type": "text",
+      "text": "With the decrease of sequencing costs, it is quite frequent to have huge projects with hun-dreds if not thousands of samples: humans, Arabidopsis, mosquitoes, rice, bacteria, viruses, and so on. A modern tool would be expected to manage hundreds of datasets, with as few lags as possible and no memory crashes. Keep in mind that “hundreds of genomes” may not corre-spond to the same size depending on the studied organisms: 1,000 HIV genomes represent approximately 9.2 Mb, which is less than 0.14% the size of a single human genome. You should therefore consider performance through 2 axes: count capacity (number of genomes or mea-sures that can be added) and size capacity (efficient and maximum file sizes that can be used).",
+      "bbox": [
+        200.01199999999977,
+        390.2899999999999,
+        575.9809999999999,
+        490.282
+      ]
+    },
+    {
+      "id": "e6-6",
+      "page": 6,
+      "sectionPath": [
+        "Rule 7: Benchmark with diverse datasets"
+      ],
+      "type": "text",
+      "text": "You may also need to consider characteristics such as the number of chromosomes (or scaf-folds) within a genome as well as the distribution of sizes among these elements (e.g., an abnormally large chromosome in an otherwise “normally sized” genome could break the assumptions of your data structures).",
+      "bbox": [
+        200.01199999999986,
+        338.30299999999994,
+        564.2929999999999,
+        386.30799999999994
+      ]
+    },
+    {
+      "id": "e6-7",
+      "page": 6,
+      "sectionPath": [
+        "Rule 7: Benchmark with diverse datasets"
+      ],
+      "type": "text",
+      "text": "If performance becomes an issue, compiled code and optimized graphics libraries could be a good alternative to scripting languages (e.g., JavaScript, python) to generate the display of large amounts of data.",
+      "bbox": [
+        200.01199999999994,
+        299.299,
+        571.5499999999995,
+        334.26399999999995
+      ]
+    },
+    {
+      "id": "e6-8",
+      "page": 6,
+      "sectionPath": [
+        "Rule 8: Be aware of the genomic tool ecosystem and promote"
+      ],
+      "type": "text",
+      "text": "interoperability Your application will likely need to work among an existing ecosystem of databases and tools that vary by community, even when developed as a stand-alone instance. To lower your tool’s barriers to adoption, pay special attention to implementation, distribution, documentation, and deployment.",
+      "bbox": [
+        200.012,
+        198.21299999999997,
+        575.8460000000002,
+        264.66564422
+      ]
+    },
+    {
+      "id": "e6-9",
+      "page": 6,
+      "sectionPath": [
+        "Rule 8: Be aware of the genomic tool ecosystem and promote"
+      ],
+      "type": "text",
+      "text": "Regarding implementation, your tool should be as light as possible, OS agnostic [40], and if possible, run client-side. Implementing a standard Genomics API [41] to consume input data-sets will also enable seamless integration and better interoperability with other databases and applications. Moreover, some users may want to include your visualizations in automated workflows, so the ability to get output via a command-line and companion scripts can be a nice additional feature to provide.",
+      "bbox": [
+        200.01199999999994,
+        120.204,
+        574.2230000000004,
+        194.17399999999998
+      ]
+    },
+    {
+      "id": "e6-10",
+      "page": 6,
+      "sectionPath": [
+        "Rule 8: Be aware of the genomic tool ecosystem and promote"
+      ],
+      "type": "text",
+      "text": "For distribution, consider multiple options—a Docker or Singularity containers [42,43], or the Conda [44]/Bioconda [45] environment management systems can make complex setups much easier to install, and providing users with the details to install with dependencies on",
+      "bbox": [
+        200.012,
+        81.2,
+        572.107,
+        116.22100000000002
+      ]
+    },
+    {
+      "id": "e7-1",
+      "page": 7,
+      "sectionPath": [
+        "Rule 8: Be aware of the genomic tool ecosystem and promote"
+      ],
+      "type": "text",
+      "text": "other systems is also valuable. Web applications (e.g., those built with JavaScript) are great for avoiding multiple setup issues as they can work with any web browser.",
+      "bbox": [
+        200.012,
+        692.575,
+        570.6119999999999,
+        714.614
+      ]
+    },
+    {
+      "id": "e7-2",
+      "page": 7,
+      "sectionPath": [
+        "Rule 8: Be aware of the genomic tool ecosystem and promote"
+      ],
+      "type": "text",
+      "text": "When time and resources allow, making a popular tool available on several platforms and programming languages is a good option for sustainability. JBrowse is a good illustration since it is available in both web and desktop versions [5], can be embedded in large genome portals as a Drupal module [46], has an R markdown and R Shiny compliant version (JBrowseR [47]), and exists as a Jupyter package [48].",
+      "bbox": [
+        200.01199999999986,
+        627.606,
+        574.5229999999999,
+        688.5930000000001
+      ]
+    },
+    {
+      "id": "e7-3",
+      "page": 7,
+      "sectionPath": [
+        "Rule 8: Be aware of the genomic tool ecosystem and promote"
+      ],
+      "type": "text",
+      "text": "Hosting an example of your software on a website can be useful for trial purposes but can be difficult to maintain over time. Always seek to make it easy for potential users to try your tool on their systems—include clear instructions and a straightforward way to download and run the tool. Good trial data helps users understand the tool and is also a good test to make sure the tool is running properly following installation. Moreover, data formats in bioinfor-matics can be tricky [49] so clearly document the formats your tool needs and provide examples.",
+      "bbox": [
+        200.01199999999966,
+        536.614,
+        568.0989999999993,
+        623.623
+      ]
+    },
+    {
+      "id": "e7-4",
+      "page": 7,
+      "sectionPath": [
+        "Rule 9: Keep up to date with related work"
+      ],
+      "type": "text",
+      "text": "Genomics has been quickly evolving in the past years and shows no sign of slowing down in the future. Envisioned future developments and challenges are linked to more diverse and applied omics approaches (especially in health), data ethics and security, reference-free studies and others, all with ever more data and a growing need for integrated solutions [50].",
+      "bbox": [
+        200.01199999999994,
+        451.914,
+        573.9960000000003,
+        499.918
+      ]
+    },
+    {
+      "id": "e7-5",
+      "page": 7,
+      "sectionPath": [
+        "Rule 9: Keep up to date with related work"
+      ],
+      "type": "text",
+      "text": "With fast evolving needs and many people working on these subjects, it can be easy to be the needle in a haystack and be forgotten in favor of another tool: As of May 30, 2022, there are 434 visualization tools listed in the awesome-genome-visualization list [51] and 151 research articles (already 13 out in 2022 and counting) found via Europe PMC whose listed keywords matched “visualization” and “genomics.” Make sure you keep up to date with data and technol-ogies in genomics so that your ideas and tools stay fresh and relevant. Do not let your focus wander off too much either: A polished and thoroughly executed idea is better than a hybrid monstrosity of hastily (re)defined goals.",
+      "bbox": [
+        200.01199999999994,
+        347.883,
+        575.9550000000003,
+        447.875
+      ]
+    },
+    {
+      "id": "e7-6",
+      "page": 7,
+      "sectionPath": [
+        "Rule 9: Keep up to date with related work"
+      ],
+      "type": "text",
+      "text": "Moreover, you should try to ride the wave rather than fight against it: Make your work known and alive (in conferences, articles, Twitter. . .) and people will start noticing and using it. After all, you could very well make the new state-of-the-art tool!",
+      "bbox": [
+        200.01199999999986,
+        308.879,
+        569.4540000000001,
+        343.901
+      ]
+    },
+    {
+      "id": "e7-7",
+      "page": 7,
+      "sectionPath": [
+        "Rule 10: Grow and support your user community"
+      ],
+      "type": "text",
+      "text": "Gaining users is the final key to a great visualization tool. To do that, you need to communicate your tool to prospective users as well as those who are actively working with it. Communica-tion can take time, but it is rewarding—not only to ensure that people are using your tool, but also to gather ideas for improvements.",
+      "bbox": [
+        200.01199999999977,
+        224.179,
+        575.9310000000003,
+        272.183
+      ]
+    },
+    {
+      "id": "e7-8",
+      "page": 7,
+      "sectionPath": [
+        "Rule 10: Grow and support your user community"
+      ],
+      "type": "text",
+      "text": "User documentation is a simple starting point—make sure you have an up-to-date README or manual for your software, including multiple examples on how to actually use your software. GitHub is an easy way to centralize this information and engage with those that have downloaded your project and are attempting to use it, especially through the “Discus-sions” and “Issues” features. Projects with no activity or updates are a warning sign to potential users, whereas those with activity are more enticing. Plus, you can centralize answers to fre-quent questions and, if you have an active user base, GitHub Discussions now supports polls, making it a convenient way to get input on new ideas.",
+      "bbox": [
+        200.01199999999977,
+        120.20500000000003,
+        575.9440000000003,
+        220.196
+      ]
+    },
+    {
+      "id": "e7-9",
+      "page": 7,
+      "sectionPath": [
+        "Rule 10: Grow and support your user community"
+      ],
+      "type": "text",
+      "text": "Furthermore, as reproducible research and FAIR-sharing principles are applicable to software products [52,53], it may encourage users to cite a released version of your tool by using tools like Zenodo to issue persistent Digital Object Identifiers (DOI) against your releases.",
+      "bbox": [
+        200.01199999999977,
+        81.2,
+        575.9610000000001,
+        129.205
+      ]
+    },
+    {
+      "id": "e8-1",
+      "page": 8,
+      "sectionPath": [
+        "Rule 10: Grow and support your user community"
+      ],
+      "type": "text",
+      "text": "When presenting at a conference, try to end with 1 to 2 questions about new feature requests or biggest issues, along with contact details. You could create dedicated groups on online platforms like meet-up or organize training sessions towards federating a user commu-nity. Also consider setting up a google search notifications around the name of your tool—you might find mentions on Biostars, publications, and other sites you were not expecting.",
+      "bbox": [
+        200.01299999999995,
+        653.6270000000001,
+        574.3120000000001,
+        714.614
+      ]
+    },
+    {
+      "id": "e8-2",
+      "page": 8,
+      "sectionPath": [
+        "Rule 10: Grow and support your user community"
+      ],
+      "type": "text",
+      "text": "Finally, do not forget to use social media to cast a wider net by advertising releases of the tool as well as occasional examples of its use [54].",
+      "bbox": [
+        200.01300000000003,
+        627.606,
+        562.3249999999999,
+        649.588
+      ]
+    },
+    {
+      "id": "e8-3",
+      "page": 8,
+      "sectionPath": [
+        "Conclusions"
+      ],
+      "type": "text",
+      "text": "Our 10 simple rules for developing genomic visualization tools will not replace the experience gained by trial-and-error but will hopefully make the development process less painful for future bio-datavis practitioners and other datavis enthusiasts. Moreover, these rules merely cover the tip of the iceberg, and we strongly encourage our readers to take a look at the refer-ences included in this paper to further improve their understanding. Other interesting matters that did not make it through the introductory cut include visual design validation [55,56], inclusion and accessibility matters [57,58], and visual representation of uncertainty [59,60], which are subfields on their own.",
+      "bbox": [
+        200.012,
+        486.38399999999996,
+        574.2990000000002,
+        586.375
+      ]
+    },
+    {
+      "id": "e8-4",
+      "page": 8,
+      "sectionPath": [
+        "Conclusions"
+      ],
+      "type": "text",
+      "text": "Most of the elements presented here would also be applicable to non-genomic datavis tools; what may be more specific to genomics here is that the datasets are increasing at fast pace [15], with a target audience of scientists that have specialized questions covering a wide range of data types and scales. Depending on your goal (see Rule 1), you may have to create a multi usage tool that could work for pre-established analysis workflows and explor-atory usages as well as for capturing printable versions of your visual representations at a given state.",
+      "bbox": [
+        200.01199999999986,
+        395.39199999999994,
+        573.8319999999999,
+        482.40099999999995
+      ]
+    },
+    {
+      "id": "e8-5",
+      "page": 8,
+      "sectionPath": [
+        "Conclusions"
+      ],
+      "type": "text",
+      "text": "These static snapshots could be used for publication, as you should also considering pub-lishing papers about your tool and the design choices behind it (datavis-oriented columns are gaining in popularity, for example, with the datavis section in Frontiers in Bioinformatics).",
+      "bbox": [
+        200.01199999999977,
+        355.4579999999999,
+        570.1079999999995,
+        391.4099999999999
+      ]
+    },
+    {
+      "id": "e8-6",
+      "page": 8,
+      "sectionPath": [
+        "Conclusions"
+      ],
+      "type": "text",
+      "text": "To wrap up these 10 rules, here is a summary of what we deem most important, our take-home message for those who did not have time to read the article in detail:",
+      "bbox": [
+        200.01199999999994,
+        330.42299999999994,
+        565.7060000000001,
+        352.4049999999999
+      ]
+    },
+    {
+      "id": "e8-7",
+      "page": 8,
+      "sectionPath": [
+        "Conclusions"
+      ],
+      "type": "text",
+      "text": "• Going blindly into building a visualization tool is a bad idea; take time to learn about datavis principles first (we highly recommend Nature Methods’ “Points of View” column [61]) and to carefully consider your tool’s visual representations and interface designs.",
+      "bbox": [
+        200.0119999999999,
+        285.40899999999993,
+        573.4730000000003,
+        320.4309999999999
+      ]
+    },
+    {
+      "id": "e8-8",
+      "page": 8,
+      "sectionPath": [
+        "Conclusions"
+      ],
+      "type": "text",
+      "text": "• Genomics comes with multiple challenges, due in part to its diversity and scale of data. Make sure you have correctly identified the tasks your tool should complete and consider imple-menting interactions between different visual representations.",
+      "bbox": [
+        200.01199999999994,
+        240.39499999999992,
+        575.6190000000004,
+        275.4169999999999
+      ]
+    },
+    {
+      "id": "e8-9",
+      "page": 8,
+      "sectionPath": [
+        "Conclusions"
+      ],
+      "type": "text",
+      "text": "• Interact with your community at all times: during the design phase to correctly assess your end goal; during development to use real data and make sure you are going in the right direction; and on an ongoing basis once your tool is available for all to enjoy, to prevent it from ending in the “oubliettes de l’histoire.”",
+      "bbox": [
+        200.01200000000003,
+        181.468,
+        566.6099999999999,
+        230.40299999999996
+      ]
+    },
+    {
+      "id": "e8-10",
+      "page": 8,
+      "sectionPath": [
+        "Supporting information"
+      ],
+      "type": "text",
+      "text": "S1 File. Extraction processes and data used in Rule 9. Text file including the extraction method and request string used to count tools from the awesome genome visualization list and publications related to genomic visualization from PMC. (TXT)",
+      "bbox": [
+        200.01199999999986,
+        87.208,
+        575.7529999999996,
+        135.212
+      ]
+    }
+  ],
+  "figures": [
+    {
+      "id": "fig1",
+      "label": "Figure 1",
+      "page": 3,
+      "captionEvidenceId": "e3-5",
+      "cropOk": false
+    },
+    {
+      "id": "fig2",
+      "label": "Figure 2",
+      "page": 5,
+      "captionEvidenceId": "e5-1",
+      "cropOk": false
+    }
+  ],
+  "warnings": []
+}
