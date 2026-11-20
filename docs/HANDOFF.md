@@ -10,7 +10,7 @@
 
 | 项 | 值 |
 |---|---|
-| 本地路径 | `/Users/lmy/Documents/code/Anna/paper2slides` |
+| 本地路径 | 仓库根目录（本机克隆位置） |
 | 仓库 | 私有 `LiuMingyang-1/paper2slides`，分支 `main` |
 | Anna 账号 | staging，已开通开发者，`anna-app login` 已登录（PAT 约 90 天） |
 | Anna App | `[DRAFT] paper2slides (id=288)`，slug `paper2slides`（不可改） |
@@ -70,7 +70,7 @@ PPTX 导出与 PDF 解析两侧统一过滤 XML 非法字符，e2e 脚本导出�
 - **花额度前先问用户。**
 - **不要擅自发布**（`anna-app apps publish/submit-review/release`）。
 - 用户要讨论时只讨论，不动手；文档先行。
-- 我只做任务理解、拆分、验收、合并；**编码交给 gpt-6.2-sol**（Lody Role `5f850a58-e61c-4fd7-b398-b7127835b8a3`，machine `7e33479f-13cd-400f-8942-9fb4fb3ec838`），**每个子任务新开一个会话**，`workContext` 用 GitHub 仓库，独立分支 `task/Tn-*`，并发 ≤ 3。
+- 我只做任务理解、拆分、验收、合并；**编码交给 gpt-6.2-sol**（Lody Agent Role，ID 见本机 Lody 配置），**每个子任务新开一个会话**，`workContext` 用 GitHub 仓库，独立分支 `task/Tn-*`，并发 ≤ 3。
 - 优先用成熟开源库；联网调研也交给 gpt-6.2-sol。
 - 回复用户要简洁（中文）。
 - Commit 结尾：`Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`。
