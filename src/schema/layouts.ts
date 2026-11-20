@@ -13,8 +13,9 @@ export interface LayoutDefinition {
   readonly slots: Readonly<Record<string, SlotDefinition>>;
 }
 
-const title = { type: "string", required: true, maxChars: 150 } as const;
-const bullets = { type: "points", required: true, maxChars: 140, minItems: 1, maxItems: 4 } as const;
+const title = { type: "string", required: true, maxChars: 60 } as const;
+const bullets = { type: "points", required: true, maxChars: 180, minItems: 1, maxItems: 5 } as const;
+const takeaway = { type: "points", required: false, maxChars: 80, minItems: 1, maxItems: 1 } as const;
 const column = { type: "points", required: true, maxChars: 100, minItems: 1, maxItems: 3 } as const;
 
 /**
@@ -30,21 +31,23 @@ export const LAYOUTS: Readonly<Record<LayoutId, LayoutDefinition>> = {
     description: "标题页",
     requiresFigure: false,
     slots: {
-      title: { ...title, maxChars: 180 },
+      title,
+      subtitle: { type: "string", required: false, maxChars: 120 },
       authors: { type: "string", required: false, maxChars: 160 },
     },
   },
   bullets: {
     description: "纯文字要点，适于图截取失败或没有合适原图",
     requiresFigure: false,
-    slots: { title, bullets },
+    slots: { title, bullets, takeaway },
   },
   bullets_figure: {
     description: "要点配论文原图，也用于论文的框架图",
     requiresFigure: true,
     slots: {
       title,
-      bullets: { ...bullets, maxItems: 3, maxChars: 105 },
+      bullets: { ...bullets, maxItems: 3, maxChars: 140 },
+      takeaway,
       caption: { type: "points", required: false, maxChars: 105, minItems: 1, maxItems: 1 },
     },
   },
