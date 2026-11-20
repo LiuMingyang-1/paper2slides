@@ -1,7 +1,7 @@
-// Placeholder entry; replaced by the UI task (see docs/TASKS.md, T5).
 import { connectAnna } from "./anna";
+import { mountApp } from "./ui/app";
+import "./ui/style.css";
 
 const root = document.getElementById("app")!;
-connectAnna().then((anna) => {
-  root.textContent = anna ? "Paper2Slides — connected to Anna host." : "Paper2Slides — standalone preview (no host).";
-});
+if (window.parent === window) mountApp(root, null);
+else void connectAnna().then((host) => mountApp(root, host));
