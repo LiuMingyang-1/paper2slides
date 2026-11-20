@@ -117,3 +117,11 @@ export function extractWrittenNumbers(text: string): ExtractedNumber[] {
     raw, index, canonical: canonicalNumber("", String(value), percent ? EXPONENTS["%"]! : 0), uncertainty: false,
   }));
 }
+
+/** Filter by the spoken cardinal value before converting written percentages. */
+export function extractWrittenNumbersAtLeast(text: string, minimum: number): ExtractedNumber[] {
+  const words = extractNumberWords(text).filter(({ value }) => value >= minimum);
+  return words.map(({ raw, index, value, percent }) => ({
+    raw, index, canonical: canonicalNumber("", String(value), percent ? EXPONENTS["%"]! : 0), uncertainty: false,
+  }));
+}
