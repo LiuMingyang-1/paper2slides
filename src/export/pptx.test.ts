@@ -1,8 +1,10 @@
 import { createRequire } from "node:module";
+import { readFile } from "node:fs/promises";
 import JSZip from "jszip";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { fixtureDeck, fixturePaper } from "../layout/fixture";
 import { measureSlide, renderSlide } from "../layout";
+import type { Deck, Paper, Point } from "../types";
 import { exportPptx } from "./index";
 
 // jsdom supplies DOM and XML parsing. Layout geometry is supplied explicitly.
@@ -81,6 +83,43 @@ describe("editable PPTX export", () => {
     const notes = await readXml("ppt/notesSlides/notesSlide5.xml");
     expect(tags(notes, "a", "t")[0]?.textContent).toContain(`e4-1 (p.4) ${fixturePaper.blocks[3]!.text}`);
     expect(win.document.body.childElementCount).toBe(0);
+  });
+
+  it("exports valid XML with the archived review's raw PDF citations", async () => {
+    const load = async (path: string) => JSON.parse(await readFile(new URL(path, import.meta.url), "utf8"));
+    const paper: Paper = await load("../../eval/papers/deep-learning-review.parsed.json");
+    const slides: { text: string; claims: { slot: string; text: string; evidenceIds: string[] }[] }[] =
+      await load("../../eval/runs/2026-11-21/grounding-review/slides.json");
+    const { text, claims } = slides[7]!;
+    const points = (slot: string): Point[] => claims.filter((claim) => claim.slot.startsWith(slot + ":"))
+      .map(({ text, evidenceIds }) => ({ kind: "fact", text, evidenceIds }));
+    const source = paper.blocks.find((block) => block.id === "e10-25")!;
+    expect(source.text).toContain("\u0003");
+    expect(points("bullets").some((point) => point.evidenceIds.includes(source.id))).toBe(true);
+
+    const deck: Deck = {
+      ...fixtureDeck,
+      paperId: paper.id,
+      verifications: [],
+      slides: [{
+        id: "s8", outlineId: "o8", layout: "bullets",
+        slots: { title: text.split("\n")[0]!, bullets: points("bullets"), takeaway: points("takeaway") },
+        notes: "指标说明\u000b & 示例",
+      }],
+    };
+    const blob = await exportPptx(deck, paper, { document: win.document });
+    const zip = await JSZip.loadAsync(await blob.arrayBuffer());
+    const parts = zip.file(/\.(xml|rels)$/);
+    expect(parts.map((part) => part.name)).toContain("ppt/notesSlides/notesSlide1.xml");
+    const parser = new win.DOMParser();
+    for (const part of parts) {
+      const xml = parser.parseFromString(await part.async("string"), "application/xml");
+      expect(xml.querySelector("parsererror")?.textContent ?? null, part.name).toBeNull();
+      if (part.name === "ppt/notesSlides/notesSlide1.xml") {
+        expect(xml.documentElement.textContent).toContain(source.text.replaceAll("\u0003", ""));
+        expect(xml.documentElement.textContent).toContain("指标说明 & 示例");
+      }
+    }
   });
 
   it("uses supplied preview geometry without rendering again and refuses unresolved overflow", async () => {

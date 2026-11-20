@@ -5,6 +5,8 @@ import { join, resolve } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
 import { fileURLToPath } from "node:url";
 import { parseArgs } from "node:util";
+import { JSDOM } from "jsdom";
+import JSZip from "jszip";
 import puppeteer from "puppeteer-core";
 
 const stages = ["parse", "understand", "slides", "export"];
@@ -215,7 +217,7 @@ async function screenshotSlides() {
   writeFileSync(join(artifacts, "slides.json"), `${JSON.stringify(slides, null, 2)}\n`);
 }
 
-function saveDeck(bytes) {
+async function saveDeck(bytes) {
   const footer = bytes.lastIndexOf(Buffer.from([0x50, 0x4b, 0x05, 0x06]));
   if (bytes.length < 1024 || bytes.length > 100 * 1024 * 1024
     || bytes.readUInt32LE(0) !== 0x04034b50 || footer < 0 || footer + 22 > bytes.length
@@ -224,9 +226,26 @@ function saveDeck(bytes) {
   }
   const directory = bytes.readUInt32LE(footer + 16);
   const directoryLength = bytes.readUInt32LE(footer + 12);
-  if (directory + directoryLength !== footer || directoryLength < 46 || bytes.readUInt32LE(directory) !== 0x02014b50
-    || !bytes.subarray(directory, footer).includes(Buffer.from("ppt/presentation.xml"))) {
+  if (directory + directoryLength !== footer || directoryLength < 46 || bytes.readUInt32LE(directory) !== 0x02014b50) {
     throw new Error("PPTX ZIP 目录缺失或无效");
+  }
+  const zip = await JSZip.loadAsync(bytes);
+  if (!zip.file("ppt/presentation.xml")) throw new Error("PPTX 缺少演示文稿入口");
+  const decoder = new TextDecoder("utf-8", { fatal: true });
+  const { window } = new JSDOM();
+  try {
+    const parser = new window.DOMParser();
+    for (const part of zip.file(/\.(xml|rels)$/i)) {
+      try {
+        const xml = parser.parseFromString(decoder.decode(await part.async("uint8array")), "application/xml");
+        const error = xml.querySelector("parsererror");
+        if (error) throw new Error(error.textContent);
+      } catch (error) {
+        throw new Error(`PPTX XML 部件无效（${part.name}）`, { cause: error });
+      }
+    }
+  } finally {
+    window.close();
   }
   writeFileSync(join(artifacts, "deck.pptx"), bytes);
   log(`已保存 deck.pptx（${bytes.length} 字节）`);
@@ -244,7 +263,7 @@ async function exportDeck() {
         filename = readdirSync(downloadDir).find((name) => name.endsWith(".pptx"));
         return filename && !(await app.$(".progress-card"));
       }, 120_000);
-      saveDeck(readFileSync(join(downloadDir, filename)));
+      await saveDeck(readFileSync(join(downloadDir, filename)));
     } finally {
       await cdp.detach();
       rmSync(downloadDir, { recursive: true, force: true });
@@ -261,7 +280,7 @@ async function exportDeck() {
         throw new Error("无法请求 PPTX 下载链接");
       });
       if (!response.ok) throw new Error(`PPTX 下载失败（HTTP ${response.status}）`);
-      saveDeck(Buffer.from(await response.arrayBuffer()));
+      await saveDeck(Buffer.from(await response.arrayBuffer()));
     } finally {
       clearInterval(heartbeat);
     }

@@ -1,4 +1,5 @@
 import type { PDFDocumentLoadingTask } from "pdfjs-dist";
+import { cleanXmlText } from "../export/xml-text";
 import { ParseError, type Paper } from "../types";
 import { BODY_PAGE_LIMIT, buildPaper } from "./blocks";
 import { extractFigures } from "./figures";
@@ -59,6 +60,11 @@ export async function parseWithPdfJs(
     const paper = buildPaper(id, pdf.numPages, pages, (metadata?.info ?? {}) as Record<string, unknown>, lowTextPages);
     if (options.cropFigures !== false && typeof document !== "undefined") {
       await extractFigures(pdf, paper, pages);
+    }
+    // Keep the original layout and block boundaries so citation IDs stay stable.
+    for (const block of paper.blocks) {
+      block.text = cleanXmlText(block.text);
+      block.sectionPath = block.sectionPath.map(cleanXmlText);
     }
     return paper;
   } catch (error) {
