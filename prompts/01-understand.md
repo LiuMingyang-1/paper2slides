@@ -1,6 +1,6 @@
 ---
 id: understand
-version: 2
+version: 3
 schema: UnderstandingSchema
 maxTokens: 4096
 temperature: 0.1
@@ -24,20 +24,23 @@ includes: [_shared/citation-rules.md, _shared/output-schema.md]
 
 - `full` 读整篇，在原文支持时连接方法、结果与消融实验。`section` 只概括当前分批提供的章节。`section_summaries` 合并带原始证据 ID 的章节摘要，去重并保留关键跨章节关系；沿用现有出处，禁止添加摘要中没有的事实及 ID。
 - 模块仅限 `problem`、`method`、`theory`、`experiments`、`ablation`、`taxonomy`、`limitations`、`future_work`。同一模块最多出现一次。实际缺失的模块直接省略。
+- 为方法保留原文解释的动机、机制与关键选择。问题模块优先找能分别支撑问题、影响和解决方向的证据，只有一段相关材料时只提炼该段支持的内容。
 - 普通模式每模块 1–4 条，每条最多 240 字符。详略为 `brief` 时，每模块保留 1–2 条短要点，每条最多 140 字符，供后续合并。
-- 标题保持论文身份（优先保留标明的原题），`oneLiner` 用指定语言，聚焦论文问题与主要贡献。元信息用于识别论文，正文陈述须有证据。
+- 标题保持论文身份（优先保留标明的原题），`oneLiner` 用指定语言，最多 120 字符，聚焦论文问题与主要贡献，中文汇报会原样用作封面副标题。元信息用于识别论文，正文陈述须有证据。
 
 {{> _shared/citation-rules.md}}
 
 ## 输出格式
 
-`{"title":"论文标题","oneLiner":"一句话（≤280字符）","modules":[{"kind":"method","points":[{"text":"有依据的要点","kind":"fact","evidenceIds":["e3-5"]}]}]}`
+`{"title":"论文标题","oneLiner":"一句话（≤120字符）","modules":[{"kind":"method","points":[{"text":"有依据的要点","kind":"fact","evidenceIds":["e3-5"]}]}]}`
 
 标题最多 180 字符。没有可辨认的模块时允许 `modules: []`。
 
 每个模块对象只有 `kind` 和 `points` 两个键，`kind` 只写一次且取模块类型（如 `method`）；`fact`/`summary`/`opinion` 只用于 point 的 `kind`，不要写在模块上。
 
 ## 反例
+
+BERT 的研究问题页曾有四条要点，其中三条都在改写 `e1-5`。理解阶段应保留 `e1-5` 支持的单向上下文局限，并把 `e2-1` 支持的双向解决机制作为独立要点。中文封面只给英文标题也无法交代贡献，`oneLiner` 应概括 BERT 如何用双向预训练获得可微调的语言表示。
 
 综述按三类方法组织已有工作。把引述的其他论文结果扩写为本文新做的 `experiments` 模块，会改变论文事实。
 

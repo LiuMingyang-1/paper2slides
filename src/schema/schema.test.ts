@@ -65,16 +65,46 @@ describe("model output schemas", () => {
     const schema = outlineValidator("balanced", ["method"], figureIds);
     const items = [
       { id: "s1", title: "Paper", modules: [], intent: "Introduce the paper" },
-      ...["A", "B", "C", "D"].map((title, index) => ({
+      ...["A", "B", "C", "D", "E"].map((title, index) => ({
         id: `s${index + 2}`, title, modules: ["method"], intent: "Discuss " + title,
       })),
     ];
-    expect(schema({ emphasis: "balanced", items }).value.items).toHaveLength(5);
-    expect(() => schema({ emphasis: "balanced", items: items.slice(0, 4) })).toThrow("5–8");
+    expect(schema({ emphasis: "balanced", items }).value.items).toHaveLength(6);
+    expect(() => schema({ emphasis: "balanced", items: items.slice(0, 4) })).toThrow("5–10");
     expect(() => schema({ emphasis: "balanced", items: [{ ...items[0], modules: ["method"] }, ...items.slice(1)] })).toThrow("items[0].modules");
     expect(() => schema({ emphasis: "balanced", items: [
-      ...items.slice(0, 4), { ...items[4], modules: ["ablation"] },
+      ...items.slice(0, 4), { ...items[4], modules: ["ablation"] }, items[5],
     ] })).toThrow("items[4].modules");
+    expect(() => schema({ emphasis: "balanced", items: [
+      ...items.slice(0, 5), { ...items[5], title: " ａ " },
+    ] })).toThrow("items[5].title：标题不得重复");
+    const normalizations: string[] = [];
+    expect(schema({ emphasis: "balanced", items: items.slice(0, 5) }, normalizations).value.items).toHaveLength(5);
+    expect(normalizations).toEqual([expect.stringContaining("低于 6 页目标")]);
+  });
+
+  it("rejects content titles above 22 Han characters or 60 total characters", () => {
+    const schema = validate("bullets");
+    const slide = (title: string) => ({ ...slideFor("bullets"), slots: { ...fixtures.bullets, title } });
+    for (const title of ["BERT " + "论".repeat(22), "a".repeat(60)]) {
+      expect(schema(slide(title)).value.slots.title).toBe(title);
+    }
+    expect(() => schema(slide("论".repeat(23)))).toThrow("中文标题最多 22 个汉字");
+    expect(() => schema(slide("a".repeat(61)))).toThrow("最多 60 个字符");
+  });
+
+  it("warns about one valid citation with more evidence available but never invents another citation", () => {
+    const base = slideFor("bullets");
+    const slide = { ...base, slots: { ...base.slots, bullets: [
+      point("First point"), { ...point("Second point"), evidenceIds: ["e1-1", "e3-1"] },
+    ] } };
+    const warnings: string[] = [];
+    expect(validate("bullets")(slide, warnings)).toEqual({ value: slide, missingEvidenceIds: ["e3-1"] });
+    expect(warnings).toEqual([expect.stringContaining("仅引用 1 个")]);
+    const scarce = slideValidator({ outlineId: "s1", titlePage: false, evidenceIds: new Set(["e1-1"]), figureIds });
+    const scarceWarnings: string[] = [];
+    expect(scarce(base, scarceWarnings).value).toEqual(base);
+    expect(scarceWarnings).toEqual([]);
   });
 
   it("compression preserves point provenance, numeric spelling and table cell assignment", () => {
@@ -107,7 +137,8 @@ describe("validation feedback for model retries", () => {
       ...slideFor("bullets"),
       slots: { ...fixtures.bullets, "Untrusted model output": "unexpected contents" },
     }, warnings).value).toEqual(slideFor("bullets"));
-    expect(warnings).toEqual(["丢弃字段 slots.Untrusted model output"]);
+    expect(warnings).toContain("丢弃字段 slots.Untrusted model output");
+    expect(warnings.join("\n")).not.toContain("unexpected contents");
   });
 
   it("caps feedback at three issues and identifies a missing field", () => {
@@ -119,7 +150,7 @@ describe("validation feedback for model retries", () => {
 
   it("counts Unicode code points in slot length limits", () => {
     const schema = validate("title");
-    const chars = LAYOUTS.title.slots.title!.maxChars * 2;
+    const chars = LAYOUTS.title.slots.title!.maxChars;
     const slide = { ...slideFor("title"), slots: { title: "𠀀".repeat(chars) } };
     expect(schema(slide).value).toEqual(slide);
     expect(() => schema({ ...slide, slots: { title: slide.slots.title + "𠀀" } }))
@@ -175,15 +206,15 @@ describe("normalization of model output", () => {
   it("clamps outline arrays and drops extras, preserving title text through confirmation", () => {
     const warnings: string[] = [];
     const title = "论文".repeat(100);
-    const items = Array.from({ length: 9 }, (_, i) => ({
-      id: `s${i + 1}`, title, intent: "介绍论文", importance: i,
+    const items = Array.from({ length: 11 }, (_, i) => ({
+      id: `s${i + 1}`, title: `${title}${i}`, intent: "介绍论文", importance: i,
       modules: i === 0 ? [] : i === 1 ? ["method", "problem"] : ["method"],
     }));
     const schema = outlineValidator("balanced", ["method"], figureIds);
     const { value } = schema({ emphasis: "balanced", items }, warnings);
-    expect(value.items).toHaveLength(8);
-    expect(value.items[1]).toEqual({ id: "s2", title, intent: "介绍论文", modules: ["method"] });
-    expect(warnings).toContain("截断 items：9 项保留前 8 项");
+    expect(value.items).toHaveLength(10);
+    expect(value.items[1]).toEqual({ id: "s2", title: `${title}1`, intent: "介绍论文", modules: ["method"] });
+    expect(warnings).toContain("截断 items：11 项保留前 10 项");
     expect(warnings).toContain("截断 items[1].modules：2 项保留前 1 项");
     expect(outlineValidator("balanced", ["method"], figureIds, true)(value).value).toEqual(value);
   });
@@ -201,9 +232,9 @@ describe("normalization of model output", () => {
     }, warnings);
     expect(value.slots.bullets).toEqual([
       { ...point(text), evidenceIds: ["e1-1", "e2-3", "e3-1", "e4-1"] },
-      point("Point 0"), point("Point 1"), point("Point 2"),
+      point("Point 0"), point("Point 1"), point("Point 2"), point("Point 3"),
     ]);
-    expect(warnings).toContain("截断 slots.bullets：6 项保留前 4 项");
+    expect(warnings).toContain("截断 slots.bullets：6 项保留前 5 项");
     expect(warnings).toContain("截断 slots.bullets[0].evidenceIds：5 项保留前 4 项");
     const compressed = compressionValidator(value, ["bullets"], schema);
     const compressionWarnings: string[] = [];

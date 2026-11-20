@@ -1,8 +1,8 @@
 ---
 id: compress
-version: 1
+version: 2
 schema: SlideSchema
-maxTokens: 1536
+maxTokens: 2048
 temperature: 0.1
 includes: [_shared/citation-rules.md, _shared/output-schema.md]
 ---
@@ -28,6 +28,8 @@ includes: [_shared/citation-rules.md, _shared/output-schema.md]
 输出一份与输入同结构的完整 Slide 对象。
 
 ## 反例
+
+BERT 真实输出只列了 MLM 的 80% / 10% / 10%。有机制解释的版本压缩后仍应交代微调输入里没有 [MASK]，这是混合替换策略的动机。
 
 「准确率在测试集 A 为 93.0%」缩成「准确率 93%」会丢失测试条件，并改变日后核验需要的数字写法。
 

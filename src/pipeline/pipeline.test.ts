@@ -3,7 +3,9 @@ import type { AnnaHost, LlmCompleteArgs } from "../anna";
 import { fakeHost, reply } from "../llm/test-fixtures";
 import type { Emphasis, Evidence, Outline, OutlineItem, Paper, Slide, Understanding } from "../types";
 import { MODULE_KINDS } from "../schema/understanding";
+import bert from "../../eval/papers/bert.parsed.json";
 import { batchBySection } from "./evidence";
+import idealMlm from "./fixtures/bert-mlm-ideal.json";
 import { createPipeline, type PipelineProgress } from "./pipeline";
 
 function block(id: string, text: string, section: string, type: Evidence["type"] = "text"): Evidence {
@@ -15,7 +17,7 @@ const paper: Paper = {
   blocks: [
     block("e1-0", "We investigate an estimation problem.", "1 Introduction"),
     block("e2-0", "The estimator uses cached measurements.", "2 Method"),
-    block("e2-1", "Figure 1. The proposed estimator.", "2 Method", "caption"),
+    block("e2-1", "Figure 1. The proposed estimator. " + "甲🔬".repeat(100), "2 Method", "caption"),
     block("e2-2", "Figure 2. Comparison setup.", "2 Method", "caption"),
     block("e3-0", "The evaluation used 8.60% as the target error rate.", "3 Results"),
   ],
@@ -37,6 +39,7 @@ const outline: Outline = {
     { id: "s3", title: "Inputs", modules: ["method"], intent: "Discuss the inputs" },
     { id: "s4", title: "Workflow", modules: ["method"], intent: "Discuss the steps" },
     { id: "s5", title: "Conditions", modules: ["method"], intent: "Discuss setup" },
+    { id: "s6", title: "Implementation", modules: ["method"], intent: "Discuss implementation" },
   ],
 };
 
@@ -89,25 +92,32 @@ describe("paper generation", () => {
     const { pipeline, options, complete, search, cache, progress } = setup();
     const result = await pipeline.run("en", "method");
     expect(result).toMatchObject({ understanding, outline, slides: outline.items.map(fixtureSlide) });
-    expect(result.llmCalls).toHaveLength(7);
-    expect(cache.size).toBe(7);
+    expect(result.llmCalls).toHaveLength(8);
+    expect(cache.size).toBe(8);
     expect([...cache.keys()].every((key) => /^paper-hash:(understand|outline|slide)@\d+:[a-f0-9]{64}$/.test(key))).toBe(true);
     expect(promptText(complete.mock.calls[0]![0])).toContain("[e2-0] (p.2, §2 Method) The estimator");
     expect(promptText(complete.mock.calls[0]![0])).toContain("语言由 `en`");
     expect(search).toHaveBeenNthCalledWith(2, "Describe cached measurements Estimator", 8);
     const figureSlide = promptText(complete.mock.calls[3]![0]);
+    const available = [{
+      id: "fig1", label: "Figure 1", page: 2, captionEvidenceId: "e2-1",
+      caption: Array.from(paper.blocks[2]!.text).slice(0, 200).join(""),
+    }];
+    expect(inputField(figureSlide, "本页可用原图（截取成功，含图号、页码、图注原文前 200 字及证据 ID）")).toEqual(available);
+    expect(inputField(promptText(complete.mock.calls[1]![0]),
+      "可用原图（ID、图号、页码、图注原文前 200 字及证据 ID）")).toEqual(available);
     expect(figureSlide).toContain("[e2-0]");
     expect(figureSlide).toContain("[e2-1]");
     expect(figureSlide).toContain("[e3-0]");
     expect(figureSlide).not.toContain('"fig2"');
     expect(figureSlide).not.toContain("data:image");
-    expect(progress.at(-1)).toEqual({ phase: "slides", completed: 5, total: 5, outlineId: "s5", cacheHit: false });
+    expect(progress.at(-1)).toEqual({ phase: "slides", completed: 6, total: 6, outlineId: "s6", cacheHit: false });
 
     await expect(createPipeline(paper, options).run("en", "method")).resolves.toMatchObject({ llmCalls: [] });
-    expect(complete).toHaveBeenCalledTimes(7);
+    expect(complete).toHaveBeenCalledTimes(8);
     expect(progress.at(-1)?.cacheHit).toBe(true);
     await pipeline.generateOutline(understanding, "balanced", "en");
-    expect(complete).toHaveBeenCalledTimes(8);
+    expect(complete).toHaveBeenCalledTimes(9);
   });
 
   it("resumes at the incomplete page after quota exhaustion", async () => {
@@ -118,8 +128,41 @@ describe("paper generation", () => {
     const second = setup();
     const resumed = createPipeline(paper, { ...second.options, cache: first.cache });
     await expect(resumed.run("en", "method")).resolves.toMatchObject({ slides: outline.items.map(fixtureSlide) });
-    expect(second.complete).toHaveBeenCalledTimes(3);
+    expect(second.complete).toHaveBeenCalledTimes(4);
     expect(inputField<OutlineItem>(promptText(second.complete.mock.calls[0]![0]), "大纲项").id).toBe("s3");
+  });
+
+  it("fills the Chinese subtitle from understanding, including on cache hits", async () => {
+    const { pipeline, complete } = setup();
+    const cover = { ...outline, items: [outline.items[0]!] };
+    const chinese = { ...understanding, oneLiner: "用缓存测量减少重复计算。" };
+    const generate = (oneLiner: string) => pipeline.generateSlides({ ...chinese, oneLiner }, cover, "zh");
+    expect((await generate(chinese.oneLiner))[0]?.slots.subtitle).toBe(chinese.oneLiner);
+    expect((await generate("𠀀".repeat(125)))[0]?.slots.subtitle).toBe("𠀀".repeat(119) + "…");
+    expect(complete).toHaveBeenCalledTimes(1);
+    expect((await pipeline.generateSlides(chinese, cover, "en"))[0]?.slots.subtitle).toBeUndefined();
+  });
+
+  it("accepts the ideal MLM fixture and drops only unsupported sentences without a retry", async () => {
+    const unsupported = "模型用了 80.5% 的掩码比例。";
+    const complete = vi.fn<AnnaHost["llm"]["complete"]>()
+      .mockResolvedValueOnce(reply(JSON.stringify(fixtureSlide(outline.items[0]!))))
+      .mockResolvedValueOnce(reply(JSON.stringify(idealMlm)))
+      .mockResolvedValueOnce(reply(JSON.stringify(fixtureSlide(outline.items[0]!))))
+      .mockResolvedValueOnce(reply(JSON.stringify({ ...idealMlm, notes: unsupported + idealMlm.notes + "另做了二十五项实验。" })));
+    const sources = ["e2-1", "e4-14", "e4-15"];
+    const mlmOutline = { ...outline, items: [outline.items[0]!, outline.items[2]!] };
+    const pipeline = createPipeline(bert as unknown as Paper, {
+      host: fakeHost(complete),
+      retriever: { search: async () => [...sources, "e1-2"].map((evidenceId) => ({ evidenceId, score: 1 })) },
+    });
+    for (let run = 0; run < 2; run++) {
+      expect((await pipeline.generateSlides(understanding, mlmOutline, "zh"))[1]).toEqual(idealMlm);
+    }
+    expect(complete).toHaveBeenCalledTimes(4);
+    expect(pipeline.getLlmCalls().at(-1)).toMatchObject({ ok: true, attempt: 1, normalizations: [
+      expect.stringContaining("80.5%"), expect.stringContaining("二十五"),
+    ] });
   });
 
   it("accepts an edited outline and caches compression separately", async () => {
