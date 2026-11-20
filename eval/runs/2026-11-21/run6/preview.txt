@@ -1,0 +1,831 @@
+P
+Paper2Slides
+论文汇报工作台
+Anna 工作区
+累计额度 7.984
+调用日志
+中文
+EN
+✓
+论文 PDF
+✓
+确认大纲
+3
+预览与导出
+← 返回大纲
+bert.pdf
+导出 PPTX
+幻灯片
+BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding
+
+BERT 用掩码语言模型与下一句预测进行深度双向预训练，微调后在 11 项 NLP 任务上取得 SOTA。
+
+Jacob Devlin, Ming-Wei Chang, Kenton Lee, Kristina Toutanova
+
+01
+✅ 0
+⚠️ 0
+❌ 0
+单向预训练限制上下文，双向条件导致平凡预测
+单向预训练的局限
+GPT 等 left-to-right 架构中每个词元只能注意先前词元，丢失右侧上下文。 [1]
+对问答这类词元级任务，缺少双向上下文可能非常有害。 [2]
+该限制也使句级任务上的表示能力次优。 [3]
+双向条件为何难训练
+标准条件语言模型只能单向训练，因双向条件会让词间接看到自身。 [4]
+多层上下文下模型可平凡预测目标词，训练信号失效。 [5]
+双向模型理论上更强，但需绕开这一平凡预测问题。 解读 [6]
+p.1, p.3, p.4
+02
+✅ 1
+⚠️ 5
+❌ 0
+MLM 让 BERT 在 self-attention 中同时看左右上下文
+MLM 随机遮盖 15% 词元并预测原词，使表示融合左右上下文。 [1]
+为缓解预训练与微调输入不一致，被选位置 80% 换 [MASK]、10% 换随机词、10% 保留原词。 [2]
+BERT 用双向 self-attention，而 GPT 只能受限地单向看上下文。 [3]
+要点
+MLM 通过遮盖预测让深度 Transformer 预训练时同时利用左右上下文。 [4]
+p.2, p.3, p.4
+03
+✅ 4
+⚠️ 0
+❌ 0
+BERT 输入由词元、句段与位置三类 embedding 相加
+每个词元的输入表示由词元、句段与位置三类嵌入相加得到。 [1]
+序列首词元固定为 [CLS]，其最终隐状态作为整句的聚合表示用于分类。 [2]
+句对用 [SEP] 分隔，并为每个词元加可学习的句段嵌入标明属于句 A 还是句 B。 [3]
+要点
+BERT 输入 = 词元嵌入 + 句段嵌入 + 位置嵌入（Figure 2）。 [4]
+Figure 2：BERT 输入表示，输入嵌入为词元、分割与位置嵌入之和。 [5]
+p.4, p.5
+04
+✅ 4
+⚠️ 1
+❌ 0
+NSP 用 [CLS] 判断句子对是否相邻
+NSP 把句子对二分为 IsNext 与 NotNext，各占 50%，用于训练句子关系理解。 [1]
+QA、NLI 等任务依赖两句话的关系，语言建模本身无法直接捕捉。 [2]
+句对拼成单序列，[SEP] 分隔，[CLS] 的最终隐状态 C 用于预测是否相邻。 [3]
+去掉 NSP 会显著损害 QNLI、MNLI、SQuAD 1.1 上的表现。 [4]
+要点
+NSP 以 50/50 构造正负句对，靠 [CLS] 表示补上句子级关系建模。 [5]
+p.4, p.8
+05
+✅ 4
+⚠️ 0
+❌ 1
+预训练与微调共用同一架构，仅换输出层
+预训练与微调除输出层外架构相同，用同一预训练参数初始化不同下游任务。 [1]
+微调只新增分类层权重，[CLS] 表示供分类任务，token 表示供序列标注与问答。 [2]
+要点
+统一架构使微调只需换输入输出，全部参数一起更新。 [3]
+Figure 1 展示预训练与微调共用同一架构，仅输出层不同。 [4]
+p.3, p.5
+06
+✅ 2
+⚠️ 2
+❌ 0
+BERT 在 GLUE、SQuAD、SWAG 上刷新 SOTA
+任务	此前最佳/OpenAI GPT	BERTLARGE 提升
+GLUE 官方榜	OpenAI GPT 72.8	BERTLARGE 80.5 [1]
+MNLI 准确率	此前 SOTA 80.6/80.1	BERTLARGE 86.7/85.9 [2]
+SQuAD v1.1 Test F1	此前最佳 +1.5 分	BERTLARGE 93.2 [3]
+SQuAD v2.0 Test F1	此前最佳系统	BERTLARGE 83.1，+5.1 F1 [4]
+SWAG 准确率	OpenAI GPT 86.3	BERTLARGE 86.6 [5]
+p.1, p.6, p.7
+07
+✅ 2
+⚠️ 3
+❌ 0
+去掉 NSP 与改用单向 LM 使 SQuAD F1 大幅下降
+设置	QNLI	MRPC	SQuAD
+BERTBASE	88.4	86.7	88.5 [1]
+No NSP	84.9	86.5	87.9 [2]
+LTR & No NSP	84.3	77.5	77.8 [3]
++ BiLSTM	84.1	75.7	84.9 [4]
+p.8
+08
+✅ 4
+⚠️ 0
+❌ 0
+更大模型持续提升，微调与 feature-based 均有效
+模型	CoNLL-2003 NER F1	用法
+BERTLARGE	96.6	fine-tuning [1]
+BERTBASE	96.4	fine-tuning [2]
+BERTBASE	96.1	feature-based（拼接顶层四层） [3]
+BERTBASE	91.0	feature-based（仅词嵌入） [4]
+p.9
+09
+✅ 4
+⚠️ 0
+❌ 0
+MLM 的 [MASK] 不匹配与小数据微调不稳定
+预训练用 [MASK] 填空，微调时该词元不出现，造成两阶段输入不匹配；作者以 80% [MASK]、10% 随机词、10% 原词缓解。 [1]
+BERTLARGE 在小数据集上微调有时不稳定，需多次随机重启并在 Dev 上选最优模型。 [2]
+[CLS] 向量 C 未经微调不是有意义的句子表示，因其训练目标是 NSP。 [3]
+要点
+MLM 的 [MASK] 不匹配与小数据微调不稳定是 BERT 的主要局限。 [4]
+p.4, p.6
+10
+✅ 2
+⚠️ 2
+❌ 0
+幻灯片预览
+01 / 10
+BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding
+
+BERT 用掩码语言模型与下一句预测进行深度双向预训练，微调后在 11 项 NLP 任务上取得 SOTA。
+
+Jacob Devlin, Ming-Wei Chang, Kenton Lee, Kristina Toutanova
+
+引用核验
+✅ 0
+⚠️ 0
+❌ 0
+全部未通过 · 1
+原文 PDF
+←
+1 / 16
+→
+Proceedings of NAACL-HLT 2019
+, pages 4171–4186
+
+
+Minneapolis, Minnesota, June 2 - June 7, 2019.
+ 
+c
+©
+2019 Association for Computational Linguistics
+
+
+4171
+BERT: Pre-training of Deep Bidirectional Transformers for
+
+
+Language Understanding
+
+
+Jacob Devlin
+ 
+Ming-Wei Chang
+ 
+Kenton Lee
+ 
+Kristina Toutanova
+
+
+Google AI Language
+
+
+{
+jacobdevlin,mingweichang,kentonl,kristout
+}
+@google.com
+
+
+Abstract
+
+
+We
+ 
+introduce
+ 
+a
+ 
+new
+ 
+language
+ 
+representa-
+
+
+tion model called
+ 
+BERT
+, which stands for
+
+
+B
+idirectional
+ 
+E
+ncoder
+ 
+R
+epresentations from
+
+
+T
+ransformers.
+ 
+Unlike recent language repre-
+
+
+sentation models (Peters et al., 2018a; Rad-
+
+
+ford et al., 2018), BERT is designed to pre-
+
+
+train deep bidirectional representations from
+
+
+unlabeled text by jointly conditioning on both
+
+
+left and right context in all layers.
+ 
+As a re-
+
+
+sult, the pre-trained BERT model can be ﬁne-
+
+
+tuned with just one additional output layer
+
+
+to create state-of-the-art models for a wide
+
+
+range of tasks, such as question answering and
+
+
+language inference, without substantial task-
+
+
+speciﬁc architecture modiﬁcations.
+
+
+BERT is conceptually simple and empirically
+
+
+powerful.
+ 
+It obtains new state-of-the-art re-
+
+
+sults on eleven natural language processing
+
+
+tasks, including pushing the GLUE score to
+
+
+80.5% (7.7% point absolute improvement),
+
+
+MultiNLI accuracy to 86.7% (4.6% absolute
+
+
+improvement), SQuAD v1.1 question answer-
+
+
+ing Test F1 to 93.2 (1.5 point absolute im-
+
+
+provement) and SQuAD v2.0 Test F1 to 83.1
+
+
+(5.1 point absolute improvement).
+
+
+1
+ 
+Introduction
+
+
+Language model pre-training has been shown to
+
+
+be effective for improving many natural language
+
+
+processing tasks (Dai and Le, 2015; Peters et al.,
+
+
+2018a; Radford et al., 2018; Howard and Ruder,
+
+
+2018). These include sentence-level tasks such as
+
+
+natural language inference (Bowman et al., 2015;
+
+
+Williams et al., 2018) and paraphrasing (Dolan
+
+
+and Brockett, 2005), which aim to predict the re-
+
+
+lationships between sentences by analyzing them
+
+
+holistically, as well as token-level tasks such as
+
+
+named entity recognition and question answering,
+
+
+where models are required to produce ﬁne-grained
+
+
+output at the token level (Tjong Kim Sang and
+
+
+De Meulder, 2003; Rajpurkar et al., 2016).
+
+
+There are two existing strategies for apply-
+
+
+ing pre-trained language representations to down-
+
+
+stream tasks:
+ 
+feature-based
+ 
+and
+ 
+ﬁne-tuning
+. The
+
+
+feature-based approach, such as ELMo (Peters
+
+
+et al., 2018a), uses task-speciﬁc architectures that
+
+
+include the pre-trained representations as addi-
+
+
+tional features. The ﬁne-tuning approach, such as
+
+
+the Generative Pre-trained Transformer (OpenAI
+
+
+GPT) (Radford et al., 2018), introduces minimal
+
+
+task-speciﬁc parameters,
+ 
+and is trained on the
+
+
+downstream tasks by simply ﬁne-tuning
+ 
+all
+ 
+pre-
+
+
+trained parameters. The two approaches share the
+
+
+same objective function during pre-training, where
+
+
+they use unidirectional language models to learn
+
+
+general language representations.
+
+
+We argue that current techniques restrict the
+
+
+power of the pre-trained representations, espe-
+
+
+cially for the ﬁne-tuning approaches.
+ 
+The ma-
+
+
+jor limitation is that standard language models are
+
+
+unidirectional, and this limits the choice of archi-
+
+
+tectures that can be used during pre-training. For
+
+
+example, in OpenAI GPT, the authors use a left-to-
+
+
+right architecture, where every token can only at-
+
+
+tend to previous tokens in the self-attention layers
+
+
+of the Transformer (Vaswani et al., 2017). Such re-
+
+
+strictions are sub-optimal for sentence-level tasks,
+
+
+and could be very harmful when applying ﬁne-
+
+
+tuning based approaches to token-level tasks such
+
+
+as question answering, where it is crucial to incor-
+
+
+porate context from both directions.
+
+
+In this paper, we improve the ﬁne-tuning based
+
+
+approaches
+ 
+by
+ 
+proposing
+ 
+BERT:
+ 
+B
+idirectional
+
+
+E
+ncoder
+ 
+R
+epresentations
+ 
+from
+ 
+T
+ransformers.
+
+
+BERT alleviates the previously mentioned unidi-
+
+
+rectionality constraint by using a “masked lan-
+
+
+guage model” (MLM) pre-training objective, in-
+
+
+spired by the Cloze task (Taylor, 1953).
+ 
+The
+
+
+masked language model randomly masks some of
+
+
+the tokens from the input, and the objective is to
+
+
+predict the original vocabulary id of the masked
+4172
+word based only on its context.
+ 
+Unlike left-to-
+
+
+right language model pre-training, the MLM ob-
+
+
+jective enables the representation to fuse the left
+
+
+and the right context, which allows us to pre-
+
+
+train a deep bidirectional Transformer.
+ 
+In addi-
+
+
+tion to the masked language model, we also use
+
+
+a “next sentence prediction” task that jointly pre-
+
+
+trains text-pair representations. The contributions
+
+
+of our paper are as follows:
+
+
+• We demonstrate the importance of bidirectional
+
+
+pre-training for language representations.
+ 
+Un-
+
+
+like Radford et al. (2018), which uses unidirec-
+
+
+tional language models for pre-training, BERT
+
+
+uses masked language models to enable pre-
+
+
+trained deep bidirectional representations. This
+
+
+is also in contrast to Peters et al. (2018a), which
+
+
+uses a shallow concatenation of independently
+
+
+trained left-to-right and right-to-left LMs.
+
+
+• We show that pre-trained representations reduce
+
+
+the need for many heavily-engineered task-
+
+
+speciﬁc architectures.
+ 
+BERT is the ﬁrst ﬁne-
+
+
+tuning based representation model that achieves
+
+
+state-of-the-art performance on a large suite
+
+
+of sentence-level
+ 
+and
+ 
+token-level tasks, outper-
+
+
+forming many task-speciﬁc architectures.
+
+
+• BERT advances the state of the art for eleven
+
+
+NLP tasks.
+ 
+The code and pre-trained mod-
+
+
+els are available at
+ 
+https://github.com/
+
+
+google-research/bert
+.
+
+
+2
+ 
+Related Work
+
+
+There is a long history of pre-training general lan-
+
+
+guage representations, and we brieﬂy review the
+
+
+most widely-used approaches in this section.
+
+
+2.1
+ 
+Unsupervised Feature-based Approaches
+
+
+Learning
+ 
+widely
+ 
+applicable
+ 
+representations
+ 
+of
+
+
+words has been an active area of research for
+
+
+decades, including non-neural (Brown et al., 1992;
+
+
+Ando and Zhang, 2005; Blitzer et al., 2006) and
+
+
+neural (Mikolov et al., 2013; Pennington et al.,
+
+
+2014) methods.
+ 
+Pre-trained word embeddings
+
+
+are an integral part of modern NLP systems, of-
+
+
+fering signiﬁcant improvements over embeddings
+
+
+learned from scratch (Turian et al., 2010). To pre-
+
+
+train word embedding vectors, left-to-right lan-
+
+
+guage modeling objectives have been used (Mnih
+
+
+and Hinton, 2009), as well as objectives to dis-
+
+
+criminate correct from incorrect words in left and
+
+
+right context (Mikolov et al., 2013).
+
+
+These approaches have been generalized to
+
+
+coarser granularities,
+ 
+such as sentence embed-
+
+
+dings (Kiros et al., 2015; Logeswaran and Lee,
+
+
+2018) or paragraph embeddings (Le and Mikolov,
+
+
+2014).
+ 
+To train sentence representations, prior
+
+
+work has used objectives to rank candidate next
+
+
+sentences (Jernite et al., 2017; Logeswaran and
+
+
+Lee, 2018), left-to-right generation of next sen-
+
+
+tence words given a representation of the previous
+
+
+sentence (Kiros et al., 2015), or denoising auto-
+
+
+encoder derived objectives (Hill et al., 2016).
+
+
+ELMo and its predecessor (Peters et al., 2017,
+
+
+2018a) generalize traditional word embedding re-
+
+
+search along a different dimension. They extract
+
+
+context-sensitive
+ 
+features from a left-to-right and a
+
+
+right-to-left language model. The contextual rep-
+
+
+resentation of each token is the concatenation of
+
+
+the left-to-right and right-to-left representations.
+
+
+When integrating contextual word embeddings
+
+
+with existing task-speciﬁc architectures, ELMo
+
+
+advances the state of the art for several major NLP
+
+
+benchmarks (Peters et al., 2018a) including ques-
+
+
+tion answering (Rajpurkar et al., 2016), sentiment
+
+
+analysis (Socher et al., 2013), and named entity
+
+
+recognition (Tjong Kim Sang and De Meulder,
+
+
+2003). Melamud et al. (2016) proposed learning
+
+
+contextual representations through a task to pre-
+
+
+dict a single word from both left and right context
+
+
+using LSTMs.
+ 
+Similar to ELMo, their model is
+
+
+feature-based and not deeply bidirectional. Fedus
+
+
+et al. (2018) shows that the cloze task can be used
+
+
+to improve the robustness of text generation mod-
+
+
+els.
+
+
+2.2
+ 
+Unsupervised Fine-tuning Approaches
+
+
+As with the feature-based approaches, the ﬁrst
+
+
+works in this direction only pre-trained word em-
+
+
+bedding parameters from unlabeled text
+ 
+(Col-
+
+
+lobert and Weston, 2008).
+
+
+More recently, sentence or document encoders
+
+
+which produce contextual token representations
+
+
+have been pre-trained from unlabeled text and
+
+
+ﬁne-tuned for a supervised downstream task (Dai
+
+
+and Le, 2015; Howard and Ruder, 2018; Radford
+
+
+et al., 2018). The advantage of these approaches
+
+
+is that few parameters need to be learned from
+
+
+scratch.
+ 
+At least partly due to this advantage,
+
+
+OpenAI GPT (Radford et al., 2018) achieved pre-
+
+
+viously state-of-the-art results on many sentence-
+
+
+level tasks from the GLUE benchmark (Wang
+
+
+et al., 2018a).
+ 
+Left-to-right language model-
