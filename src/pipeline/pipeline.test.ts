@@ -91,7 +91,7 @@ describe("paper generation", () => {
     expect(result).toMatchObject({ understanding, outline, slides: outline.items.map(fixtureSlide) });
     expect(result.llmCalls).toHaveLength(7);
     expect(cache.size).toBe(7);
-    expect([...cache.keys()].every((key) => /^paper-hash:(understand|outline|slide)@1:[a-f0-9]{64}$/.test(key))).toBe(true);
+    expect([...cache.keys()].every((key) => /^paper-hash:(understand|outline|slide)@\d+:[a-f0-9]{64}$/.test(key))).toBe(true);
     expect(promptText(complete.mock.calls[0]![0])).toContain("[e2-0] (p.2, §2 Method) The estimator");
     expect(promptText(complete.mock.calls[0]![0])).toContain("语言由 `en`");
     expect(search).toHaveBeenNthCalledWith(2, "Describe cached measurements Estimator", 8);

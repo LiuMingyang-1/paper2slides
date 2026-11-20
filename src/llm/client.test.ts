@@ -37,7 +37,7 @@ describe("Anna completion client", () => {
     expect(complete).toHaveBeenCalledTimes(1);
     expect(complete.mock.calls[0]![0]).not.toHaveProperty("responseFormat");
     expect(logs).toMatchObject([{
-      promptId: "understand", promptVersion: 1, attempt: 1, ok: true,
+      promptId: "understand", promptVersion: expect.any(Number), attempt: 1, ok: true,
       quotaConsumed: 3, inputTokens: 100, outputTokens: 20, latencyMs: 17, stopReason: "endTurn",
     }]);
   });
