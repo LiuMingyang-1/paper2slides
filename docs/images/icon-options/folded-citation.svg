@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="tile" x2=".82" y2="1">
+      <stop stop-color="#0A84FF"/>
+      <stop offset=".6" stop-color="#0071E3"/>
+      <stop offset="1" stop-color="#0060DF"/>
+    </linearGradient>
+    <linearGradient id="paper" x2="0" y2="1">
+      <stop stop-color="#E5F2FF"/>
+      <stop offset="1" stop-color="#A0CAFF"/>
+    </linearGradient>
+    <linearGradient id="slide" x2="0" y2="1">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#EAF4FF"/>
+    </linearGradient>
+  </defs>
+  <path fill="url(#tile)" stroke="#FFF" stroke-opacity=".2"
+    d="M43 3h42c28 0 40 12 40 40v42c0 28-12 40-40 40H43C15 125 3 113 3 85V43C3 15 15 3 43 3Z"/>
+  <path fill="url(#paper)" d="M36 22h31l17 17v31H27V31a9 9 0 0 1 9-9Z"/>
+  <path fill="#79B5FF" d="M67 22v12a5 5 0 0 0 5 5h12Z"/>
+  <path d="M40 39h16" stroke="#2877CC" stroke-width="5" stroke-linecap="round"/>
+  <rect x="26" y="56" width="76" height="43" rx="9" fill="#003C9C" opacity=".25"/>
+  <rect x="26" y="51" width="76" height="43" rx="9" fill="url(#slide)"/>
+  <path d="M44 68h14m-14 10h14" fill="none" stroke="#5A9AE9" stroke-width="5" stroke-linecap="round"/>
+  <path fill="#0060DF" d="M72 51h19v30l-9.5-5-9.5 5Z"/>
+  <path d="M78 61h7" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/>
+</svg>
