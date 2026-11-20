@@ -1,0 +1,94 @@
+[
+ {
+  "id": "s1",
+  "outlineId": "s1",
+  "layout": "title",
+  "slots": {
+   "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+   "authors": "Jacob Devlin, Ming-Wei Chang, Kenton Lee, Kristina Toutanova"
+  }
+ },
+ {
+  "id": "s2",
+  "outlineId": "s2",
+  "layout": "bullets",
+  "slots": {
+   "title": "研究问题：单向语言模型对双向上下文任务的限制",
+   "bullets": [
+    {
+     "text": "标准语言模型是单向的，限制了预训练可用的架构选择",
+     "kind": "fact",
+     "evidenceIds": [
+      "e1-5"
+     ]
+    },
+    {
+     "text": "OpenAI GPT 采用从左到右架构，每个 token 在自注意力中只能关注之前的 token",
+     "kind": "fact",
+     "evidenceIds": [
+      "e1-5"
+     ]
+    },
+    {
+     "text": "这种限制对句子级任务次优，对问答等 token 级任务可能非常有害",
+     "kind": "fact",
+     "evidenceIds": [
+      "e1-5"
+     ]
+    },
+    {
+     "text": "问答等任务关键在于融合双向上下文，单向条件建模难以满足",
+     "kind": "summary",
+     "evidenceIds": [
+      "e1-5",
+      "e4-12"
+     ]
+    }
+   ]
+  }
+ },
+ {
+  "id": "s3",
+  "outlineId": "s3",
+  "layout": "bullets_figure",
+  "figureId": "fig2",
+  "slots": {
+   "title": "方法：双向 Transformer 编码器与 MLM/NSP 预训练任务",
+   "bullets": [
+    {
+     "text": "多层双向 Transformer 编码器，采用双向自注意力",
+     "kind": "fact",
+     "evidenceIds": [
+      "e3-31",
+      "e3-44"
+     ]
+    },
+    {
+     "text": "MLM 随机掩码 15% WordPiece token，80% 换 [MASK]、10% 换随机词、10% 保留",
+     "kind": "fact",
+     "evidenceIds": [
+      "e4-14",
+      "e4-15"
+     ]
+    },
+    {
+     "text": "NSP 任务中 50% 为真实下一句（IsNext），50% 为随机句（NotNext）",
+     "kind": "fact",
+     "evidenceIds": [
+      "e4-16"
+     ]
+    }
+   ],
+   "caption": [
+    {
+     "text": "BERT 输入表示：token、segment 与 position 嵌入之和",
+     "kind": "fact",
+     "evidenceIds": [
+      "e5-21"
+     ]
+    }
+   ]
+  },
+  "notes": "下一页进入预训练数据与微调设置。"
+ }
+]

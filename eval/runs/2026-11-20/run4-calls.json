@@ -1,0 +1,72 @@
+调用日志
+×
+
+4 次调用记录
+
+[
+  {
+    "promptId": "understand",
+    "promptVersion": 3,
+    "startedAt": "2026-11-20T09:42:00.710Z",
+    "inputTokens": 16010,
+    "outputTokens": 1780,
+    "quotaConsumed": 2.362068965517241,
+    "latencyMs": 26647,
+    "stopReason": "endTurn",
+    "ok": true,
+    "attempt": 1,
+    "normalizations": [
+      "丢弃重复键 modules[0].kind（保留首个值）",
+      "丢弃重复键 modules[1].kind（保留首个值）",
+      "丢弃重复键 modules[2].kind（保留首个值）",
+      "丢弃重复键 modules[3].kind（保留首个值）",
+      "丢弃重复键 modules[4].kind（保留首个值）",
+      "丢弃重复键 modules[5].kind（保留首个值）",
+      "合并模块 modules[5] 至 experiments",
+      "截断 modules[2].points：6 项保留前 4 项"
+    ],
+    "rawOutput": "{\"title\":\"BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding\",\"oneLiner\":\"BERT 通过掩码语言模型与下一句预测进行深度双向预训练，微调后在多项 NLP 任务取得最先进结果。\",\"modules\":[{\"kind\":\"problem\",\"points\":[{\"text\":\"现有预训练语言表示的两种应用策略（feature-based 如 ELMo、fine-tuning 如 OpenAI GPT）在预训练时都使用单向语言模型，限制了表示能力。\",\"kind\":\"fact\",\"evidenceIds\":[\"e1-4\"]},{\"text\":\"标准语言模型是单向的，OpenAI GPT 中每个 token 在自注意力层只能关注其左侧上下文，这对句子级任务次优，对需要双向上下文的 token 级任务（如问答）可能有害。\",\"kind\":\"fact\",\"evidenceIds\":[\"e1-5\"]},{\"text\":\"标准条件语言模型只能从左到右或从右到左训练，因为双向条件会让每个词间接“看到自己”，导致模型在多层上下文中平凡地预测目标词。\",\"kind\":\"fact\",\"evidenceIds\":[\"e4-12\"]}],\"kind\":\"method\"},{\"kind\":\"method\",\"points\":[{\"text\":\"BERT 使用掩码语言模型（MLM）预训练目标，随机掩码部分输入 token 并基于上下文预测其原始词表 id，从而融合左右上下文，实现深度双向 Transformer 预训练。\",\"kind\":\"fact\",\"evidenceIds\":[\"e1-6\",\"e2-1\"]},{\"text\":\"MLM 实验中随机掩码每个序列 15% 的 WordPiece token；被选中的位置以 80% 概率替换为 [MASK]、10% 概率替换为随机 token、10% 概率保持不变，以缓解预训练与微调的不匹配。\",\"kind\":\"fact\",\"evidenceIds\":[\"e4-14\",\"e4-15\"]},{\"text\":\"除 MLM 外，BERT 还使用下一句预测（NSP）任务联合预训练文本对表示：50% 情况下 B 是 A 的真实下一句（IsNext），50% 为语料中的随机句子（NotNext）。\",\"kind\":\"fact\",\"evidenceIds\":[\"e2-1\",\"e4-16\"]},{\"text\":\"BERT 架构为多层双向 Transformer 编码器，BERT_BASE 为 L=12, H=768, A=12, 110M 参数，BERT_LARGE 为 L=24, H=1024, A=16, 340M 参数；使用 30,000 词表的 WordPiece embeddings，输入为 token、segment、position embeddings 之和。\",\"kind\":\"fact\",\"evidenceIds\":[\"e3-39\",\"e3-41\",\"e4-2\",\"e4-9\"]}],\"kind\":\"method\"},{\"kind\":\"experiments\",\"points\":[{\"text\":\"在 GLUE 上，BERT_BASE 和 BERT_LARGE 分别比先前最先进系统平均提升 4.5% 和 7.0%；MNLI 上 BERT 获得 4.6% 绝对准确率提升，官方 GLUE 榜 BERT_LARGE 得分 80.5，OpenAI GPT 为 72.8。\",\"kind\":\"fact\",\"evidenceIds\":[\"e6-11\",\"e6-13\"]},{\"text\":\"SQuAD v1.1 上，BERT_LARGE (Ens.+TriviaQA) Test EM 87.4、F1 93.2，比顶级榜单系统高 +1.5 F1（集成）与 +1.3 F1（单系统）；不使用 TriviaQA 微调仅损失 0.1-0.4 F1。\",\"kind\":\"fact\",\"evidenceIds\":[\"e7-11\",\"e6-37\",\"e7-23\"]},{\"text\":\"SQuAD v2.0 上 BERT_LARGE 单系统 Test EM 80.0、F1 83.1，比此前最佳系统提升 +5.1 F1；SWAG 上 BERT_LARGE Test 准确率 86.3，超 ESIM+ELMo +27.1%、超 OpenAI GPT 8.3%。\",\"kind\":\"fact\",\"evidenceIds\":[\"e7-20\",\"e7-44\",\"e7-48\"]},{\"text\":\"摘要总结 BERT 在十一个 NLP 任务上取得新最先进结果：GLUE 80.5%（7.7% 绝对提升）、MultiNLI 86.7%（4.6% 绝对提升）、SQuAD v1.1 Test F1 93.2（1.5 提升）、SQuAD v2.0 Test F1 83.1（5.1 提升）。\",\"kind\":\"fact\",\"evidenceIds\":[\"e1-2\"]}],\"kind\":\"experiments\"},{\"kind\":\"ablation\",\"points\":[{\"text\":\"移除 NSP 显著损害 QNLI、MNLI 和 SQuAD 1.1 性能；LTR & No NSP（类似 OpenAI GPT 的左到右模型）在所有任务上都差于 MLM 模型，MRPC 和 SQuAD 上大幅下降。\",\"kind\":\"fact\",\"evidenceIds\":[\"e8-10\"]},{\"text\":\"在 LTR 模型上加随机初始化 BiLSTM 显著改善 SQuAD 结果但仍远差于预训练双向模型，且在 GLUE 任务上有损性能。\",\"kind\":\"fact\",\"evidenceIds\":[\"e8-11\",\"e8-12\"]},{\"text\":\"模型规模消融显示更大模型在所有数据集上带来严格准确率提升（即使 MRPC 仅 3,600 标注样本），BERT_BASE 110M、BERT_LARGE 340M 参数显著超过文献中最大 Transformer 规模。\",\"kind\":\"fact\",\"evidenceIds\":[\"e8-16\",\"e8-20\"]},{\"text\":\"CoNLL-2003 NER 上，feature-based 方法拼接顶部四层隐藏层表示达 Dev F1 96.1，仅比全模型微调低 0.3 F1，表明 BERT 对微调与特征法均有效。\",\"kind\":\"fact\",\"evidenceIds\":[\"e9-13\",\"e9-18\"]}],\"kind\":\"ablation\"},{\"kind\":\"theory\",\"points\":[{\"text\":\"BERT 是首个基于微调的表示模型，在大量句子级与 token 级任务上达到最先进性能，超越许多任务专用架构，减少对大量人工设计任务专用架构的需求。\",\"kind\":\"fact\",\"evidenceIds\":[\"e2-3\"]},{\"text\":\"与 ELMo 浅层拼接独立训练的左到右和右到左 LM 不同，BERT 用掩码语言模型实现深度双向表示；与 OpenAI GPT 的单向 LM 预训练形成对比。\",\"kind\":\"fact\",\"evidenceIds\":[\"e2-2\"]},{\"text\":\"BERT 的统一架构使预训练与最终下游架构差异极小，同一预训练模型参数可初始化不同下游任务，微调时所有参数端到端更新。\",\"kind\":\"fact\",\"evidenceIds\":[\"e3-29\",\"e3-30\",\"e5-26\"]}],\"kind\":\"theory\"},{\"kind\":\"experiments\",\"points\":[{\"text\":\"微调成本相对低廉：所有结果可在单个 Cloud TPU 上至多 1 小时或 GPU 上数小时内复现；SQuAD 模型约 30 分钟单 Cloud TPU 即可达到 Dev F1 91.0%。\",\"kind\":\"fact\",\"evidenceIds\":[\"e5-28\",\"e5-43\"]},{\"text\":\"预训练语料为 BooksCorpus（800M words）与 English Wikipedia（2,500M words），需使用文档级语料而非打乱的句子级语料以提取长连续序列。\",\"kind\":\"fact\",\"evidenceIds\":[\"e5-23\"]}],\"kind\":\"experiments\"}]}"
+  },
+  {
+    "promptId": "outline",
+    "promptVersion": 2,
+    "startedAt": "2026-11-20T09:42:28.844Z",
+    "inputTokens": 2397,
+    "outputTokens": 529,
+    "quotaConsumed": 0.4172413793103448,
+    "latencyMs": 6121,
+    "stopReason": "endTurn",
+    "ok": true,
+    "attempt": 1,
+    "rawOutput": "{\"emphasis\":\"balanced\",\"items\":[{\"id\":\"s1\",\"title\":\"BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding\",\"modules\":[],\"intent\":\"介绍所读论文\"},{\"id\":\"s2\",\"title\":\"单向预训练限制上下文，双向条件导致平凡预测\",\"modules\":[\"problem\"],\"intent\":\"解释 left-to-right 预训练丢失哪些上下文及其对问答等 token 级任务的影响\"},{\"id\":\"s3\",\"title\":\"MLM 让 BERT 同时看左右上下文实现深度双向预训练\",\"modules\":[\"method\"],\"intent\":\"说明掩码语言模型如何通过预测被掩码 token 融合左右上下文\"},{\"id\":\"s4\",\"title\":\"15% 掩码与 80/10/10 替换策略缓解预训练微调不匹配\",\"modules\":[\"method\"],\"intent\":\"解释 MLM 掩码比例与 [MASK]/随机/原词替换策略的设计动机\"},{\"id\":\"s5\",\"title\":\"NSP 以 50% IsNext/NotNext 联合预训练文本对表示\",\"modules\":[\"method\"],\"intent\":\"说明下一句预测任务如何构造正负样本对并训练句子级关系\"},{\"id\":\"s6\",\"title\":\"BERT 输入为词元、句段与位置嵌入之和\",\"modules\":[\"method\"],\"intent\":\"解释 BERT 输入表示如何组合 token、segment、position embeddings\",\"figureId\":\"fig2\"},{\"id\":\"s7\",\"title\":\"预训练与微调共用同一 Transformer 编码器架构\",\"modules\":[\"method\",\"theory\"],\"intent\":\"说明 BERT 如何用统一架构初始化不同下游任务并端到端微调\",\"figureId\":\"fig1\"},{\"id\":\"s8\",\"title\":\"BERT 在 GLUE、SQuAD、SWAG 上刷新最先进结果\",\"modules\":[\"experiments\"],\"intent\":\"汇总 BERT 在 GLUE、SQuAD v1.1/v2.0、SWAG 上相对先前系统的提升\"},{\"id\":\"s9\",\"title\":\"移除 NSP 与左到右模型显著损害下游性能\",\"modules\":[\"ablation\"],\"intent\":\"解释消融 NSP、改用 LTR 及加 BiLSTM 对 QNLI、MNLI、SQuAD 的影响\"},{\"id\":\"s10\",\"title\":\"更大模型与 feature-based 四层拼接均验证 BERT 表示有效\",\"modules\":[\"ablation\"],\"intent\":\"说明模型规模扩大与 CoNLL-2003 NER 上 feature-based 方法的表现\"}]}"
+  },
+  {
+    "promptId": "slide",
+    "promptVersion": 2,
+    "startedAt": "2026-11-20T09:42:40.787Z",
+    "inputTokens": 2801,
+    "outputTokens": 108,
+    "quotaConsumed": 0.3637931034482758,
+    "latencyMs": 15382,
+    "stopReason": "endTurn",
+    "ok": false,
+    "attempt": 1,
+    "error": "slots.title：最多 60 个字符",
+    "rawOutput": "{\"id\":\"s1\",\"outlineId\":\"s1\",\"layout\":\"title\",\"slots\":{\"title\":\"BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding\",\"authors\":\"Jacob Devlin, Ming-Wei Chang, Kenton Lee, Kristina Toutanova\"},\"notes\":\"今天要读的是 BERT 这篇论文，作者来自 Google AI Language。它提出双向 Transformer 的预训练语言表示模型，之后只需加一层输出就能微调到多种任务上，是 NLP 领域的重要工作。\"}"
+  },
+  {
+    "promptId": "slide",
+    "promptVersion": 2,
+    "startedAt": "2026-11-20T09:42:56.966Z",
+    "inputTokens": 2842,
+    "outputTokens": 104,
+    "quotaConsumed": 0.36810344827586206,
+    "latencyMs": 14506,
+    "stopReason": "endTurn",
+    "ok": false,
+    "attempt": 2,
+    "error": "slots.title：最多 60 个字符",
+    "rawOutput": "{\"id\":\"s1\",\"outlineId\":\"s1\",\"layout\":\"title\",\"slots\":{\"title\":\"BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding\",\"authors\":\"Jacob Devlin, Ming-Wei Chang, Kenton Lee, Kristina Toutanova\"},\"notes\":\"这是本次组会要读的论文，BERT 由 Devlin 等人提出，提出用双向 Transformer 做语言表示的预训练。接下来我们按论文结构依次介绍其动机、方法与实验。\"}"
+  }
+]
+下载 JSON

@@ -2,7 +2,7 @@
 
 上传论文 PDF，生成**每句话有出处、每个数字经过核验**的组会汇报 PPT。一个运行在 [Anna](https://staging.anna.partners) 平台上的 Anna App。
 
-> 开发中。设计文档：[docs/DESIGN.md](docs/DESIGN.md)；任务拆解：[docs/TASKS.md](docs/TASKS.md)。
+> 开发中。设计：[docs/DESIGN.md](docs/DESIGN.md) · 交接：[docs/HANDOFF.md](docs/HANDOFF.md) · 日志：[docs/LOG-2026-11-20.md](docs/LOG-2026-11-20.md) · 平台实测：[docs/PLATFORM-PROBE.md](docs/PLATFORM-PROBE.md)
 
 ## 开发
 
