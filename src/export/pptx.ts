@@ -2,6 +2,7 @@ import PptxGenJS from "pptxgenjs";
 import { fitSlide, renderSlide, slideReady, type SlideMeasurement } from "../layout";
 import type { Deck, Evidence, Paper } from "../types";
 import { rectToInches } from "./coordinates";
+import { cleanXmlText } from "./xml-text";
 
 const PPTX_MIME = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
 const INCH_PER_PX = 1 / 128;
@@ -32,7 +33,7 @@ function textStyle(style: CSSStyleDeclaration, text: string) {
 
 function textRuns(el: HTMLElement, style: CSSStyleDeclaration): PptxGenJS.TextProps[] {
   return Array.from(el.childNodes, (node): PptxGenJS.TextProps => {
-    const text = node.textContent ?? "";
+    const text = cleanXmlText(node.textContent ?? "");
     const inline = node.nodeType === 1 ? node as HTMLElement : undefined;
     const runStyle = inline ? styleOf(inline) : style;
     return {
@@ -105,7 +106,7 @@ function addObjects(slide: PptxGenJS.Slide, measurement: SlideMeasurement) {
       }
       case "image": {
         const image = el as HTMLImageElement;
-        slide.addImage({ ...position, data: image.src, altText: image.alt });
+        slide.addImage({ ...position, data: image.src, altText: cleanXmlText(image.alt) });
         break;
       }
       case "shape":
@@ -141,7 +142,7 @@ function citationNotes(root: HTMLElement, evidence: ReadonlyMap<string, Evidence
 export async function exportPptx(deck: Deck, paper: Paper, options: ExportOptions = {}): Promise<Blob> {
   const pptx = new PptxGenJS();
   pptx.layout = "LAYOUT_16x9";
-  pptx.title = paper.title;
+  pptx.title = cleanXmlText(paper.title);
   const evidence = new Map(paper.blocks.map((block) => [block.id, block]));
   const doc = options.document ?? options.measurements?.[0]?.root.ownerDocument ?? document;
   if (options.measurements && options.measurements.length !== deck.slides.length) {
@@ -169,7 +170,7 @@ export async function exportPptx(deck: Deck, paper: Paper, options: ExportOption
       const slide = pptx.addSlide();
       slide.background = { color: hex(styleOf(measurement.root).backgroundColor) };
       addObjects(slide, measurement);
-      slide.addNotes(citationNotes(measurement.root, evidence, source.notes));
+      slide.addNotes(cleanXmlText(citationNotes(measurement.root, evidence, source.notes)));
     }
     const bytes = await pptx.write({ outputType: "arraybuffer" }) as ArrayBuffer;
     return new Blob([bytes], { type: PPTX_MIME });
