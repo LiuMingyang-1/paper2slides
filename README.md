@@ -48,7 +48,7 @@ Paper2Slides 只做一件事，并把它做深：**论文场景下的事实准�
 <td width="50%"><img src="docs/images/workbench-verification.png" alt="核验面板：故意写错的 99.9% 被标为无出处"></td>
 </tr>
 <tr>
-<td align="center"><sub>悬停角标查看原文、页码与核验状态</sub></td>
+<td align="center"><sub>悬停角标查看原文、页码与核验状态（BERT 真实生成结果）</sub></td>
 <td align="center"><sub>Demo 中故意写错的 99.9% 被标为 ❌，PDF 中高亮对应原文</sub></td>
 </tr>
 </table>
