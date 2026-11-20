@@ -3,7 +3,7 @@ import { extractNumberWords } from "./number-words";
 export interface ExtractedNumber {
   /** Original spelling, suitable for the verification UI. */
   raw: string;
-  /** Exact decimal value expressed as an integer coefficient and power of ten. */
+  /** Exact decimal value, with a distinct key for percentage points and ordered splits. */
   canonical: string;
   index: number;
   uncertainty: boolean;
@@ -17,7 +17,7 @@ interface ParsedNumber extends ExtractedNumber {
 }
 
 const EXPONENTS: Readonly<Record<string, number>> = { k: 3, K: 3, M: 6, B: 9, "%": -2 };
-const NUMBER = /((?<![\dA-Za-z_])[+-][^\S\r\n]*|±[^\S\r\n]*)?(?<![\dA-Za-z_])(\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?|\.\d+)(?:[eE][^\S\r\n]*([+-]?\d+)(?![A-Za-z0-9])|[^\S\r\n]*[×x][^\S\r\n]*10[^\S\r\n]*(?:\^[^\S\r\n]*([+-]?\d+)|([⁻⁺]?[⁰¹²³⁴⁵⁶⁷⁸⁹]+)))?([^\S\r\n]*(?:%|[kKMB](?![A-Za-z0-9])))?/gu;
+const NUMBER = /((?<![\dA-Za-z_])[+-][^\S\r\n]*|±[^\S\r\n]*)?(?<![\dA-Za-z_])(\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?|\.\d+)(?:[eE][^\S\r\n]*([+-]?\d+)(?![A-Za-z0-9])|[^\S\r\n]*[×x][^\S\r\n]*10[^\S\r\n]*(?:\^[^\S\r\n]*([+-]?\d+)|([⁻⁺]?[⁰¹²³⁴⁵⁶⁷⁸⁹]+)))?([^\S\r\n]*(?:百分点|个[^\S\r\n]*百分点|(?:%[^\S\r\n]*|[Pp]ercentage[^\S\r\n]+)[Pp]oints?\b|%|[kKMB](?![A-Za-z0-9])))?/gu;
 const SUPERSCRIPTS = "⁰¹²³⁴⁵⁶⁷⁸⁹";
 const INDEX = String.raw`\d+(?:\.\d+)*(?:\s*\([a-z]\)|[a-z](?![a-z]))?(?!\d|\.\d|[^\S\r\n]*%)`;
 const INDEX_RANGE = String.raw`${INDEX}(?:\s*(?:[-–—,，]|and\b|、|至)\s*${INDEX})*`;
@@ -31,6 +31,8 @@ const METADATA = [
   /^[ \t]*(?:\(?\d+\)|\d+[.、])[ \t]*(?![\s\d%])/gmu,
   /\b\d+(?:st|nd|rd|th)\b/giu,
   /第\s*\d+\s*(?:个|项|名|位|条)/gu,
+  // Version identifiers are retained in prose for term matching.
+  /\bv\d+(?:\.\d+)+(?!\w|\.\d|[^\S\r\n]*%)/giu,
   // Preserve offsets while excluding model labels such as ResNet-50.
   /\b[A-Za-z][A-Za-z0-9_]*(?:-[A-Za-z0-9_]+)*-\d+(?:\.\d+)?(?:-[A-Za-z0-9_]+)*\b/gu,
 ];
@@ -54,7 +56,8 @@ function canonicalNumber(sign: string, mantissa: string, exponent: number): stri
 }
 
 function applySuffix(number: string, suffix: string): string {
-  if (number === "0") return number;
+  if (/百分点|points?$/iu.test(suffix)) return "percentage-points:" + number;
+  if (!suffix || number === "0") return number;
   const [coefficient, exponent] = number.split("e");
   return coefficient + "e" + (Number(exponent) + EXPONENTS[suffix]!);
 }
@@ -90,7 +93,7 @@ export function extractNumbers(text: string): ExtractedNumber[] {
     // Leave room for the mantissa length and suffix when adjusting the exponent.
     if (!Number.isSafeInteger(exp) || !Number.isSafeInteger(Math.abs(exp) + raw.length + 9)) continue;
     const unit = suffix.trim();
-    const canonical = canonicalNumber(sign, mantissa!, exp + (EXPONENTS[unit] ?? 0));
+    const canonical = applySuffix(canonicalNumber(sign, mantissa!, exp), unit);
     const number: ParsedNumber = { raw: text.slice(index, end), canonical, index, end, uncertainty, suffix: unit };
     if (paired && previous) {
       // Both terms share a written suffix in "81.5 ± 0.4%" or "1.5M ± 0.1".
@@ -111,32 +114,58 @@ export function numbersMatch(claim: ExtractedNumber, evidence: ExtractedNumber):
     && (claim.uncertaintyValue === undefined || claim.uncertaintyValue === evidence.uncertaintyValue);
 }
 
-const WRITTEN_SPLIT = /(?:按|以)[^\S\r\n]*(\d{1,3}\/\d{1,3})(?=[^\S\r\n]*(?:的?比例|构造正负))/dgu;
-const FREQUENCY_PAIR = /(?<![\d.+-])(\d{1,3})[^\S\r\n]*%[^\S\r\n]+of the time\b[^.!?;\n%]*?\band\b[^.!?;\n%\d+-]*?(\d{1,3})[^\S\r\n]*%[^\S\r\n]+of the time\b/giu;
+const SLASH_SHARES = /(?<![\w.+/-]|\d,)\d{1,3}(?:[^\S\r\n]*\/[^\S\r\n]*\d{1,3})+(?![\w.%+-]|[^\S\r\n]*\/)/gu;
+const SPLIT_LABEL = /^[^\S\r\n]*(?:的?比例|分配)/u;
+const SPLIT_PAIR_CONSTRUCTION = /^[^\S\r\n]*构造正负/u;
+const SPLIT_EXPLANATION = /^[^\S\r\n]*[^\d:：.!?;。！？；\r\n]{0,24}[:：][^.!?;。！？；\r\n]*/u;
+const EXPLAINED_SHARE = /(?:[:：、,，])[^\S\r\n]*\d{1,3}[^\S\r\n]*%/gu;
 
-function splitKey(first: string, second: string): string | undefined {
-  return Number(first) + Number(second) === 100 ? `split:${Number(first)}/${Number(second)}` : undefined;
+const FREQUENCY_SHARE = /(?<![\w.+-]|\d,)(\d{1,3})[^\S\r\n]*%[^\S\r\n]+of the time\b/giu;
+const COORDINATED_SHARE = /^(?:[^.!?;\r\n%\d]*\band\b|[^\S\r\n]*(?:,|\((\d+)\)))[^.!?;\r\n%\d]*$/iu;
+
+function splitKey(shares: readonly number[]): string | undefined {
+  return shares.reduce((total, share) => total + share, 0) === 100 ? `split:${shares.join("/")}` : undefined;
 }
 
-/** A slash split is a pair of shares, not two independent numbers. */
+/** Keep explicitly labeled or expanded shares together and check their order. */
 export function extractSlashSplits(text: string): ExtractedNumber[] {
-  return Array.from(normalizeText(text).matchAll(WRITTEN_SPLIT), (match) => {
-    const [start, end] = match.indices![1]!;
-    const [first, second] = match[1]!.split("/");
-    return {
-      raw: text.slice(start, end), index: start, uncertainty: false,
-      // Keep an explicitly written split checkable even when its shares are invalid.
-      canonical: splitKey(first!, second!) ?? "invalid-split",
-    };
+  const normalized = normalizeText(text);
+  return [...normalized.matchAll(SLASH_SHARES)].flatMap(({ 0: raw, index }) => {
+    const end = index + raw.length;
+    const before = normalized.slice(0, index);
+    const after = normalized.slice(end);
+    const shares = raw.split("/").map(Number);
+    const expansion = after.match(SPLIT_EXPLANATION)?.[0] ?? "";
+    const explicit = SPLIT_LABEL.test(after)
+      || (/[按以][^\S\r\n]*$/u.test(before) && SPLIT_PAIR_CONSTRUCTION.test(after));
+    if (!explicit && [...expansion.matchAll(EXPLAINED_SHARE)].length !== shares.length) return [];
+    // Invalid totals still need to fail as a group on the claim side.
+    return [{ raw: text.slice(index, end), index, uncertainty: false, canonical: splitKey(shares) ?? "invalid-split" }];
   });
 }
 
-/** Require both percentages in one coordinated frequency statement. */
+/** Require all shares in a single coordinated frequency statement. */
 export function extractFrequencySplits(text: string): ExtractedNumber[] {
-  return Array.from(normalizeText(text).matchAll(FREQUENCY_PAIR)).flatMap((match) => {
-    const canonical = splitKey(match[1]!, match[2]!);
-    return canonical ? [{ raw: text.slice(match.index, match.index + match[0].length), index: match.index, canonical, uncertainty: false }] : [];
-  });
+  const normalized = normalizeText(text);
+  const matches = [...normalized.matchAll(FREQUENCY_SHARE)];
+  const splits: ExtractedNumber[] = [];
+  for (let start = 0; start < matches.length;) {
+    const index = matches[start]!.index;
+    let end = index + matches[start]![0].length;
+    let next = start + 1;
+    for (; next < matches.length; next++) {
+      const share = matches[next]!;
+      const separator = normalized.slice(end, share.index).match(COORDINATED_SHARE);
+      if (!separator || (separator[1] && Number(separator[1]) !== next - start + 1)) break;
+      end = share.index + share[0].length;
+    }
+    if (next - start >= 2) {
+      const canonical = splitKey(matches.slice(start, next).map((share) => Number(share[1])));
+      if (canonical) splits.push({ raw: text.slice(index, end), index, canonical, uncertainty: false });
+    }
+    start = next;
+  }
+  return splits;
 }
 
 /** Additional numeric spellings used by the evidence index only. */
