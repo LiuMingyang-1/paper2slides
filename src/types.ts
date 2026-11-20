@@ -173,6 +173,8 @@ export interface LlmCallLog {
   ok: boolean;
   attempt: number;
   error?: string;
+  /** Well-formed references absent from the evidence supplied to this step. */
+  missingEvidenceIds?: string[];
 }
 
 export interface Deck {
