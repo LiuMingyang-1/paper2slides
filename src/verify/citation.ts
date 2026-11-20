@@ -1,5 +1,6 @@
 import type { Evidence, Point, PointVerification, Slide } from "../types";
 import { tokenize } from "../retrieval/bm25";
+import { crossLanguageTerms, indexLanguage, type LanguageIndex } from "./crosslingual";
 import { type ExtractedNumber, extractNumbers, numbersMatch } from "./numbers";
 
 // With 70% weight on vocabulary recall, a reordered claim can still pass.
@@ -8,6 +9,10 @@ import { type ExtractedNumber, extractNumbers, numbersMatch } from "./numbers";
 const TOKEN_WEIGHT = 7;
 const PHRASE_WEIGHT = 3;
 export const LEXICAL_SUPPORT_THRESHOLD = 0.60;
+// Cross-language matching lacks a prose check, so each anchor must be present.
+// With no anchors there is no lexical evidence, even when numeric validation is vacuous.
+const CROSS_LANGUAGE_THRESHOLD = 1;
+const CROSS_LANGUAGE_REASON = "跨语言：仅基于术语与数字锚点核验。";
 
 type ResultOwner = "baseline" | "paper";
 
@@ -18,6 +23,7 @@ interface AttributedNumber extends ExtractedNumber {
 interface IndexedEvidence {
   tokens: string[];
   numbers: AttributedNumber[];
+  language: LanguageIndex;
 }
 
 const BASELINE = /\bbaselines?\b|基线|基准模型|对照组/giu;
@@ -87,13 +93,18 @@ function resultNumbers(text: string): AttributedNumber[] {
 function indexText(text: string): IndexedEvidence {
   const numbers = resultNumbers(text);
   const tokens: string[] = [];
+  const prose: string[] = [];
   let start = 0;
   for (const { index, raw, canonical } of numbers) {
-    tokens.push(...tokenize(text.slice(start, index)), "number:" + canonical);
+    const segment = text.slice(start, index);
+    prose.push(segment);
+    tokens.push(...tokenize(segment), "number:" + canonical);
     start = index + raw.length;
   }
-  tokens.push(...tokenize(text.slice(start)));
-  return { tokens, numbers };
+  const tail = text.slice(start);
+  tokens.push(...tokenize(tail));
+  prose.push(tail);
+  return { tokens, numbers, language: indexLanguage(prose.join(" ")) };
 }
 
 function longestCommonRun(claim: string[], source: string[]): number {
@@ -148,7 +159,13 @@ function verifyPoint(
     const wrongOwner = matching.length > 0 && !found;
     return { value: claim.raw, found, wrongOwner };
   });
-  const matchScore = lexicalSupport(claim.tokens, sources);
+  const missingNumbers = numbers.filter(({ found }) => !found);
+  const crossLanguage = crossLanguageTerms(claim.language, sources.map(({ language }) => language));
+  const anchorCount = crossLanguage ? crossLanguage.total + numbers.length : 0;
+  const matchScore = crossLanguage
+    ? (crossLanguage.matched + numbers.length - missingNumbers.length) / Math.max(1, anchorCount)
+    : lexicalSupport(claim.tokens, sources);
+  const reasonPrefix = crossLanguage ? CROSS_LANGUAGE_REASON : "";
   const details = { matchScore, missingEvidenceIds, numbers: numbers.map(({ value, found }) => ({ value, found })) };
 
   if (!ids.length) {
@@ -157,13 +174,20 @@ function verifyPoint(
       : { ...details, status: "partial", reason: "概括或解读未提供引用。" };
   }
   if (missingEvidenceIds.length) {
-    return { ...details, status: "unsupported", reason: "引用不存在：" + missingEvidenceIds.join("、") + "。" };
+    return { ...details, status: "unsupported", reason: reasonPrefix + "引用不存在：" + missingEvidenceIds.join("、") + "。" };
   }
-  const missingNumbers = numbers.filter(({ found }) => !found);
   if (missingNumbers.length) {
     const reason = missingNumbers.map(({ value, wrongOwner }) =>
       wrongOwner ? value + " 在所引证据中属于另一方（基线或本文方法）" : value + " 未在所引证据中找到");
-    return { ...details, status: "unsupported", reason: reason.join("。") + "。" };
+    return { ...details, status: "unsupported", reason: reasonPrefix + reason.join("。") + "。" };
+  }
+  if (crossLanguage) {
+    if (!anchorCount) {
+      return { ...details, status: "partial", reason: CROSS_LANGUAGE_REASON + "要点没有可核对的锚点。" };
+    }
+    return matchScore >= CROSS_LANGUAGE_THRESHOLD
+      ? { ...details, status: "supported", reason: CROSS_LANGUAGE_REASON + "锚点全部命中。" }
+      : { ...details, status: "partial", reason: CROSS_LANGUAGE_REASON + "术语锚点未全部命中。" };
   }
   if (point.kind === "opinion") {
     return { ...details, status: "supported", reason: "解读的引用有效，数值核验通过。" };
