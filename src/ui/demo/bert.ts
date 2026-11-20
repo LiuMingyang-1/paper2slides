@@ -79,10 +79,31 @@ function reply(args: LlmCompleteArgs): unknown {
     if (!item.modules.length) {
       return { ...base, layout: "title", slots: { title: item.title, authors: bert.authors.join(" · ") } } satisfies Slide;
     }
-    return {
-      ...base, layout: "bullets",
-      slots: { title: item.title, bullets: moduleFor(item.modules[0] as Topic, language, true).points },
-    } satisfies Slide;
+    const kind = item.modules[0] as Topic;
+    const points = moduleFor(kind, language, true).points;
+    if (kind === "experiments") {
+      const label = bilingual("BERT 的 GLUE 分数", "BERT GLUE score")[language];
+      return {
+        ...base, layout: "key_numbers",
+        slots: { title: item.title, numbers: [
+          { ...points[0]!, text: `80.5% | ${label}` },
+          { ...points[1]!, text: `99.9% | ${label}` },
+        ] },
+      } satisfies Slide;
+    }
+    if (kind === "ablation") {
+      return {
+        ...base, layout: "two_column",
+        slots: {
+          title: item.title,
+          leftHeading: bilingual("移除 NSP", "Removing NSP")[language],
+          left: [points[0]!],
+          rightHeading: bilingual("单向上下文", "Left-to-right context")[language],
+          right: [points[1]!],
+        },
+      } satisfies Slide;
+    }
+    return { ...base, layout: "bullets", slots: { title: item.title, bullets: points } } satisfies Slide;
   }
   const emphasis = field("侧重点") as Emphasis | undefined;
   if (emphasis && Object.hasOwn(topicOrder, emphasis)) {

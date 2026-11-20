@@ -1,78 +1,71 @@
-import type { Deck, Paper, Point, PointVerification, Slide } from "../types";
+import { fitSlide, renderSlide as renderLayout, slideReady } from "../layout";
+import type { Deck, Paper, PointVerification, Slide } from "../types";
+import { verifyDeck } from "../verify/citation";
 import { el } from "./dom";
 
-export const SLIDE_WIDTH = 1280;
-export const SLIDE_HEIGHT = 720;
+const SLIDE_WIDTH = 1280;
+const SLIDE_HEIGHT = 720;
 export const PPTX_MIME = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
 
-// After T4 lands, delegate render/fit/export to src/layout and src/export here.
-export function renderSlide(slide: Slide, paper: Paper, checks: readonly PointVerification[], opinionLabel: string) {
-  const page = el("article", "draft-slide");
-  page.dataset.layout = slide.layout;
-  const content = el("div", "draft-inner");
-  const sourceById = new Map(paper.blocks.map((source) => [source.id, source]));
-  let citation = 0;
-  for (const [slot, value] of Object.entries({ title: slide.slots.title ?? "", ...slide.slots })) {
-    const group = el("div", "draft-slot");
-    group.dataset.slot = slot;
-    content.append(group);
-    if (typeof value === "string") {
-      group.append(el(slot === "title" ? "h2" : "p", "", value.replaceAll("|", " · ")));
-      continue;
+function markNumbers(claim: HTMLElement, check: PointVerification | undefined) {
+  const numbers = check?.numbers.filter(({ found }) => !found).map(({ value }) => value) ?? [];
+  if (!numbers.length) return;
+  const alternatives = [...new Set(numbers)].sort((a, b) => b.length - a.length)
+    .map((value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  const pattern = new RegExp(`(?<![\\d.])(?:${alternatives.join("|")})(?!\\d|\\.\\d)`, "gu");
+  const walker = document.createTreeWalker(claim, NodeFilter.SHOW_TEXT, {
+    acceptNode: (node) => node.parentElement?.closest(".p2s-citation, .p2s-opinion") ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT,
+  });
+  const textNodes: Text[] = [];
+  while (walker.nextNode()) textNodes.push(walker.currentNode as Text);
+  for (const node of textNodes) {
+    const matches = [...node.data.matchAll(pattern)];
+    if (!matches.length) continue;
+    const fragment = document.createDocumentFragment();
+    let offset = 0;
+    for (const match of matches) {
+      fragment.append(node.data.slice(offset, match.index), el("mark", "unverified-number", match[0]));
+      offset = match.index + match[0].length;
     }
-    const list = el("ul");
-    value.forEach((point, index) => {
-      const check = checks.find((item) => item.slideId === slide.id && item.slot === slot && item.pointIndex === index);
-      const claim = el("li", "claim");
-      claim.dataset.point = `${slot}:${index}`;
-      claim.tabIndex = -1;
-      if (point.kind === "opinion") claim.append(el("small", "opinion", opinionLabel), " ");
-      const missing = check?.numbers.filter(({ found }) => !found).map(({ value }) => value) ?? [];
-      // Keep the verifier's exact source spelling when marking a number.
-      let remaining = point.text.replaceAll("|", " · ");
-      for (const value of remaining.match(/\S+/g) ?? []) {
-        if (!missing.some((number) => value.includes(number))) continue;
-        const index = remaining.indexOf(value);
-        claim.append(remaining.slice(0, index), el("mark", "unverified-number", value));
-        remaining = remaining.slice(index + value.length);
+    fragment.append(node.data.slice(offset));
+    node.replaceWith(fragment);
+  }
+}
+
+export function renderSlide(
+  slide: Slide, paper: Paper, checks: readonly PointVerification[], opinionLabel: string, interactive = true,
+) {
+  const page = renderLayout(slide, { paper, verifications: checks });
+  const pointChecks = new Map(checks.filter(({ slideId }) => slideId === slide.id)
+    .map((check) => [`${check.slot}:${check.pointIndex}`, check]));
+  for (const label of page.querySelectorAll(".p2s-opinion")) label.textContent = opinionLabel;
+  for (const slot of page.querySelectorAll<HTMLElement>("[data-slot]")) {
+    const name = slot.dataset.slot!;
+    if (!Array.isArray(slide.slots[name])) continue;
+    slot.querySelectorAll<HTMLElement>("[data-evidence-ids]").forEach((ref, index) => {
+      // A table citation lives in the final cell. A metric citation lives in its label.
+      const claim = name === "numbers" ? ref.parentElement?.parentElement : ref.closest<HTMLElement>("li, tr, figcaption");
+      if (!claim) return;
+      const key = `${name}:${index}`;
+      markNumbers(claim, pointChecks.get(key));
+      if (interactive) {
+        claim.dataset.point = key;
+        claim.tabIndex = -1;
+        ref.setAttribute("role", "button");
+        ref.tabIndex = 0;
+        ref.addEventListener("keydown", (event) => {
+          if (event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+          ref.click();
+        });
       }
-      claim.append(remaining);
-      const ref = el("button", `citation ${check?.status ?? "partial"}`, `[${++citation}]`);
-      ref.type = "button";
-      ref.dataset.evidenceIds = point.evidenceIds.join(" ");
-      ref.dataset.status = check?.status ?? "partial";
-      claim.append(" ", ref);
-      list.append(claim);
     });
-    group.append(list);
   }
-  const figure = paper.figures.find(({ id }) => id === slide.figureId);
-  if (figure) {
-    const source = sourceById.get(figure.captionEvidenceId);
-    const label = el("button", "figure-citation citation supported", `${figure.label} · p.${figure.page}`);
-    label.type = "button";
-    label.dataset.evidenceIds = figure.captionEvidenceId;
-    label.dataset.status = "supported";
-    content.append(label);
-    if (source) label.title = source.text;
-  }
-  page.append(content);
   return page;
 }
 
-function fitSlide(page: HTMLElement): string[] {
-  const content = page.firstElementChild as HTMLElement;
-  for (const factor of [1, 0.94, 0.87, 0.8]) {
-    page.style.setProperty("--draft-factor", String(factor));
-    if (content.scrollHeight <= content.clientHeight) return [];
-  }
-  const bottom = content.getBoundingClientRect().bottom;
-  return [...content.querySelectorAll<HTMLElement>("[data-slot]")]
-    .filter((slot) => slot.getBoundingClientRect().bottom > bottom + 0.5)
-    .map((slot) => slot.dataset.slot!);
-}
-
 export function scaleSlide(frame: HTMLElement, slide: HTMLElement) {
+  slide.style.transformOrigin = "top left";
   const size = () => {
     const scale = frame.clientWidth / SLIDE_WIDTH;
     frame.style.height = `${SLIDE_HEIGHT * scale}px`;
@@ -85,102 +78,105 @@ export function scaleSlide(frame: HTMLElement, slide: HTMLElement) {
   return () => resize.disconnect();
 }
 
-function split(slide: Slide, continuation: string): Slide[] {
-  const points = Object.values(slide.slots).flatMap((value) => typeof value === "string" ? [] : value);
-  if (points.length < 2) return [];
-  const title = String(slide.slots.title ?? "");
-  const headers = typeof slide.slots.headers === "string" ? slide.slots.headers.split("|").map((s) => s.trim()) : undefined;
-  const asBullet = (point: Point): Point => ({
-    ...point,
-    text: headers ? point.text.split("|").map((cell, i) => `${headers[i]} ${cell.trim()}`).join(" · ") : point.text.replaceAll("|", " · "),
-  });
-  // A dense slide has at most a few points. Each continuation retains the original citations and notes.
-  return points.map((point, index) => ({
-    id: index === 0 ? slide.id : `${slide.id}-${index + 1}`,
-    outlineId: slide.outlineId, layout: "bullets", notes: slide.notes,
-    slots: { title: index === 0 ? title : `${title} ${continuation}`, bullets: [asBullet(point)] },
-  }));
+function split(slide: Slide): Slide[] {
+  const first: Slide["slots"] = {};
+  const second: Slide["slots"] = {};
+  let hasContinuation = false;
+  for (const [slot, value] of Object.entries(slide.slots)) {
+    if (typeof value === "string") {
+      first[slot] = second[slot] = value;
+    } else {
+      const middle = Math.ceil(value.length / 2);
+      first[slot] = value.slice(0, middle);
+      if (middle < value.length) {
+        second[slot] = value.slice(middle);
+        hasContinuation = true;
+      }
+    }
+  }
+  return hasContinuation ? [{ ...slide, slots: first }, { ...slide, slots: second }] : [];
+}
+
+function measurementStage() {
+  const stage = el("div", "slide-measurement");
+  stage.setAttribute("aria-hidden", "true");
+  document.body.append(stage);
+  return stage;
 }
 
 export async function resolveOverflow(
-  slides: readonly Slide[], paper: Paper, compress: (slide: Slide, slots: string[]) => Promise<Slide>, continuation: string,
+  slides: readonly Slide[], paper: Paper, compress: (slide: Slide, slots: string[]) => Promise<Slide>,
+  continuation: string, opinionLabel: string,
 ) {
-  const sandbox = el("div", "slide-measurement");
-  sandbox.setAttribute("aria-hidden", "true");
-  document.body.append(sandbox);
-  const measure = (slide: Slide) => {
-    const page = renderSlide(slide, paper, [], "");
-    sandbox.replaceChildren(page);
-    return fitSlide(page);
+  const stage = measurementStage();
+  const evidence = new Map(paper.blocks.map((block) => [block.id, block]));
+  const measure = async (slide: Slide) => {
+    const page = renderSlide(slide, paper, verifyDeck([slide], evidence), opinionLabel, false);
+    stage.replaceChildren(page);
+    await slideReady(page);
+    return [...fitSlide(page).overflowingSlots];
   };
   const fitted: Slide[] = [];
   const unresolved: string[] = [];
   let compressionFailed = false;
   try {
-    await document.fonts.ready;
     for (let slide of slides) {
-      let overflow = measure(slide);
+      let overflow = await measure(slide);
       if (overflow.length) {
         try {
           slide = await compress(slide, overflow);
         } catch {
           compressionFailed = true;
         }
-        overflow = measure(slide);
+        overflow = await measure(slide);
       }
-      const parts = overflow.length ? split(slide, continuation) : [];
-      for (const part of parts.length ? parts : [slide]) {
-        if (measure(part).length) unresolved.push(part.id);
-        fitted.push(part);
+      if (!overflow.length) {
+        fitted.push(slide);
+        continue;
+      }
+
+      const title = String(slide.slots.title ?? "");
+      let pageNumber = 0;
+      const queue = [slide];
+      while (queue.length) {
+        const part = queue.shift()!;
+        const candidate = pageNumber === 0 ? part : {
+          ...part, id: `${slide.id}-${pageNumber + 1}`, slots: { ...part.slots, title: `${title} ${continuation}` },
+        };
+        const slots = await measure(candidate);
+        // If the remaining overflow is in repeated labels, splitting the rows cannot resolve it.
+        const parts = slots.some((slot) => Array.isArray(part.slots[slot])) ? split(part) : [];
+        if (parts.length) {
+          queue.unshift(...parts);
+          continue;
+        }
+        if (slots.length) unresolved.push(candidate.id);
+        fitted.push(candidate);
+        pageNumber++;
       }
     }
   } finally {
-    sandbox.remove();
+    stage.remove();
   }
   return { slides: fitted, unresolved, compressionFailed };
 }
 
 export function fitPreview(page: HTMLElement) {
+  const transform = page.style.transform;
+  page.style.transform = "";
   fitSlide(page);
+  page.style.transform = transform;
 }
 
-/** Temporary editable text export for the Demo and Anna download flow. */
-export async function exportSlides(deck: Deck, paper: Paper): Promise<Blob> {
-  const { default: PowerPoint } = await import("pptxgenjs");
-  const pptx = new PowerPoint();
-  pptx.layout = "LAYOUT_16x9";
-  pptx.title = paper.title;
-  const sources = new Map(paper.blocks.map((block) => [block.id, block]));
-  for (const slide of deck.slides) {
-    const page = pptx.addSlide();
-    const { title, ...slots } = slide.slots;
-    page.addText(String(title ?? ""), { x: 0.5, y: 0.6, w: 9, h: 1.2, fontSize: 31, bold: true, color: "172D25", fit: "shrink" });
-    const content: string[] = [];
-    const evidence = new Set<string>();
-    for (const value of Object.values(slots)) {
-      if (typeof value === "string") content.push(value.replaceAll("|", " · "));
-      else for (const point of value) {
-        content.push("• " + point.text.replaceAll("|", " · "));
-        point.evidenceIds.forEach((id) => evidence.add(id));
-      }
-    }
-    const figure = paper.figures.find(({ id }) => id === slide.figureId);
-    if (figure) {
-      content.push(`${figure.label} (p.${figure.page})`);
-      evidence.add(figure.captionEvidenceId);
-    }
-    if (content.length) page.addText(content.join("\n"), { x: 0.5, y: 2, w: 9, h: 3, fontSize: 20, breakLine: false, fit: "shrink" });
-    const refs = [...evidence].flatMap((id) => {
-      const source = sources.get(id);
-      return source ? [source] : [];
-    });
-    const pages = [...new Set(refs.map(({ page }) => page))];
-    if (pages.length) page.addText(pages.map((page) => `p.${page}`).join(", "), {
-      x: 6, y: 5.12, w: 3.5, h: 0.25, fontSize: 10, align: "right", color: "52695F",
-    });
-    const notes = [slide.notes, ...refs.map(({ page, text, id }) => `[${id}] p.${page} · ${text}`)].filter(Boolean);
-    if (notes.length) page.addNotes(notes.join("\n\n"));
+export async function exportSlides(deck: Deck, paper: Paper, opinionLabel: string): Promise<Blob> {
+  const { exportPptx } = await import("../export");
+  const stage = measurementStage();
+  try {
+    const roots = deck.slides.map((slide) => renderSlide(slide, paper, deck.verifications, opinionLabel, false));
+    stage.append(...roots);
+    await Promise.all(roots.map(slideReady));
+    return await exportPptx(deck, paper, { measurements: roots.map(fitSlide) });
+  } finally {
+    stage.remove();
   }
-  const result = await pptx.write({ outputType: "blob" });
-  return new Blob([result as Blob], { type: PPTX_MIME });
 }

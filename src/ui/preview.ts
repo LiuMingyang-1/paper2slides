@@ -66,11 +66,12 @@ export function renderPreview(
   };
   const slideChecks = new Map(deck.slides.map((slide) => [slide.id, deck.verifications.filter((check) => check.slideId === slide.id)]));
   const heading = el("h2", "", t.thumbnails);
+  const miniatures: HTMLElement[] = [];
   const thumbnails = deck.slides.map((slide, index) => {
     const thumb = el("div", "mini-slide");
     thumb.setAttribute("aria-hidden", "true");
-    const mini = renderSlide(slide, paper, slideChecks.get(slide.id)!, t.opinion);
-    mini.querySelectorAll("button").forEach((ref) => ref.replaceWith(el("span", ref.className, ref.textContent ?? "")));
+    const mini = renderSlide(slide, paper, slideChecks.get(slide.id)!, t.opinion, false);
+    miniatures.push(mini);
     const thumbButton = button("", () => select(index), "thumb");
     thumbButton.setAttribute("aria-label", `${index + 1}. ${slide.slots.title}`);
     thumbButton.append(thumb,
@@ -119,6 +120,7 @@ export function renderPreview(
   return {
     root,
     mount() {
+      miniatures.forEach(fitPreview);
       select(initial);
       void import("./pdf").then(({ openPdf }) => {
         if (disposed) return;

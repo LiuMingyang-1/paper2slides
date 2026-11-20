@@ -190,7 +190,7 @@ export function mountApp(root: HTMLElement, host: AnnaHost | null) {
       }
       report("fitting");
       const result = await resolveOverflow(slides, paper!, (slide, slots) =>
-        pipeline!.compressSlide(slide, slots, output), strings[output].continuation);
+        pipeline!.compressSlide(slide, slots, output), strings[output].continuation, strings[output].opinion);
       overflow = result.unresolved;
       compressionFailed = result.compressionFailed;
       const evidence = new Map(paper!.blocks.map((item) => [item.id, item]));
@@ -202,7 +202,7 @@ export function mountApp(root: HTMLElement, host: AnnaHost | null) {
   function exportDeck() {
     return run("exporting", async () => {
       const name = filename.replace(/\.pdf$/i, "").replace(/[\\/:*?"<>|]/g, "_") + ".pptx";
-      const blob = await exportSlides(deck!, paper!);
+      const blob = await exportSlides(deck!, paper!, strings[output].opinion);
       if (demo) download(blob, name);
       else {
         const result = await host!.upload.inline({ filename: name, mime_type: PPTX_MIME, content_b64: await base64(blob) });
