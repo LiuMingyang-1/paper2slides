@@ -1,0 +1,6 @@
+{
+  "name": "Paper2Slides",
+  "tagline": "论文 PDF → 每句有出处、数字经核验的组会 PPT",
+  "description": "上传一篇论文 PDF，生成适合组会汇报的学术 PPT。每条要点附原文出处（悬停查看、点击跳转 PDF 高亮），数字由代码核验必须原样出现在原文中；缺失的内容模块不编造。导出可编辑 PPTX，出处写入演讲者备注。",
+  "category": "productivity"
+}

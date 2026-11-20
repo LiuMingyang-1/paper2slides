@@ -1,0 +1,8 @@
+node_modules/
+bundle/
+src/prompts/generated.ts
+.anna/
+*.log
+.DS_Store
+eval/out/
+.env*
