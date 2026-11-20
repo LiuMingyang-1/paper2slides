@@ -49,6 +49,30 @@ describe("model output schemas", () => {
     })).toThrow("rows[0]");
   });
 
+  it("fills a missing figureId with the only available figure when the preferred figure is unavailable", () => {
+    const schema = slideValidator({ outlineId: "s1", titlePage: false, evidenceIds, figureIds, preferredFigureId: "fig9" });
+    const warnings: string[] = [];
+    expect(schema({ ...slideFor("bullets_figure"), figureId: undefined }, warnings).value.figureId).toBe("fig1");
+    expect(warnings).toContain("figureId 缺失，补全为 fig1");
+  });
+
+  it("rejects an explicitly unavailable figureId even with a valid preference", () => {
+    const schema = slideValidator({ outlineId: "s1", titlePage: false, evidenceIds, figureIds, preferredFigureId: "fig1" });
+    expect(() => schema({ ...slideFor("bullets_figure"), figureId: "fig9" })).toThrow("figureId：应引用本页可用原图");
+  });
+
+  it.each([{ ids: [] }, { ids: ["fig1", "fig2"] }])("rejects a missing figureId with available figures $ids", ({ ids }) => {
+    const schema = slideValidator({ outlineId: "s1", titlePage: false, evidenceIds, figureIds: new Set(ids) });
+    expect(() => schema({ ...slideFor("bullets_figure"), figureId: undefined })).toThrow("figureId：应为非空字符串");
+  });
+
+  it("validates citation IDs after wrapping a point object", () => {
+    const slide = slideFor("bullets");
+    const takeaway = { ...point("A two-stage method"), evidenceIds: ["Figure 2"] };
+    expect(() => validate("bullets")({ ...slide, slots: { ...slide.slots, takeaway } }))
+      .toThrow("slots.takeaway[0].evidenceIds[0]");
+  });
+
   it("rejects malformed, missing and repeated citations but preserves unknown IDs", () => {
     const schema = understandingValidator(evidenceIds);
     const withIds = (ids: string[]) => ({

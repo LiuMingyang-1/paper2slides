@@ -235,6 +235,7 @@ export function createPipeline(paper: Paper, options: PipelineOptions) {
       const available = titlePage ? [] : figureMetadata.filter(({ captionEvidenceId }) => ids.has(captionEvidenceId));
       const rules = slideValidator({
         outlineId: item.id, titlePage, evidenceIds: ids, evidenceText, figureIds: new Set(available.map(({ id }) => id)),
+        preferredFigureId: item.figureId,
       });
       const result = await step("slide", {
         language, outline_item: JSON.stringify(item), paper_metadata: paperMetadata,

@@ -13,6 +13,7 @@ export interface SlideConstraints {
   /** Evidence text for grounding notes. Legacy callers may only have IDs. */
   evidenceText?: ReadonlyMap<string, string>;
   figureIds: ReadonlySet<string>;
+  preferredFigureId?: string;
 }
 
 function requireCells(text: string, path: string, min: number, max: number): number {
@@ -34,7 +35,7 @@ function slotsRule(layout: LayoutId) {
 }
 
 export function slideValidator(constraints: SlideConstraints): Validator<Slide> {
-  const { outlineId, titlePage, evidenceIds, evidenceText, figureIds } = constraints;
+  const { outlineId, titlePage, evidenceIds, evidenceText, figureIds, preferredFigureId } = constraints;
   const idRule = literal(outlineId, "应与大纲项 ID 一致");
   const fields = {
     id: idRule,
@@ -67,7 +68,16 @@ export function slideValidator(constraints: SlideConstraints): Validator<Slide> 
       for (const [key, slot] of Object.entries(normalizedSlots)) {
         const definition = definitions[key]!;
         if (definition.type === "points") {
-          normalizedSlots[key] = normalizePoints(slot, definition.maxItems, `slots.${key}`, warnings);
+          const path = `slots.${key}`;
+          let points = slot;
+          if (slot !== null && typeof slot === "object") {
+            const prototype = Object.getPrototypeOf(slot);
+            if (prototype === Object.prototype || prototype === null) {
+              points = [slot];
+              warnings.push(`${path} 单对象包装为数组`);
+            }
+          }
+          normalizedSlots[key] = normalizePoints(points, definition.maxItems, path, warnings);
         }
       }
     }
@@ -109,7 +119,17 @@ export function slideValidator(constraints: SlideConstraints): Validator<Slide> 
         requireValid(/\p{Nd}/u.test(entry.text.split("|")[0]!), path, "第一个单元应为数值");
       });
     }
-    const figureId = parseRule(LAYOUTS[layout].requiresFigure ? requiredFigure : forbiddenFigure, value.figureId, "figureId");
+    const { requiresFigure } = LAYOUTS[layout];
+    if (requiresFigure && value.figureId === undefined) {
+      const fallback = preferredFigureId !== undefined && figureIds.has(preferredFigureId)
+        ? preferredFigureId
+        : figureIds.size === 1 ? figureIds.values().next().value : undefined;
+      if (fallback !== undefined) {
+        value.figureId = fallback;
+        warnings.push(`figureId 缺失，补全为 ${fallback}`);
+      }
+    }
+    const figureId = parseRule(requiresFigure ? requiredFigure : forbiddenFigure, value.figureId, "figureId");
     return {
       value: {
         id: outlineId, outlineId, layout, slots,
