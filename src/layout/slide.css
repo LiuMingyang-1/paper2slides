@@ -1,0 +1,193 @@
+.p2s-slide {
+  box-sizing: border-box;
+  width: 1280px;
+  height: 720px;
+  flex: none;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 64px;
+  gap: 30px;
+  color: #17232d;
+  background: #fff;
+  font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  text-align: left;
+  --p2s-accent: #205f71;
+  --p2s-muted: #455461;
+  --p2s-rule: #d8dfe2;
+  --p2s-reduction: 0px;
+  /* At 128 px/in, 25px and 18px export above the 14pt and 10pt floors. */
+  --p2s-body-size: max(25px, calc(33px - var(--p2s-reduction)));
+  --p2s-note-size: max(18px, calc(22px - var(--p2s-reduction)));
+}
+
+.p2s-slide .p2s-text {
+  margin: 0;
+  font-size: var(--p2s-body-size);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+  white-space: pre-line;
+}
+
+.p2s-slide .p2s-title {
+  flex: none;
+  max-height: 144px;
+  overflow: hidden;
+  font-size: max(28px, calc(49px - var(--p2s-reduction)));
+  line-height: 1.38;
+  font-weight: 700;
+}
+
+.p2s-slide[data-layout="title"] {
+  justify-content: center;
+  gap: 26px;
+}
+
+.p2s-slide[data-layout="title"] .p2s-title {
+  max-height: 416px;
+  font-size: max(28px, calc(72px - 2 * var(--p2s-reduction)));
+}
+
+.p2s-slide .p2s-authors {
+  max-height: 144px;
+  overflow: hidden;
+  color: var(--p2s-muted);
+}
+
+.p2s-slide .p2s-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.p2s-slide .p2s-list {
+  box-sizing: border-box;
+  display: grid;
+  gap: 19px;
+  list-style: disc outside;
+  margin: 0;
+  /* 48px matches the 27pt native PPTX bullet indent. */
+  padding: 0 0 3px 48px;
+}
+
+.p2s-slide .p2s-citation {
+  color: var(--p2s-accent);
+  font-size: var(--p2s-note-size);
+  vertical-align: baseline;
+  position: relative;
+  top: -.36em;
+  white-space: nowrap;
+  font-weight: 700;
+}
+
+.p2s-slide .p2s-citation.partial {
+  text-decoration: underline dotted;
+}
+
+.p2s-slide .p2s-citation.unsupported {
+  color: var(--p2s-muted);
+  text-decoration: underline;
+}
+
+.p2s-slide .p2s-opinion {
+  font-size: var(--p2s-note-size);
+  color: var(--p2s-muted);
+  white-space: nowrap;
+}
+
+.p2s-slide .p2s-pages {
+  position: absolute;
+  bottom: 29px;
+  left: 64px;
+  right: 64px;
+  font-size: 18px;
+  color: var(--p2s-muted);
+  text-align: right;
+}
+
+.p2s-slide .p2s-figure-layout,
+.p2s-slide .p2s-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 44px;
+}
+
+.p2s-slide .p2s-figure-layout {
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.p2s-slide .p2s-figure-layout > .p2s-list,
+.p2s-slide .p2s-column {
+  align-self: start;
+}
+
+.p2s-slide .p2s-figure {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  gap: 13px;
+  margin: 0;
+}
+
+.p2s-slide .p2s-media {
+  flex: 1 1 auto;
+  min-height: 0;
+  position: relative;
+  display: grid;
+  align-items: center;
+}
+
+.p2s-slide .p2s-media img {
+  position: absolute;
+  inset: 0;
+  max-width: 100%;
+  max-height: 100%;
+  margin: auto;
+}
+
+.p2s-slide .p2s-caption,
+.p2s-slide .p2s-figure-reference {
+  font-size: var(--p2s-note-size);
+  color: var(--p2s-muted);
+}
+
+.p2s-slide .p2s-numbers {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: 34px;
+  margin: 17px 0 34px;
+}
+
+.p2s-slide .p2s-metric {
+  color: var(--p2s-accent);
+  font-size: max(32px, calc(67px - 2 * var(--p2s-reduction)));
+  line-height: 1.17;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.p2s-slide .p2s-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.p2s-slide .p2s-table .p2s-text {
+  padding: 10px 15px;
+  vertical-align: top;
+  border-bottom: 1px solid var(--p2s-rule);
+}
+
+.p2s-slide .p2s-table th {
+  text-align: left;
+  background: #f2f5f6;
+}
+
+.p2s-slide .p2s-column-heading {
+  color: var(--p2s-accent);
+  font-weight: 700;
+  margin-bottom: 17px;
+}
