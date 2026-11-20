@@ -9,7 +9,7 @@ export interface Validation<T> {
   missingEvidenceIds: string[];
 }
 
-export type Validator<T> = (input: unknown) => Validation<T>;
+export type Validator<T> = (input: unknown, normalizations?: string[]) => Validation<T>;
 
 export function requireValid(condition: unknown, path: string, rule: string): asserts condition {
   if (!condition) throw new SchemaError(path, rule);

@@ -1,6 +1,7 @@
 import { check, literal, optional, pipe } from "valibot";
 import type { Emphasis, ModuleKind, Outline } from "../types";
-import { choiceRule, listRule, parseRule, recordRule, textRule } from "./rules";
+import { normalizeRecord, trimList } from "./normalize";
+import { choiceRule, listRule, modelTextRule, parseRule, recordRule, textRule } from "./rules";
 import { requireValid, type Validator } from "./validation";
 
 export function outlineValidator(
@@ -10,26 +11,39 @@ export function outlineValidator(
   /** Allow the user to remove content pages in the confirmation step. */
   edited = false,
 ): Validator<Outline> {
-  const itemRule = recordRule({
+  const maxItems = 8;
+  const itemFields = {
     id: textRule(32),
-    title: textRule(150),
-    intent: textRule(200),
+    title: modelTextRule(150),
+    intent: modelTextRule(200),
     modules: pipe(
       listRule(choiceRule(modules), 0, modules.length),
       check((items) => new Set(items).size === items.length, "模块不得重复"),
     ),
     figureId: optional(textRule(64)),
-  });
-  const schema = recordRule({
+  };
+  const fields = {
     emphasis: literal(emphasis, "应与请求参数一致"),
     items: pipe(
-      listRule(itemRule, edited ? 1 : 5, 8),
+      listRule(recordRule(itemFields), edited ? 1 : 5, maxItems),
       check((items) => new Set(items.map(({ id }) => id)).size === items.length, "页面 ID 不得重复"),
     ),
-  });
+  };
+  const schema = recordRule(fields);
 
-  return (input) => {
-    const value = parseRule(schema, input, "outline");
+  return (input, warnings = []) => {
+    const record = edited ? undefined : normalizeRecord(input, fields, "", warnings);
+    if (record && Array.isArray(record.items)) {
+      record.items = trimList(record.items, maxItems, "items", warnings).map((entry, index) => {
+        const path = `items[${index}]`;
+        const item = normalizeRecord(entry, itemFields, path, warnings);
+        if (item && Array.isArray(item.modules)) {
+          item.modules = trimList(item.modules, modules.length, `${path}.modules`, warnings);
+        }
+        return item ?? entry;
+      });
+    }
+    const value = parseRule(schema, record ?? input, "outline");
     const items = value.items.map(({ figureId, ...item }, index) => {
       const path = `items[${index}]`;
       requireValid(edited ? /^s[1-9]\d*$/.test(item.id) : item.id === `s${index + 1}`,

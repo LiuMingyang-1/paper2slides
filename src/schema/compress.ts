@@ -22,8 +22,8 @@ export function compressionValidator(
   overflowing: readonly string[],
   validateSlide: Validator<Slide>,
 ): Validator<Slide> {
-  return (input) => {
-    const result = validateSlide(input);
+  return (input, warnings) => {
+    const result = validateSlide(input, warnings);
     const slide = result.value;
     requireValid(slide.layout === original.layout && slide.figureId === original.figureId && slide.notes === original.notes,
       "slide", "应保留版式、原图和备注");

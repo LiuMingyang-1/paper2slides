@@ -175,6 +175,8 @@ export interface LlmCallLog {
   error?: string;
   /** Well-formed references absent from the evidence supplied to this step. */
   missingEvidenceIds?: string[];
+  normalizations?: string[];
+  rawOutput?: string;
 }
 
 export interface Deck {
