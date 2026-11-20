@@ -24,7 +24,11 @@ const fact = (text: string, ...evidenceIds: string[]): Point => ({ kind: "fact",
 const slides: Slide[] = [
   {
     id: "s1", outlineId: "o1", layout: "title",
-    slots: { title: fixturePaper.title, authors: fixturePaper.authors.join(" · ") },
+    slots: {
+      title: fixturePaper.title,
+      subtitle: "比较不同召回策略的召回率与查询时延",
+      authors: fixturePaper.authors.join(" · "),
+    },
     notes: "演示使用虚构的论文数据。",
   },
   {
@@ -36,6 +40,7 @@ const slides: Slide[] = [
         fact(blocks[1]!.text, "e2-2"),
         { kind: "opinion", text: "可以按页回溯候选段落。", evidenceIds: ["e2-1"] },
       ],
+      takeaway: [{ kind: "opinion", text: "按段落召回，按页码回溯原文。", evidenceIds: ["e2-1", "e2-2"] }],
     },
   },
   {
@@ -43,6 +48,7 @@ const slides: Slide[] = [
     slots: {
       title: "Recall@10 随检索策略变化",
       bullets: [fact("混合召回的 Recall@10 为 81.6%。", "e4-2"), fact("单路召回的 Recall@10 为 72.6%。", "e4-1")],
+      takeaway: [fact("混合召回率高 9 个百分点。", "e4-1", "e4-2")],
       caption: [fact(blocks[2]!.text, "e3-1")],
     },
   },
@@ -70,6 +76,17 @@ const slides: Slide[] = [
       left: [fact(blocks[5]!.text, "e5-1"), { kind: "summary", text: "人工判断给出了检索任务的参考结果。", evidenceIds: ["e5-1"] }],
       rightHeading: "时延核验",
       right: [fact("单路召回的查询时延为 68 ms。", "e4-1"), fact("混合召回的查询时延为 70 ms。", "e4-2")],
+    },
+  },
+  {
+    id: "s7", outlineId: "o7", layout: "bullets",
+    slots: {
+      title: "检索流程",
+      bullets: [
+        fact("按段落切分", "e2-1"),
+        fact("按词面匹配召回", "e2-2"),
+        fact("按语义相似度重排", "e2-2"),
+      ],
     },
   },
 ];

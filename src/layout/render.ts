@@ -1,5 +1,6 @@
 import { LAYOUTS } from "../schema/layouts";
 import type { Paper, Point, PointVerification, Slide } from "../types";
+import { fitSlide } from "./measure";
 import "./slide.css";
 
 export interface RenderOptions {
@@ -86,28 +87,49 @@ export function renderSlide(slide: Slide, options: RenderOptions = {}): HTMLElem
   };
 
   const title = mark(textBox("h1", text("title"), "p2s-title"), "title");
-  root.append(title);
   if (slide.layout === "title") {
+    const cover = make("div", "p2s-cover");
+    cover.dataset.fitRegion = "";
+    cover.append(title);
+    const subtitle = text("subtitle");
+    if (subtitle) cover.append(mark(textBox("p", subtitle, "p2s-subtitle"), "subtitle"));
     const authors = text("authors");
-    if (authors) root.append(mark(textBox("p", authors, "p2s-authors"), "authors"));
-    title.dataset.fitRegion = "";
+    if (authors) cover.append(mark(textBox("p", authors, "p2s-authors"), "authors"));
+    root.append(cover);
     return root;
   }
 
+  root.append(title);
   title.dataset.fitRegion = "";
   const body = make("div", "p2s-body");
   body.dataset.fitRegion = "";
   root.append(body);
+  const bulletContent = () => {
+    const content = make("div", "p2s-content");
+    const bullets = list("bullets");
+    if (bullets) content.append(bullets);
+    const takeaway = points("takeaway")[0];
+    if (takeaway) {
+      const panel = mark(make("aside", "p2s-takeaway"), "takeaway");
+      panel.dataset.pptx = "shape";
+      const label = textBox("span", "要点", "p2s-takeaway-label");
+      const items = make("ul", "p2s-takeaway-list");
+      const message = textBox("li", takeaway.text, "p2s-takeaway-text");
+      cite(message, takeaway, "takeaway", 0);
+      items.append(message);
+      panel.append(label, items);
+      content.append(panel);
+    }
+    return content;
+  };
   switch (slide.layout) {
     case "bullets": {
-      const bullets = list("bullets");
-      if (bullets) body.append(bullets);
+      body.append(bulletContent());
       break;
     }
     case "bullets_figure": {
       body.classList.add("p2s-figure-layout");
-      const bullets = list("bullets");
-      body.append(bullets ?? make("div"));
+      body.append(bulletContent());
       const frame = make("figure", "p2s-figure");
       const media = make("div", "p2s-media");
       frame.append(media);
@@ -117,7 +139,13 @@ export function renderSlide(slide: Slide, options: RenderOptions = {}): HTMLElem
         const img = make("img");
         img.dataset.pptx = "image";
         img.alt = figure.label;
-        img.addEventListener("error", showFallback, { once: true });
+        // The interactive preview can mount and fit before the PNG has decoded.
+        const refit = () => { if (root.isConnected) fitSlide(root); };
+        img.addEventListener("load", refit, { once: true });
+        img.addEventListener("error", () => {
+          showFallback();
+          refit();
+        }, { once: true });
         img.src = figure.imageDataUrl;
         media.append(img);
       } else {
@@ -133,6 +161,7 @@ export function renderSlide(slide: Slide, options: RenderOptions = {}): HTMLElem
       break;
     }
     case "key_numbers": {
+      const content = make("div", "p2s-content");
       const numbers = mark(make("div", "p2s-numbers"), "numbers");
       points("numbers").forEach((point, index) => {
         const [value = "", label = ""] = point.text.split("|", 2).map((part) => part.trim());
@@ -143,9 +172,10 @@ export function renderSlide(slide: Slide, options: RenderOptions = {}): HTMLElem
         item.append(metric, description);
         numbers.append(item);
       });
-      body.append(numbers);
+      content.append(numbers);
       const context = list("context");
-      if (context) body.append(context);
+      if (context) content.append(context);
+      body.append(content);
       break;
     }
     case "table": {
@@ -174,15 +204,16 @@ export function renderSlide(slide: Slide, options: RenderOptions = {}): HTMLElem
       break;
     }
     case "two_column": {
-      body.classList.add("p2s-columns");
+      const content = make("div", "p2s-content p2s-columns");
       for (const slot of ["left", "right"]) {
         const column = make("section", "p2s-column");
         const heading = `${slot}Heading`;
         column.append(mark(textBox("h2", text(heading), "p2s-column-heading"), heading));
         const items = list(slot);
         if (items) column.append(items);
-        body.append(column);
+        content.append(column);
       }
+      body.append(content);
       break;
     }
   }

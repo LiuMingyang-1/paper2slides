@@ -24,7 +24,7 @@ const names = {
 const roots = fixtureDeck.slides.map((slide) => {
   const label = document.createElement("h2");
   label.className = "preview-label";
-  label.textContent = names[slide.layout];
+  label.textContent = slide.layout === "bullets" && !slide.slots.takeaway ? "纯文字要点（内容很少）" : names[slide.layout];
   const frame = document.createElement("div");
   frame.className = "preview-frame";
   const root = renderSlide(slide, { paper: fixturePaper, verifications: fixtureDeck.verifications });

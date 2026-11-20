@@ -12,13 +12,13 @@ afterEach(() => vi.restoreAllMocks());
 
 describe("slide templates", () => {
   it("renders the shared slots for all six layouts and numbers citations in DOM order", () => {
-    expect(fixtureDeck.slides.map((slide) => slide.layout)).toEqual(LAYOUT_IDS);
+    expect([...new Set(fixtureDeck.slides.map((slide) => slide.layout))]).toEqual(LAYOUT_IDS);
     fixtureDeck.slides.forEach((slide, index) => {
       const root = render(index);
       expect(root.dataset.layout).toBe(slide.layout);
       expect(root.querySelector("h1")?.textContent).toBe(slide.slots.title);
       expect([...root.querySelectorAll<HTMLElement>("[data-slot]")].map((el) => el.dataset.slot))
-        .toEqual(Object.keys(LAYOUTS[slide.layout].slots));
+        .toEqual(Object.keys(LAYOUTS[slide.layout].slots).filter((name) => name in slide.slots));
 
       const refs = [...root.querySelectorAll("sup")];
       const points = Object.keys(LAYOUTS[slide.layout].slots).flatMap((name) => {
@@ -40,10 +40,13 @@ describe("slide templates", () => {
   it("keeps optional content absent and renders structural elements", () => {
     const title = fixtureDeck.slides[0]!;
     expect(renderSlide({ ...title, slots: { title: title.slots.title! } }).querySelector("p")).toBeNull();
+    expect(render(0).querySelector(".p2s-subtitle")?.textContent).toBe(title.slots.subtitle);
+    expect(render(1).querySelector(".p2s-takeaway-label")?.textContent).toBe("要点");
+    expect(render(6).querySelector(".p2s-takeaway")).toBeNull();
     expect(render(1).querySelector(".p2s-opinion")?.textContent).toBe("解读");
     const figure = render(2);
     expect(figure.querySelector("img")?.getAttribute("src")).toMatch(/^data:image\/png;base64,/);
-    expect(figure.querySelector("figcaption sup")?.textContent).toBe("[3]");
+    expect(figure.querySelector("figcaption sup")?.textContent).toBe("[4]");
     expect(figure.querySelector("footer")?.textContent).toBe("p.3, p.4");
     expect(render(3).querySelector(".p2s-metric")?.textContent).toBe("81.6%");
     expect([...render(4).querySelectorAll("thead th")].map((el) => el.textContent))
@@ -65,6 +68,21 @@ describe("slide templates", () => {
 });
 
 describe("overflow measurement", () => {
+  it("enlarges sparse content until it reaches the target and resets when refitting", () => {
+    const root = render(6);
+    const body = root.querySelector<HTMLElement>(".p2s-body")!;
+    const content = root.querySelector<HTMLElement>(".p2s-content")!;
+    vi.spyOn(body, "clientHeight", "get").mockReturnValue(500);
+    let regularHeight = 240;
+    vi.spyOn(content, "offsetHeight", "get").mockImplementation(() =>
+      regularHeight - 10 * Number.parseInt(root.style.getPropertyValue("--p2s-reduction"), 10));
+    expect(fitSlide(root).overflowingSlots).toEqual([]);
+    expect(root.style.getPropertyValue("--p2s-reduction")).toBe("-8px");
+    regularHeight = 380;
+    expect(fitSlide(root).overflowingSlots).toEqual([]);
+    expect(root.style.getPropertyValue("--p2s-reduction")).toBe("0px");
+  });
+
   it("reduces fonts in steps and reports slots that still overflow at the floors", () => {
     const root = render(1);
     const title = root.querySelector<HTMLElement>("[data-slot=title]")!;

@@ -14,61 +14,123 @@
   font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
   text-align: left;
   --p2s-accent: #205f71;
+  --p2s-accent-tint: #e9f3f4;
   --p2s-muted: #455461;
   --p2s-rule: #d8dfe2;
   --p2s-reduction: 0px;
-  /* At 128 px/in, 25px and 18px export above the 14pt and 10pt floors. */
-  --p2s-body-size: max(25px, calc(33px - var(--p2s-reduction)));
-  --p2s-note-size: max(18px, calc(22px - var(--p2s-reduction)));
+  /* 128 px/in puts the body floor at 14pt and the note floor at 10pt.
+     The 26pt body ceiling gives sparse lists more presence while keeping the title dominant. */
+  --p2s-body-size: clamp(25px, calc(33px - var(--p2s-reduction)), 46px);
+  --p2s-note-size: clamp(18px, calc(22px - var(--p2s-reduction)), 22px);
+  --p2s-leading: clamp(1.4em, calc(1.4em - var(--p2s-reduction) / 2), 1.55em);
+  --p2s-list-gap: clamp(12px, calc(19px - 2.5 * var(--p2s-reduction)), 51px);
+  /* Content headings run from 16–29pt. The lower bound keeps a long title above the body floor. */
+  --p2s-title-max: 52px;
+  --p2s-title-min: 28px;
 }
 
 .p2s-slide .p2s-text {
   margin: 0;
   font-size: var(--p2s-body-size);
-  line-height: 1.4;
+  line-height: var(--p2s-leading);
   overflow-wrap: anywhere;
   white-space: pre-line;
 }
 
 .p2s-slide .p2s-title {
   flex: none;
-  max-height: 144px;
+  max-height: 2lh;
   overflow: hidden;
-  font-size: max(28px, calc(49px - var(--p2s-reduction)));
-  line-height: 1.38;
+  color: var(--p2s-accent);
+  font-size: var(--p2s-title-size, var(--p2s-title-max));
+  line-height: 1.4;
   font-weight: 700;
 }
 
+.p2s-slide .p2s-title[data-single-line] {
+  white-space: nowrap;
+}
+
 .p2s-slide[data-layout="title"] {
-  justify-content: center;
-  gap: 26px;
+  background: #123641;
+  color: #fff;
+  /* The cover uses a 20–41pt title range for a distinct hierarchy. */
+  --p2s-title-max: 72px;
+  --p2s-title-min: 36px;
+}
+
+.p2s-slide .p2s-cover {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: safe center;
+  gap: 20px;
 }
 
 .p2s-slide[data-layout="title"] .p2s-title {
-  max-height: 416px;
-  font-size: max(28px, calc(72px - 2 * var(--p2s-reduction)));
+  color: inherit;
+}
+
+.p2s-slide .p2s-subtitle {
+  flex: none;
+  color: #d4eaed;
 }
 
 .p2s-slide .p2s-authors {
-  max-height: 144px;
-  overflow: hidden;
-  color: var(--p2s-muted);
+  flex: none;
+  margin-top: 18px;
+  color: #b9d5d9;
+  font-size: var(--p2s-note-size);
 }
 
 .p2s-slide .p2s-body {
   flex: 1 1 auto;
   min-height: 0;
   overflow: hidden;
+  display: grid;
+  align-content: safe center;
 }
 
 .p2s-slide .p2s-list {
   box-sizing: border-box;
   display: grid;
-  gap: 19px;
+  gap: var(--p2s-list-gap);
   list-style: disc outside;
   margin: 0;
-  /* 48px matches the 27pt native PPTX bullet indent. */
-  padding: 0 0 3px 48px;
+  padding: 0 0 3px 36px;
+}
+
+.p2s-slide .p2s-content {
+  min-width: 0;
+  display: grid;
+  gap: var(--p2s-list-gap);
+}
+
+.p2s-slide .p2s-takeaway {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  align-items: baseline;
+  gap: 16px;
+  padding: 14px 20px;
+  background: var(--p2s-accent-tint);
+}
+
+.p2s-slide .p2s-takeaway-label {
+  font-size: var(--p2s-note-size);
+  font-weight: 700;
+  color: var(--p2s-accent);
+}
+
+.p2s-slide .p2s-takeaway-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.p2s-slide .p2s-takeaway-text {
+  font-size: clamp(25px, calc(var(--p2s-body-size) - 4px), 33px);
 }
 
 .p2s-slide .p2s-citation {
@@ -114,37 +176,35 @@
 }
 
 .p2s-slide .p2s-figure-layout {
-  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  /* 666px of the 1280px slide, with the remainder shared by text, gutter and margins. */
+  grid-template-columns: minmax(0, 1fr) 666px;
   grid-template-rows: minmax(0, 1fr);
+  align-items: safe center;
+  /* The narrower figure column uses a 21pt body ceiling to limit line breaks. */
+  --p2s-body-size: clamp(25px, calc(33px - var(--p2s-reduction)), 38px);
+  --p2s-list-gap: clamp(12px, calc(19px - 2 * var(--p2s-reduction)), 29px);
 }
 
-.p2s-slide .p2s-figure-layout > .p2s-list,
 .p2s-slide .p2s-column {
   align-self: start;
 }
 
 .p2s-slide .p2s-figure {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  gap: 13px;
+  display: grid;
+  gap: 8px;
   margin: 0;
+  text-align: center;
 }
 
 .p2s-slide .p2s-media {
-  flex: 1 1 auto;
-  min-height: 0;
-  position: relative;
   display: grid;
-  align-items: center;
+  justify-items: center;
 }
 
 .p2s-slide .p2s-media img {
-  position: absolute;
-  inset: 0;
-  max-width: 100%;
-  max-height: 100%;
-  margin: auto;
+  display: block;
+  width: min(100%, var(--p2s-image-width, 100%));
+  height: auto;
 }
 
 .p2s-slide .p2s-caption,
@@ -158,12 +218,11 @@
   grid-auto-columns: minmax(0, 1fr);
   grid-auto-flow: column;
   gap: 34px;
-  margin: 17px 0 34px;
 }
 
 .p2s-slide .p2s-metric {
   color: var(--p2s-accent);
-  font-size: max(32px, calc(67px - 2 * var(--p2s-reduction)));
+  font-size: clamp(32px, calc(67px - 2 * var(--p2s-reduction)), 82px);
   line-height: 1.17;
   font-weight: 700;
   margin-bottom: 10px;
@@ -176,7 +235,7 @@
 }
 
 .p2s-slide .p2s-table .p2s-text {
-  padding: 10px 15px;
+  padding: clamp(8px, calc(10px - var(--p2s-reduction)), 23px) 15px;
   vertical-align: top;
   border-bottom: 1px solid var(--p2s-rule);
 }
