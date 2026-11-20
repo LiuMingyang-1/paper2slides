@@ -1,5 +1,7 @@
 <div align="center">
 
+<img src="docs/images/icon-256.png" width="112" height="112" alt="">
+
 # Paper2Slides
 
 **上传一篇论文 PDF，生成每句话有出处、每个数字经过核验的组会汇报 PPT。**

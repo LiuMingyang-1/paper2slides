@@ -126,16 +126,9 @@ summary { cursor: pointer; }
 .topbar.is-scrolled::after { opacity: 1; }
 .brand, .top-actions { display: flex; align-items: center; gap: .75rem; }
 .brand-icon {
-  display: grid;
-  place-items: center;
-  width: 1.875rem;
-  height: 1.875rem;
-  border-radius: .5rem;
-  background: var(--primary-fill);
-  color: #fff;
-  font-size: 1rem;
-  font-weight: 650;
-  line-height: 1;
+  flex: none;
+  width: 2rem;
+  height: 2rem;
 }
 .brand strong { display: block; font-size: .9375rem; line-height: 1.15; letter-spacing: -.015em; }
 .brand small { display: block; margin-top: .125rem; font-size: .6875rem; line-height: 1.15; }

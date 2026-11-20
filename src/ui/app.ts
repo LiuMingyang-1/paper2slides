@@ -15,6 +15,7 @@ import { failureText, moduleName, strings, warningText, type Language } from "./
 import { createVectorSearch, type EmbeddingCallLog } from "./vector-search";
 
 const MAX_BYTES = 25 * 1024 * 1024;
+const brandIconUrl = new URL("./assets/icon.svg", import.meta.url).href;
 type Preview = ReturnType<typeof renderPreview>;
 type ProgressLabel = "parsing" | "cropping" | "understand" | "section" | "merge" | "outlining" | "generating" | "embedding" | "compress" | "fitting" | "exporting";
 const phases: Record<PipelineProgress["phase"], ProgressLabel> = {
@@ -270,7 +271,9 @@ export function mountApp(root: HTMLElement, host: AnnaHost | null) {
       toggle.setAttribute("aria-pressed", String(lang === language));
       langs.append(toggle);
     }
-    const icon = el("span", "brand-icon", "P");
+    const icon = el("img", "brand-icon");
+    icon.src = brandIconUrl;
+    icon.alt = "";
     icon.setAttribute("aria-hidden", "true");
     return el("header", "topbar",
       el("div", "brand", icon, el("div", "", el("strong", "", "Paper2Slides"), el("small", "", t().product))),
