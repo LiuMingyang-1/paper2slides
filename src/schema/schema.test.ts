@@ -90,3 +90,37 @@ describe("model output schemas", () => {
     expect(() => schema(original)).toThrow("缩短");
   });
 });
+
+describe("validation feedback for model retries", () => {
+  it("formats nested citation paths with array indexes and concise Chinese rules", () => {
+    const schema = understandingValidator(evidenceIds);
+    expect(() => schema({
+      title: "Paper",
+      oneLiner: "About CNN",
+      modules: [{ kind: "method", points: [{ ...point("CNN"), evidenceIds: ["Figure 2"] }] }],
+    })).toThrow(/^modules\[0\]\.points\[0\]\.evidenceIds\[0\]：应为 e\{页码\}-\{块序号\}$/);
+  });
+
+  it("reports the containing object for unexpected keys without echoing input", () => {
+    expect(() => validate("bullets")({
+      ...slideFor("bullets"),
+      slots: { ...fixtures.bullets, "Untrusted model output": "unexpected contents" },
+    })).toThrow(/^slots：含未定义字段$/);
+  });
+
+  it("caps feedback at three issues and identifies a missing field", () => {
+    expect(() => validate("two_column")({
+      ...slideFor("two_column"),
+      slots: {},
+    })).toThrow(/^slots\.title：应提供此字段；slots\.leftHeading：应提供此字段；slots\.left：应提供此字段$/);
+  });
+
+  it("counts Unicode code points in slot length limits", () => {
+    const schema = validate("title");
+    const chars = LAYOUTS.title.slots.title!.maxChars;
+    const slide = { ...slideFor("title"), slots: { title: "𠀀".repeat(chars) } };
+    expect(schema(slide).value).toEqual(slide);
+    expect(() => schema({ ...slide, slots: { title: slide.slots.title + "𠀀" } }))
+      .toThrow(new RegExp(`^slots\\.title：最多 ${chars} 个字符$`));
+  });
+});

@@ -13,8 +13,10 @@
     "dev": "npm run build && anna-app dev"
   },
   "dependencies": {
+    "minisearch": "7.2.0",
     "pdfjs-dist": "^4.10.38",
-    "pptxgenjs": "^4.0.1"
+    "pptxgenjs": "^4.0.1",
+    "valibot": "1.5.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
