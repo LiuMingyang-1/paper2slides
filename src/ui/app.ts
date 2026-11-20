@@ -5,16 +5,18 @@ import { PROMPTS } from "../prompts/generated";
 import { HybridRetriever } from "../retrieval/hybrid";
 import { outlineValidator } from "../schema/outline";
 import { createCache, sha256 } from "../store/cache";
-import type { Deck, Emphasis, LlmCallLog, Outline, Paper, Understanding } from "../types";
+import { createEmbeddingCache } from "../store/embeddings";
+import type { Deck, Emphasis, LlmCallLog, Outline, Paper, RetrievalFilter, Retriever, Understanding } from "../types";
 import { verifyDeck } from "../verify/citation";
 import { base64, button, download, el } from "./dom";
 import { renderPreview } from "./preview";
 import { exportSlides, PPTX_MIME, resolveOverflow } from "./slides-adapter";
 import { failureText, moduleName, strings, warningText, type Language } from "./strings";
+import { createVectorSearch, type EmbeddingCallLog } from "./vector-search";
 
 const MAX_BYTES = 25 * 1024 * 1024;
 type Preview = ReturnType<typeof renderPreview>;
-type ProgressLabel = "parsing" | "cropping" | "understand" | "section" | "merge" | "outlining" | "generating" | "compress" | "fitting" | "exporting";
+type ProgressLabel = "parsing" | "cropping" | "understand" | "section" | "merge" | "outlining" | "generating" | "embedding" | "compress" | "fitting" | "exporting";
 const phases: Record<PipelineProgress["phase"], ProgressLabel> = {
   understand: "understand", section: "section", merge: "merge", outline: "outlining", slides: "generating", compress: "compress",
 };
@@ -26,7 +28,8 @@ function editedOutlineKey(paper: Paper, language: Language, emphasis: Emphasis) 
 export function mountApp(root: HTMLElement, host: AnnaHost | null) {
   const hostCache = createCache(host?.storage);
   const demoCache = createCache();
-  const logs: LlmCallLog[] = [];
+  const embeddingCache = host ? createEmbeddingCache() : undefined;
+  const logs: (LlmCallLog | EmbeddingCallLog)[] = [];
   let quota = 0;
   let hasUnknownQuota = false;
   let language: Language = "zh";
@@ -37,6 +40,11 @@ export function mountApp(root: HTMLElement, host: AnnaHost | null) {
   let bytes: ArrayBuffer | undefined;
   let filename = "";
   let demo = false;
+  let vectorEnabled = false;
+  let vectorFallback = false;
+  let vectorSearch: ReturnType<typeof createVectorSearch> | undefined;
+  let lexical: Retriever | undefined;
+  let retriever: Retriever | undefined;
   let busy = false;
   let deck: Deck | undefined;
   let understanding: Understanding | undefined;
@@ -58,7 +66,15 @@ export function mountApp(root: HTMLElement, host: AnnaHost | null) {
   const isDirty = () => !!outline && (draftedFor !== output || outline.emphasis !== emphasis);
 
   function updateQuota() {
-    quotaLabel.textContent = `${t().quota}  ${quota}${hasUnknownQuota ? "+" : ""}`;
+    const formatted = new Intl.NumberFormat(language, { maximumFractionDigits: 3 }).format(quota);
+    quotaLabel.textContent = `${t().quota}  ${formatted}${hasUnknownQuota ? "+" : ""}`;
+  }
+
+  function recordCall(log: LlmCallLog | EmbeddingCallLog) {
+    logs.push(log);
+    quota += log.quotaConsumed ?? 0;
+    if (log.quotaConsumed === null) hasUnknownQuota = true;
+    updateQuota();
   }
 
   function report(label: ProgressLabel, completed?: number, total?: number, cached = false) {
@@ -133,18 +149,16 @@ export function mountApp(root: HTMLElement, host: AnnaHost | null) {
       if (settings?.emphasis === "balanced" || settings?.emphasis === "method" || settings?.emphasis === "experiments") {
         emphasis = settings.emphasis;
       }
+      retriever = lexical = new HybridRetriever(paper.id, paper.blocks);
+      if (file && embeddingCache) {
+        vectorSearch = createVectorSearch(paper, activeHost, embeddingCache, () => report("embedding"), recordCall);
+      }
       pipeline = createPipeline(paper, {
         host: activeHost,
-        // Lexical mode avoids embedding charges before a slide cache hit can be checked.
-        retriever: new HybridRetriever(paper.id, paper.blocks),
+        retriever: { search: (query: string, k: number, filter?: RetrievalFilter) => retriever!.search(query, k, filter) },
         cache: cache(),
         onProgress: (event) => report(phases[event.phase], event.completed, event.total, event.cacheHit),
-        llm: { onCall(log) {
-          logs.push(log);
-          quota += log.quotaConsumed ?? 0;
-          if (log.quotaConsumed === null) hasUnknownQuota = true;
-          updateQuota();
-        } },
+        llm: { onCall: recordCall },
       });
     });
   }
@@ -152,7 +166,8 @@ export function mountApp(root: HTMLElement, host: AnnaHost | null) {
   function reset() {
     paper = bytes = outline = understanding = pipeline = deck = error = undefined;
     exportUrl = draftedFor = undefined;
-    demo = false;
+    demo = vectorEnabled = vectorFallback = false;
+    vectorSearch = lexical = retriever = undefined;
     compressionFailed = false;
     overflow = [];
     activeSlide = 0;
@@ -183,6 +198,8 @@ export function mountApp(root: HTMLElement, host: AnnaHost | null) {
     if (isDirty() || !outline || outline.items.some(({ title }) => !title.trim())) return;
     return run("generating", async () => {
       await cache().set(editedOutlineKey(paper!, output, emphasis), structuredClone(outline!));
+      vectorFallback = false;
+      retriever = vectorEnabled && vectorSearch ? vectorSearch.retriever(() => { vectorFallback = true; }) : lexical;
       const slides = await pipeline!.generateSlides(understanding!, outline!, output);
       for (const slide of slides) {
         const item = outline!.items.find(({ id }) => id === slide.outlineId);
@@ -291,9 +308,45 @@ export function mountApp(root: HTMLElement, host: AnnaHost | null) {
         (value) => { emphasis = value; }));
   }
 
-  function estimate(label: string, count: string) {
-    return el("div", "estimate", el("div", "", label, el("strong", "", `${demo ? 0 : count} ${t().times}`)),
-      el("small", "", demo ? t().demoDetail : t().estimateHint));
+  function estimate(label: string, count: string, budget: string | undefined, detail: string = t().estimateHint) {
+    return el("div", "estimate", el("div", "", label,
+      el("strong", "", demo ? `0 ${t().quotaUnit}` : budget ? `${budget} ${t().quotaUnit}` : t().longPaper)),
+      el("small", "", demo ? t().demoDetail : `${count} ${t().times} · ${detail}`));
+  }
+
+  function vectorControl(current: Outline, onPending: (pending: boolean) => void) {
+    const search = vectorSearch;
+    if (!search) return;
+    const toggle = el("input");
+    toggle.type = "checkbox";
+    toggle.checked = vectorEnabled;
+    toggle.setAttribute("aria-describedby", "vector-description vector-estimate");
+    const detail = el("small", "", t().vectorDetail);
+    detail.id = "vector-description";
+    const cost = el("small", "vector-cost");
+    cost.id = "vector-estimate";
+    cost.setAttribute("aria-live", "polite");
+    const section = el("section", "vector-control", el("label", "", toggle, t().vectorToggle), detail, cost);
+    let revision = 0;
+    const update = async () => {
+      const requested = ++revision;
+      cost.hidden = !toggle.checked;
+      onPending(!cost.hidden);
+      if (cost.hidden) return;
+      cost.textContent = t().vectorCalculating;
+      const { documents, queries } = await search.estimate(current.items);
+      if (requested !== revision) return;
+      const total = documents + queries;
+      cost.textContent = total
+        ? `${t().vectorExtra} ≥ ${total} ${t().quotaUnit} · ${t().vectorIndex} ${documents} + ${t().vectorQueries} ${queries} ${t().times}`
+        : t().vectorCached;
+      onPending(false);
+    };
+    toggle.addEventListener("change", () => {
+      vectorEnabled = toggle.checked;
+      void update();
+    });
+    return { section, update };
   }
 
   function source() {
@@ -306,8 +359,8 @@ export function mountApp(root: HTMLElement, host: AnnaHost | null) {
       ...(paper!.warnings.length ? [el("ul", "warnings", ...paper!.warnings.map((warning) =>
         el("li", "", language === "zh" ? warning.message : warningText(warning.code), warning.pages?.length ? ` · p. ${warning.pages.join(", ")}` : "")))] : []),
       controls(() => {}),
-      estimate(t().setupEstimate, String(setupCalls)),
-      ...(demo ? [] : [estimate(t().fullEstimate, `${setupCalls + 5}–${setupCalls + 8}`)]),
+      estimate(t().setupEstimate, String(setupCalls), setupCalls > 2 ? undefined : "2–4", t().analysisHint),
+      ...(demo ? [] : [estimate(t().fullEstimate, `${setupCalls + 5}–${setupCalls + 8}`, setupCalls > 2 ? undefined : "5–15")]),
       button(t().start, () => { void draft(); }, "primary"));
   }
 
@@ -318,11 +371,13 @@ export function mountApp(root: HTMLElement, host: AnnaHost | null) {
     const refresh = button(t().update, () => { void draft(); });
     const submit = button(t().generate, () => { void generate(); }, "primary");
     const stale = el("p", "muted", t().settingsChanged);
+    let vectorPending = false;
     const sync = () => {
       const dirty = isDirty();
       refresh.hidden = stale.hidden = !dirty;
-      submit.disabled = busy || dirty || current.items.some(({ title }) => !title.trim());
+      submit.disabled = busy || dirty || vectorPending || current.items.some(({ title }) => !title.trim());
     };
+    const vector = vectorControl(current, (pending) => { vectorPending = pending; sync(); });
     const saveEdits = () => {
       if (current.items.every(({ title }) => title.trim())) {
         void cache().set(editedOutlineKey(paper!, draftedFor!, current.emphasis), structuredClone(current));
@@ -334,7 +389,11 @@ export function mountApp(root: HTMLElement, host: AnnaHost | null) {
         field.value = item.title;
         field.maxLength = 150;
         field.setAttribute("aria-label", `${t().title} ${index + 1}`);
-        field.addEventListener("input", () => { item.title = field.value; sync(); });
+        field.addEventListener("input", () => {
+          item.title = field.value;
+          sync();
+          void vector?.update();
+        });
         field.addEventListener("change", saveEdits);
         const move = (direction: number) => {
           const next = index + direction;
@@ -356,7 +415,9 @@ export function mountApp(root: HTMLElement, host: AnnaHost | null) {
           el("div", "row-content", field, el("small", "", item.modules.map((kind) => moduleName(kind, language)).join(" · ") || item.intent)),
           el("div", "row-actions", up, down, remove));
       }));
-      amount.replaceChildren(estimate(t().slideEstimate, String(current.items.length)));
+      const count = current.items.length;
+      amount.replaceChildren(estimate(t().slideEstimate, String(count), `${Math.ceil(count * 0.5)}–${Math.ceil(count * 1.35)}`));
+      void vector?.update();
       sync();
     };
     const amount = el("div");
@@ -369,7 +430,7 @@ export function mountApp(root: HTMLElement, host: AnnaHost | null) {
         return details;
       }));
     editor.append(el("div", "outline-main", el("h1", "", t().confirm), el("p", "muted", t().outlineHelp),
-      controls(sync), stale, refresh, rows, amount, submit), interpretation);
+      controls(sync), stale, refresh, rows, amount, ...(vector ? [vector.section] : []), submit), interpretation);
     return editor;
   }
 
@@ -400,6 +461,7 @@ export function mountApp(root: HTMLElement, host: AnnaHost | null) {
       }
       body.append(actions);
       if (demo) body.append(el("p", "fixture-note", t().fixtureHint));
+      if (vectorFallback) body.append(el("p", "warnings", t().vectorFallback));
       if (compressionFailed) body.append(el("p", "warnings", t().compressError));
       if (overflow.length) body.append(el("p", "error", `${t().overflow} (${overflow.join(", ")})`));
       preview = renderPreview(deck, paper, bytes, language, activeSlide, (index) => { activeSlide = index; });

@@ -210,3 +210,9 @@ summary { cursor: pointer; }
 @media (prefers-reduced-motion: no-preference) {
   button { transition: background-color .14s, border-color .14s; }
 }
+
+.vector-control { margin: .95rem 0 1rem; padding: .7rem 1rem; border: 1px solid var(--edge); border-radius: 5px; }
+.vector-control label { display: flex; align-items: center; gap: .5rem; font-weight: 650; cursor: pointer; }
+.vector-control input { accent-color: var(--accent); }
+.vector-control small { display: block; margin-top: .22rem; }
+.vector-control .vector-cost { color: var(--deep); font-weight: 650; }
