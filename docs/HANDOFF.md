@@ -4,7 +4,7 @@
 
 ## 1. 一句话现状
 
-**功能完成，真实模型端到端已跑通，内容来源测试已通过，README 已写好。** 剩下的是：合并 T17（PPTX 非法字符修复），然后**由用户决定**发布、仓库是否公开，最后用另一个账号装一次。
+**功能完成，真实模型端到端已跑通，内容来源测试已通过，README 已写好，已知 bug 已修。** 剩下的是：**由用户决定**发布、仓库是否公开，最后用另一个账号装一次。
 
 ## 2. 环境与入口
 
@@ -19,7 +19,7 @@
 
 ```bash
 npm install
-npm test                       # 204 个测试
+npm test                       # 207 个测试
 npm run build                  # 编译提示词 + 类型检查 + 打包到 bundle/
 anna-app validate
 npm run dev:web                # 纯前端 http://localhost:5173/ ——「试用 BERT Demo」零额度
@@ -46,8 +46,8 @@ npm run build && anna-app dev --port 5182 --no-watch   # 本地 harness，连真
 
 ## 4. 待办（按顺序）
 
-### 4.1 合并 T17（进行中）
-gpt-6.2-sol 在分支 `task/T17-pptx-xml` 修 PPTX 导出的 XML 非法字符（导出侧集中过滤 + 解析侧清理 + XML 层校验）。回来后验收：改动范围、XML 校验测试、四项检查全绿，再合并。
+### 4.1 ~~合并 T17~~（已完成）
+PPTX 导出与 PDF 解析两侧统一过滤 XML 非法字符，e2e 脚本导出校验到 XML 层。
 
 ### 4.2 发布（需用户决定，不要擅自执行）
 1. `anna-app apps publish` → `anna-app apps submit-review`（用户会联系 HR 加速审核）。
