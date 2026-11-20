@@ -6,3 +6,4 @@ src/prompts/generated.ts
 .DS_Store
 eval/out/
 .env*
+.local/
