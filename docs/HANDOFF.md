@@ -42,7 +42,9 @@ npm run build && anna-app dev --port 5182 --no-watch   # 本地 harness，连真
 | `eval/e2e/` | 端到端自动化脚本 | 见 §6 |
 | `eval/grounding/` | 内容来源测试：篡改表、篡改 PDF 生成器、报告 | [REPORT.md](../eval/grounding/REPORT.md) |
 | `eval/runs/2026-11-21/` | run5–7、三项来源测试的全部产物 | 截图、核验文字、calls.json、PPTX |
-| `docs/images/` | README 用图 | `slides-gallery.png` 由真实截图拼成 |
+| `docs/images/` | README 用图、图标、改版截图 | `slides-gallery.png` 由真实截图拼成；`icon-256.png` 也是商店图标（`app.json` 的 `logo_file`） |
+| `src/ui/assets/icon.svg`, `public/` | App 图标、favicon | 苹果风格界面规范见 [UI-REDESIGN.md](UI-REDESIGN.md) |
+| `.agents/skills/apple-design/` | 项目内安装的苹果设计 skill（emilkowalski/skills） | `.claude/skills/` 下为软链接 |
 
 ## 4. 待办（按顺序）
 
