@@ -94,7 +94,8 @@ export function renderPreview(
     fitPreview(view);
     unbind = bindCitations(view, evidence, language, reveal);
     counter.textContent = `${String(index + 1).padStart(2, "0")} / ${String(deck.slides.length).padStart(2, "0")}`;
-    stats.replaceChildren(...marks(checks));
+    stats.replaceChildren(el("span", "", t.oneSlide),
+      ...(checks.length ? marks(checks) : [el("span", "", t.noChecks)]));
   }
   if (!numberOfFailures) failed.append(el("p", "empty", t.allClear));
   for (const check of deck.verifications.filter(({ status }) => status === "unsupported")) {

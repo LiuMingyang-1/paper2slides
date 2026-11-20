@@ -1,7 +1,7 @@
 import type { Evidence, Point, PointVerification, Slide } from "../types";
 import { tokenize } from "../retrieval/bm25";
 import { crossLanguageTerms, indexLanguage, type LanguageIndex } from "./crosslingual";
-import { type ExtractedNumber, extractNumbers, extractWrittenNumbers, numbersMatch } from "./numbers";
+import { type ExtractedNumber, extractFrequencySplits, extractNumbers, extractSlashSplits, extractWrittenNumbers, numbersMatch } from "./numbers";
 
 // With 70% weight on vocabulary recall, a reordered claim can still pass.
 // The 30% phrase weight rewards a contiguous anchor. A 0.60 cutoff lets
@@ -107,16 +107,25 @@ function tokenizeWithNumbers(text: string, numbers: ExtractedNumber[]): { tokens
 }
 
 function indexText(text: string, side: "point" | "evidence"): IndexedEvidence {
-  const digits = extractNumbers(text);
+  const splits = extractSlashSplits(text);
+  const digits = extractNumbers(text).filter(({ index }) =>
+    !splits.some((split) => index >= split.index && index < split.index + split.raw.length));
+  digits.push(...splits.filter(({ canonical }) => canonical !== "invalid-split" || side === "point"));
+  digits.sort((a, b) => a.index - b.index);
   const written = side === "evidence" ? extractWrittenNumbers(text) : [];
   const values = written.length ? [...digits, ...written].sort((a, b) => a.index - b.index) : digits;
   const { tokens, prose } = tokenizeWithNumbers(text, digits);
+  const numbers = resultNumbers(text, values);
+  if (side === "evidence") {
+    const byIndex = new Map(numbers.map(({ index, owner }) => [index, owner]));
+    for (const split of extractFrequencySplits(text)) numbers.push({ ...split, owner: byIndex.get(split.index) });
+  }
   return {
     tokens,
     // Keep the original words for prose matches and also allow “11 tasks” to
     // share a contiguous numeric phrase with “eleven tasks”.
     numericTokens: written.length ? tokenizeWithNumbers(text, values).tokens : undefined,
-    numbers: resultNumbers(text, values),
+    numbers,
     language: indexLanguage(prose),
   };
 }
@@ -181,7 +190,7 @@ function verifyPoint(
     return { value: claim.raw, found, wrongOwner };
   });
   const missingNumbers = numbers.filter(({ found }) => !found);
-  const crossLanguage = crossLanguageTerms(claim.language, sources.map(({ language }) => language));
+  const crossLanguage = crossLanguageTerms(claim.language, sources.map(({ language }) => language), point.kind);
   const anchorCount = crossLanguage ? crossLanguage.total + numbers.length : 0;
   const matchScore = crossLanguage
     ? (crossLanguage.matched + numbers.length - missingNumbers.length) / Math.max(1, anchorCount)

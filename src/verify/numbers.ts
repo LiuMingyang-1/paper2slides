@@ -111,6 +111,34 @@ export function numbersMatch(claim: ExtractedNumber, evidence: ExtractedNumber):
     && (claim.uncertaintyValue === undefined || claim.uncertaintyValue === evidence.uncertaintyValue);
 }
 
+const WRITTEN_SPLIT = /(?:按|以)[^\S\r\n]*(\d{1,3}\/\d{1,3})(?=[^\S\r\n]*(?:的?比例|构造正负))/dgu;
+const FREQUENCY_PAIR = /(?<![\d.+-])(\d{1,3})[^\S\r\n]*%[^\S\r\n]+of the time\b[^.!?;\n%]*?\band\b[^.!?;\n%\d+-]*?(\d{1,3})[^\S\r\n]*%[^\S\r\n]+of the time\b/giu;
+
+function splitKey(first: string, second: string): string | undefined {
+  return Number(first) + Number(second) === 100 ? `split:${Number(first)}/${Number(second)}` : undefined;
+}
+
+/** A slash split is a pair of shares, not two independent numbers. */
+export function extractSlashSplits(text: string): ExtractedNumber[] {
+  return Array.from(normalizeText(text).matchAll(WRITTEN_SPLIT), (match) => {
+    const [start, end] = match.indices![1]!;
+    const [first, second] = match[1]!.split("/");
+    return {
+      raw: text.slice(start, end), index: start, uncertainty: false,
+      // Keep an explicitly written split checkable even when its shares are invalid.
+      canonical: splitKey(first!, second!) ?? "invalid-split",
+    };
+  });
+}
+
+/** Require both percentages in one coordinated frequency statement. */
+export function extractFrequencySplits(text: string): ExtractedNumber[] {
+  return Array.from(normalizeText(text).matchAll(FREQUENCY_PAIR)).flatMap((match) => {
+    const canonical = splitKey(match[1]!, match[2]!);
+    return canonical ? [{ raw: text.slice(match.index, match.index + match[0].length), index: match.index, canonical, uncertainty: false }] : [];
+  });
+}
+
 /** Additional numeric spellings used by the evidence index only. */
 export function extractWrittenNumbers(text: string): ExtractedNumber[] {
   return extractNumberWords(text).map(({ raw, index, value, percent }) => ({
