@@ -86,18 +86,20 @@ function addObjects(slide: PptxGenJS.Slide, measurement: SlideMeasurement) {
         const style = styleOf(el);
         const bullet = el.dataset.bullet === "true";
         // Include the list gutter in a native bullet box so the text starts at the measured position.
-        const gutter = bullet ? px(styleOf(el.parentElement!).paddingLeft) * INCH_PER_PX : 0;
+        const gutterPx = bullet ? px(styleOf(el.parentElement!).paddingLeft) : 0;
+        const gutter = gutterPx * INCH_PER_PX;
         slide.addText(textRuns(el, style), {
           ...position,
           x: position.x - gutter,
           w: position.w + gutter,
           ...textStyle(style, el.textContent ?? ""),
-          align: style.textAlign === "right" ? "right" : "left",
+          align: style.textAlign === "right" || style.textAlign === "center" ? style.textAlign : "left",
           lineSpacing: px(style.lineHeight) * POINTS_PER_PX,
           valign: "top",
           margin: 0,
           isTextBox: true,
-          bullet,
+          bullet: bullet ? { characterCode: "2022", indent: gutterPx * POINTS_PER_PX } : false,
+          wrap: !el.hasAttribute("data-single-line"),
         });
         break;
       }
@@ -106,6 +108,13 @@ function addObjects(slide: PptxGenJS.Slide, measurement: SlideMeasurement) {
         slide.addImage({ ...position, data: image.src, altText: image.alt });
         break;
       }
+      case "shape":
+        slide.addShape("rect", {
+          ...position,
+          fill: { color: hex(styleOf(el).backgroundColor) },
+          line: { type: "none" },
+        });
+        break;
       case "table":
         addTable(slide, el as HTMLTableElement, measurement);
         break;
@@ -158,7 +167,7 @@ export async function exportPptx(deck: Deck, paper: Paper, options: ExportOption
         throw new Error(`Slide ${source.id} overflows: ${measurement.overflowingSlots.join(", ")}`);
       }
       const slide = pptx.addSlide();
-      slide.background = { color: "FFFFFF" };
+      slide.background = { color: hex(styleOf(measurement.root).backgroundColor) };
       addObjects(slide, measurement);
       slide.addNotes(citationNotes(measurement.root, evidence, source.notes));
     }
