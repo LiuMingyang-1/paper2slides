@@ -1,7 +1,7 @@
 import { autoUpdate, computePosition, flip, offset, shift } from "@floating-ui/dom";
 import type { Evidence, VerifyStatus } from "../types";
 import { el } from "./dom";
-import { glyph, strings, type Language } from "./strings";
+import { strings, type Language } from "./strings";
 
 export function bindCitations(
   slide: HTMLElement, evidence: ReadonlyMap<string, Evidence>, language: Language, reveal: (source: Evidence) => void,
@@ -29,7 +29,7 @@ export function bindCitations(
       if (anchor === ref) return;
       hide();
       anchor = ref;
-      const bubble = el("div", "citation-bubble", el("strong", status, `${glyph[status]} ${t[status]}`));
+      const bubble = el("div", "citation-bubble", el("strong", `stat ${status}`, t[status]));
       bubble.id = "citation-tooltip";
       bubble.role = "tooltip";
       for (const source of sources) {
@@ -42,7 +42,15 @@ export function bindCitations(
       stop = autoUpdate(ref, bubble, () => {
         void computePosition(ref, bubble, {
           strategy: "fixed", placement: "top", middleware: [offset(8), flip(), shift({ padding: 12 })],
-        }).then(({ x, y }) => Object.assign(bubble.style, { left: `${x}px`, top: `${y}px` }));
+        }).then(({ x, y, placement }) => {
+          if (tooltip !== bubble) return;
+          const bounds = ref.getBoundingClientRect();
+          const origin = Math.max(0, Math.min(bubble.offsetWidth, bounds.left + bounds.width / 2 - x));
+          Object.assign(bubble.style, { left: `${x}px`, top: `${y}px` });
+          bubble.style.setProperty("--anchor-x", `${origin}px`);
+          bubble.style.setProperty("--anchor-y", placement === "top" ? "bottom" : "top");
+          bubble.classList.add("is-positioned");
+        });
       });
     }
     ref.addEventListener("pointerenter", show, options);
