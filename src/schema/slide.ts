@@ -103,8 +103,9 @@ export function slideValidator(constraints: SlideConstraints): Validator<Slide> 
       warnings.push(`引用多样性不足：本页仅引用 ${cited.size} 个不同的可用证据 ID`);
     }
     const rawNotes = value.notes?.trim() || undefined;
+    // All valid slot citations already belong to the page's available evidence IDs.
     const notes = rawNotes !== undefined && evidenceText
-      ? normalizeNotes(rawNotes, [...cited].flatMap((id) => evidenceText.get(id) ?? []), warnings)
+      ? normalizeNotes(rawNotes, [...evidenceIds].flatMap((id) => evidenceText.get(id) ?? []), warnings)
       : rawNotes;
     if (notes !== undefined) parseRule(textRule(300), notes, "notes");
     if (layout === "table") {

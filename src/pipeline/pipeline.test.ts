@@ -144,7 +144,7 @@ describe("paper generation", () => {
   });
 
   it("accepts the ideal MLM fixture and drops only unsupported sentences without a retry", async () => {
-    const unsupported = "模型用了 80.5% 的掩码比例。";
+    const unsupported = "模型用了 93.7% 的掩码比例。";
     const complete = vi.fn<AnnaHost["llm"]["complete"]>()
       .mockResolvedValueOnce(reply(JSON.stringify(fixtureSlide(outline.items[0]!))))
       .mockResolvedValueOnce(reply(JSON.stringify(idealMlm)))
@@ -161,7 +161,7 @@ describe("paper generation", () => {
     }
     expect(complete).toHaveBeenCalledTimes(4);
     expect(pipeline.getLlmCalls().at(-1)).toMatchObject({ ok: true, attempt: 1, normalizations: [
-      expect.stringContaining("80.5%"), expect.stringContaining("二十五"),
+      expect.stringContaining("93.7%"), expect.stringContaining("二十五"),
     ] });
   });
 
