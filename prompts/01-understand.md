@@ -1,6 +1,6 @@
 ---
 id: understand
-version: 1
+version: 2
 schema: UnderstandingSchema
 maxTokens: 4096
 temperature: 0.1
@@ -34,6 +34,8 @@ includes: [_shared/citation-rules.md, _shared/output-schema.md]
 `{"title":"论文标题","oneLiner":"一句话（≤280字符）","modules":[{"kind":"method","points":[{"text":"有依据的要点","kind":"fact","evidenceIds":["e3-5"]}]}]}`
 
 标题最多 180 字符。没有可辨认的模块时允许 `modules: []`。
+
+每个模块对象只有 `kind` 和 `points` 两个键，`kind` 只写一次且取模块类型（如 `method`）；`fact`/`summary`/`opinion` 只用于 point 的 `kind`，不要写在模块上。
 
 ## 反例
 

@@ -2,6 +2,7 @@ import { hostErrorCode, type AnnaHost, type LlmCompleteArgs, type LlmCompleteRes
 import { renderPrompt, type PromptDef } from "../prompts/types";
 import type { LlmCallLog } from "../types";
 import { SchemaError, type Validation, type Validator } from "../schema/validation";
+import { parseFirstKeyWins } from "./duplicate-keys";
 
 type ErrorCode = "quota_exceeded" | "invalid_output" | "truncated" | "timeout" | "network" | "host";
 
@@ -20,12 +21,19 @@ export interface LlmClientOptions {
   onCall?: (log: LlmCallLog) => void;
 }
 
+// Duplicate keys found by the last successful parse; reported as normalizations.
+let lastDuplicates: string[] = [];
+
 function tryParse(text: string): { value: unknown } | undefined {
   try {
-    return { value: JSON.parse(text) };
+    JSON.parse(text); // validity check; first-wins re-parse below assumes well-formed JSON
   } catch {
     return undefined;
   }
+  // Models sometimes repeat a key (see duplicate-keys.ts); JSON.parse would keep the last one.
+  const { value, duplicates } = parseFirstKeyWins(text);
+  lastDuplicates = duplicates;
+  return { value };
 }
 
 /** Recover a single JSON root from a fence or prose without extracting nested fragments. */
@@ -135,7 +143,10 @@ export function createLlmClient(host: AnnaHost, options: LlmClientOptions = {}) 
         if (result.stopReason === "maxTokens") {
           throw new LlmError("truncated", "输出达到 token 上限。缩短每个字段，并确保完整闭合 JSON。");
         }
-        validation = validate(parseJson(result.content.text), normalizations);
+        lastDuplicates = [];
+        const parsed = parseJson(result.content.text);
+        for (const path of lastDuplicates) normalizations.push(`丢弃重复键 ${path}（保留首个值）`);
+        validation = validate(parsed, normalizations);
       } catch (error) {
         failure = normalizeError(error);
       }

@@ -23,6 +23,15 @@
 - 样本与配置：使用 fake AnnaHost 验证模板渲染、JSON 校验和回退路径。
 - 指标：引文有效率、引文支持率、数字准确率、关键事实覆盖率、排版合格率、调用次数和额度等待真实评测。
 
+### understand v2（2026-11-20）
+
+- 提示词 ID 与版本：`understand@2`
+- 改动、反例与假设：首次真实调用中，模型在模块对象上重复写了 `kind` 键（`{"kind":"problem","points":[…],"kind":"fact"}`），把 point 的 kind 泄漏到模块层。`JSON.parse` 保留最后一个值，导致 6 个模块全部被判为无效并丢弃，整步失败。修复分两层：代码层用"首个键优先"重新解析并记录 normalization（`src/llm/duplicate-keys.ts`）；提示词层明确"模块只有 kind 和 points 两个键，fact/summary/opinion 只用于 point"。
+- 论文样本、模型、语言与参数：BERT，`xiaomi/mimo-v2.5`（平台分配），zh，temperature 0.1。
+- 指标前后值：v1 理解步骤成功率 0/2（两次运行均失败）；修复后真实原始输出 6/6 模块恢复（回归测试 `src/llm/duplicate-keys.test.ts`）。
+- 调用次数、输入/输出 tokens、额度、延迟：单次 15.8k / 1.7k tokens，2.31 额度，约 30s。
+- fixture 路径、失败样本与后续动作：`src/llm/fixtures/understand-bert-mimo-v1.raw.txt`。
+
 ### v<版本>（<日期>）
 
 - 提示词 ID 与版本：
