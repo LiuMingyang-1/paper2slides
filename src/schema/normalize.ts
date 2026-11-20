@@ -32,7 +32,19 @@ export function trimList<T>(items: T[], max: number, path: string, warnings: str
   return items.slice(0, max);
 }
 
-function normalizePoint(input: unknown, path: string, warnings: string[]): unknown {
+function restoreCitationSeparator(id: string, evidenceIds: ReadonlySet<string>): string {
+  if (!/^e[1-9]\d+$/u.test(id)) return id;
+  let match: string | undefined;
+  for (let split = 2; split < id.length; split++) {
+    const candidate = `${id.slice(0, split)}-${id.slice(split)}`;
+    if (!evidenceIds.has(candidate)) continue;
+    if (match) return id;
+    match = candidate;
+  }
+  return match ?? id;
+}
+
+function normalizePoint(input: unknown, path: string, warnings: string[], evidenceIds: ReadonlySet<string>): unknown {
   const record = normalizeRecord(input, { text: true, kind: true, evidenceIds: true }, path, warnings, {
     type: "kind", evidence_ids: "evidenceIds", evidence: "evidenceIds", ids: "evidenceIds", evidenceId: "evidenceIds",
   });
@@ -47,13 +59,20 @@ function normalizePoint(input: unknown, path: string, warnings: string[]): unkno
     warnings.push(`${path}.evidenceIds 转为数组`);
   }
   if (Array.isArray(record.evidenceIds)) {
-    record.evidenceIds = trimList(record.evidenceIds, MAX_EVIDENCE_IDS, `${path}.evidenceIds`, warnings);
+    record.evidenceIds = trimList(record.evidenceIds, MAX_EVIDENCE_IDS, `${path}.evidenceIds`, warnings).map((id, index) => {
+      if (typeof id !== "string") return id;
+      const restored = restoreCitationSeparator(id, evidenceIds);
+      if (restored !== id) warnings.push(`${path}.evidenceIds[${index}] 补全连字符为 ${restored}`);
+      return restored;
+    });
   }
   return record;
 }
 
-export function normalizePoints(input: unknown, max: number, path: string, warnings: string[]): unknown {
+export function normalizePoints(
+  input: unknown, max: number, path: string, warnings: string[], evidenceIds: ReadonlySet<string>,
+): unknown {
   if (!Array.isArray(input)) return input;
   return trimList(input, max, path, warnings)
-    .map((point, index) => normalizePoint(point, `${path}[${index}]`, warnings));
+    .map((point, index) => normalizePoint(point, `${path}[${index}]`, warnings, evidenceIds));
 }

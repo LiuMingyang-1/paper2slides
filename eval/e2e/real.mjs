@@ -1,4 +1,5 @@
 import { appendFileSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { execFileSync } from "node:child_process";
 import { tmpdir } from "node:os";
 import { join, resolve } from "node:path";
 import { setTimeout as sleep } from "node:timers/promises";
@@ -10,6 +11,9 @@ const stages = ["parse", "understand", "slides", "export"];
 const { values: args } = parseArgs({
   options: {
     pdf: { type: "string" },
+    tamper: { type: "string" },
+    "quota-limit": { type: "string" },
+    "quota-prior": { type: "string", default: "0" },
     out: { type: "string" },
     "stop-after": { type: "string", default: "export" },
     repeat: { type: "string", default: "1" },
@@ -21,7 +25,7 @@ const { values: args } = parseArgs({
 });
 
 if (args.help) {
-  console.log("Usage: node eval/e2e/real.mjs [--demo [--replay-run6]] [--url URL] [--pdf PATH] [--out DIR] [--stop-after parse|understand|slides|export] [--repeat N]");
+  console.log("Usage: node eval/e2e/real.mjs [--demo [--replay-run6]] [--url URL] [--pdf PATH] [--tamper RULES] [--quota-limit N --quota-prior N] [--out DIR] [--stop-after parse|understand|slides|export] [--repeat N]");
   process.exit(0);
 }
 
@@ -31,6 +35,13 @@ if (stop < 0 || !/^\d+$/.test(args.repeat) || !Number.isSafeInteger(repeat) || r
   throw new Error("Use --stop-after parse|understand|slides|export and a positive integer for --repeat. --demo uses the built-in PDF.");
 }
 if (args["replay-run6"] && !args.demo) throw new Error("--replay-run6 requires --demo");
+if (args.tamper && args.demo) throw new Error("--tamper requires a PDF upload");
+const quotaPrior = Number(args["quota-prior"]);
+const quotaLimit = Number(args["quota-limit"]);
+if (args["quota-limit"] !== undefined && (args.demo || !Number.isFinite(quotaLimit)
+  || !Number.isFinite(quotaPrior) || quotaPrior < 0 || quotaLimit <= quotaPrior)) {
+  throw new Error("--quota-limit requires a real harness and 0 <= --quota-prior < --quota-limit");
+}
 
 const pdf = args.pdf ? resolve(args.pdf) : fileURLToPath(new URL("../papers/bert.pdf", import.meta.url));
 const url = args.url ?? (args.demo ? "http://127.0.0.1:5173/" : "http://127.0.0.1:5182/");
@@ -56,6 +67,45 @@ let app;
 let artifacts = out;
 let phase = "connect";
 let downloadDir;
+let uploadPdf = pdf;
+
+async function guardQuota() {
+  // The local Anna dashboard sends each model call through this JSON endpoint.
+  // Reserve one token per prompt byte and maxTokens of output at rounded-up run7 rates.
+  await page.evaluateOnNewDocument(({ prior, limit, origin }) => {
+    if (window !== window.top || location.origin !== origin) return;
+    const originalFetch = window.fetch.bind(window);
+    let spent = prior;
+    let reserved = 0;
+    let unknown = false;
+    window.fetch = async (input, init) => {
+      if (input !== "/api/session/call" || init?.method !== "POST") return originalFetch(input, init);
+      const { ns, method, args } = JSON.parse(init.body);
+      if (ns !== "llm") return originalFetch(input, init);
+      const bytes = new TextEncoder().encode(JSON.stringify(args)).length;
+      const reserve = bytes * 0.000125 + args.maxTokens * 0.00025 + 0.25;
+      if (unknown || method !== "complete" || !Number.isFinite(reserve) || spent + reserved + reserve > limit) {
+        return Response.json({ ok: false, error: { code: "quota_exceeded",
+          message: "Evaluation quota guard stopped this call." } });
+      }
+      reserved += reserve;
+      try {
+        const response = await originalFetch(input, init);
+        const body = await response.clone().json();
+        const quota = body.result?._meta?.quotaConsumed;
+        if (typeof quota === "number" && Number.isFinite(quota) && quota >= 0) spent += quota;
+        // A call without usage could have billed upstream. Do not send another.
+        else unknown = true;
+        return response;
+      } catch (error) {
+        unknown = true;
+        throw error;
+      } finally {
+        reserved -= reserve;
+      }
+    };
+  }, { prior: quotaPrior, limit: quotaLimit, origin: new URL(url).origin });
+}
 
 function button(text) {
   return `button::-p-text(${text})`;
@@ -119,6 +169,7 @@ async function screenshotSlides() {
   phase = "capture";
   const thumbs = await app.$$("nav.strip button.thumb");
   if (!thumbs.length) throw new Error("没有可截图的幻灯片");
+  const slides = [];
   for (const [index, thumb] of thumbs.entries()) {
     const pageNumber = String(index + 1).padStart(2, "0");
     await thumb.click();
@@ -145,9 +196,23 @@ async function screenshotSlides() {
       ].join("\n");
     }, pageNumber);
     await slide.screenshot({ path: join(artifacts, `slide-${pageNumber}.png`) });
+    slides.push(await slide.evaluate((frame) => ({
+      text: frame.innerText,
+      claims: [...frame.querySelectorAll("[data-point]")].map((claim) => {
+        const ref = claim.querySelector(".p2s-citation");
+        const copy = claim.cloneNode(true);
+        copy.querySelectorAll(".p2s-citation, .p2s-opinion").forEach((node) => node.remove());
+        const text = claim.matches("tr") ? [...copy.cells].map((cell) => cell.textContent.trim()).join(" | ")
+          : copy.textContent.trim();
+        return { slot: claim.dataset.point, text, status: ref.dataset.status,
+          evidenceIds: ref.dataset.evidenceIds.split(" ").filter(Boolean),
+          flaggedNumbers: [...claim.querySelectorAll(".unverified-number")].map((item) => item.textContent) };
+      }),
+    })));
     writeFileSync(join(artifacts, `slide-${pageNumber}-verification.txt`), `${verification}\n`);
     log(`已保存第 ${index + 1}/${thumbs.length} 页 · ${state.quota}`);
   }
+  writeFileSync(join(artifacts, "slides.json"), `${JSON.stringify(slides, null, 2)}\n`);
 }
 
 function saveDeck(bytes) {
@@ -258,9 +323,16 @@ async function installRun6Replay() {
 
 try {
   log(`启动 ${args.demo ? "BERT Demo" : "Anna harness"} · 运行 ${repeat} 轮 · 产物目录 ${out}`);
+  if (args.tamper) {
+    uploadPdf = join(out, "input-tampered.pdf");
+    const script = fileURLToPath(new URL("../grounding/tamper-pdf.py", import.meta.url));
+    log(execFileSync("python3", [script, pdf, resolve(args.tamper), uploadPdf], { encoding: "utf8" }).trim());
+  }
+  if (Number.isFinite(quotaLimit)) log(`任务累计额度（运行前） ${quotaPrior} / ${quotaLimit}`);
   browser = await puppeteer.launch({ executablePath: chrome, headless: true, defaultViewport: { width: 1440, height: 1000 } });
   page = await browser.newPage();
   page.setDefaultTimeout(30_000);
+  if (Number.isFinite(quotaLimit)) await guardQuota();
   const verifyReplay = args["replay-run6"] ? await installRun6Replay() : undefined;
   await page.goto(url, { waitUntil: "domcontentloaded" });
   app = args.demo ? page.mainFrame() : await page.waitForFrame((frame) => new URL(frame.url()).pathname.includes("/dev/"));
@@ -279,7 +351,7 @@ try {
       if (args.demo) await app.click(button("试用 BERT Demo"));
       else {
         const input = await app.waitForSelector('input[type="file"]');
-        await input.uploadFile(pdf);
+        await input.uploadFile(uploadPdf);
       }
     }, () => app.$(".source-panel button.primary:enabled"), 120_000);
     verifyReplay?.();

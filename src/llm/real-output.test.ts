@@ -1,10 +1,12 @@
-// Regression tests built from failed BERT calls to the platform model xiaomi/mimo-v2.5.
+// Regression tests built from failed calls to the platform model xiaomi/mimo-v2.5.
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it, vi } from "vitest";
+import visualization from "../../eval/papers/visualization.parsed.json";
 import type { AnnaHost } from "../anna";
 import { PROMPTS } from "../prompts/generated";
 import { slideValidator, type SlideConstraints } from "../schema/slide";
+import { understandingValidator } from "../schema/understanding";
 import type { LlmCallLog } from "../types";
 import { createLlmClient } from "./client";
 import { fakeHost, reply } from "./test-fixtures";
@@ -25,6 +27,32 @@ function run(raw: string, outlineId: string, figures?: Pick<SlideConstraints, "f
 }
 
 describe("real model output regressions", () => {
+  it.each([
+    ["understand-visualization-mimo-compact-ids.raw.txt", ["e3-1", "e3-35"]],
+    ["understand-visualization-mimo-compact-ids-retry.raw.txt", ["e3-1", "e3-3", "e3-5", "e3-6"]],
+  ])("restores uniquely identifiable citation separators in %s", async (name, expectedIds) => {
+    const available = new Set(visualization.blocks.map(({ id }) => id));
+    const complete = vi.fn<AnnaHost["llm"]["complete"]>().mockResolvedValue(reply(fixture(name)));
+    const logs: LlmCallLog[] = [];
+    const client = createLlmClient(fakeHost(complete), { onCall: (log) => logs.push(log) });
+    const result = await client.complete(PROMPTS.understand!, {
+      language: "zh", mode: "full", detail: "full", paper_metadata: visualization.title, evidence_blocks: "…",
+    }, understandingValidator(available));
+    expect(result.modules[2]?.points[0]?.evidenceIds).toEqual(expectedIds);
+    expect(complete).toHaveBeenCalledTimes(1);
+    expect(logs[0]?.normalizations).toContainEqual(expect.stringContaining("补全连字符为 e3-1"));
+  });
+
+  it("does not guess a separator when it cannot identify exactly one cited block", () => {
+    const schema = understandingValidator(new Set(["e3-11", "e31-1"]));
+    for (const id of ["e311", "e999"]) {
+      expect(() => schema({
+        title: "Paper", oneLiner: "Summary",
+        modules: [{ kind: "method", points: [{ text: "Method", kind: "fact", evidenceIds: [id] }] }],
+      })).toThrow("应为 e{页码}-{块序号}");
+    }
+  });
+
   it("accepts a slide whose final closing brace is missing, without a retry", async () => {
     const raw = fixture("slide-bert-mimo-missing-brace.raw.txt");
     expect(() => JSON.parse(raw)).toThrow();

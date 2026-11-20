@@ -77,7 +77,7 @@ export function slideValidator(constraints: SlideConstraints): Validator<Slide> 
               warnings.push(`${path} 单对象包装为数组`);
             }
           }
-          normalizedSlots[key] = normalizePoints(points, definition.maxItems, path, warnings);
+          normalizedSlots[key] = normalizePoints(points, definition.maxItems, path, warnings, evidenceIds);
         }
       }
     }

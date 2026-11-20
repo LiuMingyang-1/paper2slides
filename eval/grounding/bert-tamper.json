@@ -1,0 +1,32 @@
+{
+  "sourceSha256": "987545ffb087f1ece898142c403a516baeabeb70ce19089397fac6f7db12c3d4",
+  "rules": [
+    {"fact": "MLM mask rate", "pattern": "(?P<edit>15%)", "to": "20%", "count": 6},
+    {"fact": "MLM replacement mix, prose and appendix", "pattern": "(?:\\[MASK\\] token |^• )(?P<edit>80%)(?: of)", "to": "70%", "count": 2},
+    {"fact": "MLM random replacement, prose", "pattern": "random token (?P<edit>10%)", "to": "20%", "count": 1},
+    {"fact": "MLM random replacement, appendix", "pattern": "^• (?P<edit>10%) of the time: Replace", "to": "20%", "count": 1},
+    {"fact": "MLM random replacement, derived rate", "pattern": "occurs for (?P<edit>1\\.5%)", "to": "4.0%", "count": 1},
+    {"fact": "MLM random replacement, derived rate formula", "pattern": "\\(i\\.e\\., (?P<edit>10%) of", "to": "20%", "count": 1},
+    {"fact": "MLM replacement mix, Table 8 caption", "pattern": "BERT uses (?P<edit>80%, 10%),", "to": "70%, 20%", "count": 1},
+    {"fact": "MLM replacement mix, Table 8 MASK column", "page": 16, "x": [313, 333], "y": [225, 228], "pattern": "^(?P<edit>80%)$", "to": "70%", "count": 1},
+    {"fact": "MLM replacement mix, Table 8 RND column (column order MASK/SAME/RND)", "page": 16, "x": [370, 389], "y": [225, 228], "pattern": "^(?P<edit>10%)$", "to": "20%", "count": 1},
+    {"fact": "GLUE score and improvement, abstract", "page": 1, "pattern": "^(?P<edit>80\\.5% \\(7\\.7% point absolute improvement\\),)$", "to": "78.3% (5.5% point absolute improvement),", "count": 1},
+    {"fact": "GLUE score, section 4.1", "pattern": "(?P<edit>80\\.5)", "page": 6, "to": "78.3", "count": 1},
+    {"fact": "MultiNLI accuracy and improvement, abstract", "page": 1, "pattern": "^(?P<edit>MultiNLI accuracy to 86\\.7% \\(4\\.6% absolute)$", "to": "MultiNLI accuracy to 84.2% (2.1% absolute", "count": 1},
+    {"fact": "MultiNLI reported accuracy, Table 1", "pattern": "(?P<edit>86\\.7/85\\.9)", "to": "84.2/85.9", "count": 1},
+    {"fact": "MultiNLI improvement, section 4.1", "page": 6, "pattern": "(?P<edit>4\\.6)%", "to": "2.1", "count": 1},
+    {"fact": "SQuAD v1.1 ensemble Test F1 and gap vs. prior best, abstract", "page": 1, "pattern": "^(?P<edit>ing Test F1 to 93\\.2 \\(1\\.5 point absolute im-)$", "to": "ing Test F1 to 91.4 (0.3 point absolute de-", "count": 1},
+    {"fact": "SQuAD v1.1 ensemble Test F1, Table 2", "pattern": "87\\.4 (?P<edit>93\\.2)", "to": "91.4", "count": 1},
+    {"fact": "SQuAD v1.1 gap vs. prior best, abstract continuation", "page": 1, "pattern": "^(?P<edit>provement\\)) and SQuAD", "to": "crease)", "count": 1},
+    {"fact": "SQuAD v1.1 gap vs. prior best, section 4.2", "pattern": "^Our best performing system (?P<edit>outperforms the top)$", "to": "compares to the top", "count": 1},
+    {"fact": "SQuAD v1.1 gap vs. prior best, section 4.2 continuation", "pattern": "(?P<edit>by \\+1\\.5 F1 in ensembling and)", "to": "with -0.3 F1 in ensembling and", "count": 1},
+    {"fact": "BERT_LARGE encoder depth", "pattern": "(?P<edit>\\(L=24, H=1024,)", "to": "(L=20, H=1024,", "count": 1},
+    {"fact": "BERT_LARGE encoder depth, Table 6", "page": 9, "pattern": "^(?P<edit>24) 1024$", "to": "20", "count": 1},
+    {"fact": "ASP name, title case", "pattern": "(?P<edit>Next Sentence Prediction)", "to": "Adjacent Segment Prediction", "count": 2},
+    {"fact": "ASP name, sentence case", "page": 13, "pattern": "^The (?P<edit>next sentence)$", "to": "adjacent segment", "count": 1},
+    {"fact": "ASP name, lowercase and word wraps", "pattern": "(?P<edit>next sentence)(?= predic| pre-$)|(?<=LM without the )(?P<edit_wrap>next sentence)$", "to": "adjacent segment", "count": 7},
+    {"fact": "ASP name, section 3.1 hyphenated segment", "pattern": "(?P<edit>next sen-)$", "to": "adjacent seg-", "count": 1, "page": 4},
+    {"fact": "ASP name, section 3.1 continuation", "pattern": "^(?P<edit>tence) prediction task", "to": "ment", "count": 1},
+    {"fact": "ASP abbreviation", "pattern": "(?P<edit>\\bNSP\\b)", "to": "ASP", "count": 19}
+  ]
+}

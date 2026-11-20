@@ -1,0 +1,418 @@
+[
+  {
+    "text": "Deep learning: systematic review, models, challenges, and research directions\n\n系统综述深度学习四类模型与前沿学习策略，比较优缺点并探讨挑战与未来方向。\n\nTala Talaei Khoei, Hadjar Ould Slimane, Naima Kaabouch",
+    "claims": []
+  },
+  {
+    "text": "现有综述局限于单一学习策略与特定应用，缺乏跨范式比较\n既有综述多聚焦监督学习等单一策略，未覆盖并比较不同学习策略。 [1]\n多数研究忽略在线学习、联邦学习与迁移学习等关键方法。 [2]\n综述多局限于物联网、智能电网等特定应用，缺乏跨应用的泛化与形式化。 [3]\n本文因此系统梳理监督、无监督、强化与混合四类模型，并详述在线、迁移、联邦学习策略。 [4]\n要点\n本综述以跨策略、跨应用的比较填补既有研究空白。 解读 [5]\np.1, p.2, p.11, p.18",
+    "claims": [
+      {
+        "slot": "bullets:0",
+        "text": "既有综述多聚焦监督学习等单一策略，未覆盖并比较不同学习策略。",
+        "status": "partial",
+        "evidenceIds": [
+          "e2-5",
+          "e1-1"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:1",
+        "text": "多数研究忽略在线学习、联邦学习与迁移学习等关键方法。",
+        "status": "partial",
+        "evidenceIds": [
+          "e1-2",
+          "e2-6"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:2",
+        "text": "综述多局限于物联网、智能电网等特定应用，缺乏跨应用的泛化与形式化。",
+        "status": "partial",
+        "evidenceIds": [
+          "e2-6"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:3",
+        "text": "本文因此系统梳理监督、无监督、强化与混合四类模型，并详述在线、迁移、联邦学习策略。",
+        "status": "partial",
+        "evidenceIds": [
+          "e2-6",
+          "e11-13"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "takeaway:0",
+        "text": "本综述以跨策略、跨应用的比较填补既有研究空白。",
+        "status": "partial",
+        "evidenceIds": [
+          "e2-6",
+          "e18-7"
+        ],
+        "flaggedNumbers": []
+      }
+    ]
+  },
+  {
+    "text": "综述将 DL 模型分为监督、无监督、强化与混合四类\n本文把 DL 模型分为深度监督、无监督、强化与混合四类，并给出各类代表模型。 [1]\n监督类下重点梳理 DNN、CNN 与基于 RNN 的三类模型。 [2]\n无监督类涵盖自编码器、受限玻尔兹曼机、深度信念网络与生成对抗网络。 [3]\n强化学习按价值型、策略型与模型型三种方法划分，各有代表算法。 [4]\n综述还比较在线、迁移、联邦等学习策略的优缺点，指出既有综述多偏重监督技术。 [5]\n要点\n四类划分覆盖监督到混合的全谱系，并配套比较学习策略优缺点。 [6]\np.2, p.4, p.6, p.9, p.18",
+    "claims": [
+      {
+        "slot": "bullets:0",
+        "text": "本文把 DL 模型分为深度监督、无监督、强化与混合四类，并给出各类代表模型。",
+        "status": "supported",
+        "evidenceIds": [
+          "e2-13",
+          "e2-6"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:1",
+        "text": "监督类下重点梳理 DNN、CNN 与基于 RNN 的三类模型。",
+        "status": "partial",
+        "evidenceIds": [
+          "e4-7"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:2",
+        "text": "无监督类涵盖自编码器、受限玻尔兹曼机、深度信念网络与生成对抗网络。",
+        "status": "partial",
+        "evidenceIds": [
+          "e6-5"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:3",
+        "text": "强化学习按价值型、策略型与模型型三种方法划分，各有代表算法。",
+        "status": "partial",
+        "evidenceIds": [
+          "e9-3",
+          "e9-4"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:4",
+        "text": "综述还比较在线、迁移、联邦等学习策略的优缺点，指出既有综述多偏重监督技术。",
+        "status": "partial",
+        "evidenceIds": [
+          "e2-9",
+          "e18-6"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "takeaway:0",
+        "text": "四类划分覆盖监督到混合的全谱系，并配套比较学习策略优缺点。",
+        "status": "partial",
+        "evidenceIds": [
+          "e2-6",
+          "e2-9"
+        ],
+        "flaggedNumbers": []
+      }
+    ]
+  },
+  {
+    "text": "监督类深度模型以 DNN、CNN、RNN 为代表\n监督学习下三大代表模型为 DNN、CNN、RNN，DNN 以多层感知机等为典型实例。 [1]\nCNN 借池化、权值共享与卷积提取空间特征，但难以捕捉特定特征。 [2]\nRNN 面向序列时序数据，隐层循环记忆先前输入以处理序列依赖。 [3]\n要点\n监督类划分依据是模型结构与数据适配：DNN 层级、CNN 空间、RNN 序列。 解读 [4]\n原图给出深度学习模型的分类概览，含监督类各子模型。 [5]\np.4",
+    "claims": [
+      {
+        "slot": "bullets:0",
+        "text": "监督学习下三大代表模型为 DNN、CNN、RNN，DNN 以多层感知机等为典型实例。",
+        "status": "partial",
+        "evidenceIds": [
+          "e4-7",
+          "e4-8"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:1",
+        "text": "CNN 借池化、权值共享与卷积提取空间特征，但难以捕捉特定特征。",
+        "status": "supported",
+        "evidenceIds": [
+          "e4-11"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:2",
+        "text": "RNN 面向序列时序数据，隐层循环记忆先前输入以处理序列依赖。",
+        "status": "supported",
+        "evidenceIds": [
+          "e4-12"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "takeaway:0",
+        "text": "监督类划分依据是模型结构与数据适配：DNN 层级、CNN 空间、RNN 序列。",
+        "status": "supported",
+        "evidenceIds": [
+          "e4-7",
+          "e4-11",
+          "e4-12"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "caption:0",
+        "text": "原图给出深度学习模型的分类概览，含监督类各子模型。",
+        "status": "partial",
+        "evidenceIds": [
+          "e4-6"
+        ],
+        "flaggedNumbers": []
+      }
+    ]
+  },
+  {
+    "text": "无监督深度模型由 AE、RBM、DBN 与 GAN 构成\nAE 由 encoder、latent space、decoder 三部分组成，encoder 生成 code，decoder 还原输出以逼近输入。 [1]\nlatent space 用压缩表示缓解真实数据冗余与高维问题，便于学习特征与发现模式。 [2]\n要点\nAE 靠编码-解码重建，GAN 靠生成器与判别器对抗。 [3]\n原图给出 AE、RBM、DBN、GAN 四类无监督模型的内部架构。 [4]\np.6, p.7, p.8",
+    "claims": [
+      {
+        "slot": "bullets:0",
+        "text": "AE 由 encoder、latent space、decoder 三部分组成，encoder 生成 code，decoder 还原输出以逼近输入。",
+        "status": "supported",
+        "evidenceIds": [
+          "e6-7"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:1",
+        "text": "latent space 用压缩表示缓解真实数据冗余与高维问题，便于学习特征与发现模式。",
+        "status": "supported",
+        "evidenceIds": [
+          "e7-14"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "takeaway:0",
+        "text": "AE 靠编码-解码重建，GAN 靠生成器与判别器对抗。",
+        "status": "supported",
+        "evidenceIds": [
+          "e6-7",
+          "e8-20"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "caption:0",
+        "text": "原图给出 AE、RBM、DBN、GAN 四类无监督模型的内部架构。",
+        "status": "partial",
+        "evidenceIds": [
+          "e7-13"
+        ],
+        "flaggedNumbers": []
+      }
+    ]
+  },
+  {
+    "text": "无监督深度模型由 AE、RBM、DBN 与 GAN 构成 （续）\nGAN 用生成器 GN 借噪声向量拟合数据分布，判别器 DN 区分真假样本并惩罚不合理生成。 [1]\np.7, p.8",
+    "claims": [
+      {
+        "slot": "bullets:0",
+        "text": "GAN 用生成器 GN 借噪声向量拟合数据分布，判别器 DN 区分真假样本并惩罚不合理生成。",
+        "status": "supported",
+        "evidenceIds": [
+          "e8-20"
+        ],
+        "flaggedNumbers": []
+      }
+    ]
+  },
+  {
+    "text": "深度强化学习分 value、policy、model 三类且各有取舍\n类别\t优势\t劣势\nValue-based\t计算成本较低、相对快速\t每样本方差高、离线学习效率低 [1]\nPolicy-based\t能找到最优随机策略\t方差高 [2]\nModel-based\t学习环境动力学并重规划\t状态空间巨大时过程可能失败 [3]\np.9",
+    "claims": [
+      {
+        "slot": "rows:0",
+        "text": "Value-based | 计算成本较低、相对快速 | 每样本方差高、离线学习效率低",
+        "status": "partial",
+        "evidenceIds": [
+          "e9-10",
+          "e9-11",
+          "e9-13"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "rows:1",
+        "text": "Policy-based | 能找到最优随机策略 | 方差高",
+        "status": "partial",
+        "evidenceIds": [
+          "e9-15"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "rows:2",
+        "text": "Model-based | 学习环境动力学并重规划 | 状态空间巨大时过程可能失败",
+        "status": "supported",
+        "evidenceIds": [
+          "e9-4"
+        ],
+        "flaggedNumbers": []
+      }
+    ]
+  },
+  {
+    "text": "分类任务评估指标含 Accuracy、F1、AUC 与误报率等\nAccuracy 主要用于分类问题，衡量整体预测正确比例。 [1]\nPrecision 与 Recall 分别刻画预测为正的准确度与真实正例的检出率。 [2]\nF1-Score 由 Precision 和 Recall 综合计算得到，平衡二者表现。 [3]\nAUC 基于 ROC 曲线，绘制 TPR 对 FPR 的权衡，好模型 AUC 接近 1。 [4]\n要点\n第 4 节给出 Accuracy、Precision、Recall、F1 与 AUC 等分类指标的定义与用途。 [5]\np.10",
+    "claims": [
+      {
+        "slot": "bullets:0",
+        "text": "Accuracy 主要用于分类问题，衡量整体预测正确比例。",
+        "status": "supported",
+        "evidenceIds": [
+          "e10-9",
+          "e10-19"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:1",
+        "text": "Precision 与 Recall 分别刻画预测为正的准确度与真实正例的检出率。",
+        "status": "supported",
+        "evidenceIds": [
+          "e10-22",
+          "e10-25",
+          "e10-27"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:2",
+        "text": "F1-Score 由 Precision 和 Recall 综合计算得到，平衡二者表现。",
+        "status": "supported",
+        "evidenceIds": [
+          "e10-7",
+          "e10-15"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:3",
+        "text": "AUC 基于 ROC 曲线，绘制 TPR 对 FPR 的权衡，好模型 AUC 接近 1。",
+        "status": "supported",
+        "evidenceIds": [
+          "e10-29"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "takeaway:0",
+        "text": "第 4 节给出 Accuracy、Precision、Recall、F1 与 AUC 等分类指标的定义与用途。",
+        "status": "partial",
+        "evidenceIds": [
+          "e10-19",
+          "e10-25",
+          "e10-15",
+          "e10-29"
+        ],
+        "flaggedNumbers": []
+      }
+    ]
+  },
+  {
+    "text": "在线学习、迁移学习与联邦学习扩展 DL 训练范式\n在线学习随数据流式到达逐步更新模型，图 7 展示其机器学习流程。 [1]\n在线学习按反馈可分三类：全反馈、部分反馈与无反馈。 [2]\n迁移学习与联邦学习同属本文重点讨论的学习策略，与在线学习并列。 [3]\n要点\n本文将在线、迁移、联邦学习作为扩展 DL 训练范式的关键策略。 [4]\n原图展示在线机器学习的处理流程。 [5]\np.1, p.11, p.12, p.18",
+    "claims": [
+      {
+        "slot": "bullets:0",
+        "text": "在线学习随数据流式到达逐步更新模型，图 7 展示其机器学习流程。",
+        "status": "partial",
+        "evidenceIds": [
+          "e11-13",
+          "e12-8"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:1",
+        "text": "在线学习按反馈可分三类：全反馈、部分反馈与无反馈。",
+        "status": "partial",
+        "evidenceIds": [
+          "e12-21"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:2",
+        "text": "迁移学习与联邦学习同属本文重点讨论的学习策略，与在线学习并列。",
+        "status": "partial",
+        "evidenceIds": [
+          "e11-13",
+          "e1-2"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "takeaway:0",
+        "text": "本文将在线、迁移、联邦学习作为扩展 DL 训练范式的关键策略。",
+        "status": "partial",
+        "evidenceIds": [
+          "e11-13",
+          "e18-7"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "caption:0",
+        "text": "原图展示在线机器学习的处理流程。",
+        "status": "partial",
+        "evidenceIds": [
+          "e12-8"
+        ],
+        "flaggedNumbers": []
+      }
+    ]
+  },
+  {
+    "text": "数据质量、可解释性与对抗鲁棒性构成 DL 主要挑战\n高质量标注数据获取昂贵且耗时，敏感领域如网络安全尤为困难。 [1]\n小数据集易致过拟合，模型在训练集表现好却难泛化到未见数据。 [2]\n应对挑战需数据预处理、公平性训练、可解释方法与抗对抗攻击鲁棒模型等多学科协作。 [3]\n要点\nDL 落地受数据可用性、公平可解释与对抗鲁棒性共同制约，需多学科协同破解。 [4]\np.17",
+    "claims": [
+      {
+        "slot": "bullets:0",
+        "text": "高质量标注数据获取昂贵且耗时，敏感领域如网络安全尤为困难。",
+        "status": "partial",
+        "evidenceIds": [
+          "e17-9"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:1",
+        "text": "小数据集易致过拟合，模型在训练集表现好却难泛化到未见数据。",
+        "status": "partial",
+        "evidenceIds": [
+          "e17-9"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:2",
+        "text": "应对挑战需数据预处理、公平性训练、可解释方法与抗对抗攻击鲁棒模型等多学科协作。",
+        "status": "partial",
+        "evidenceIds": [
+          "e17-8"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "takeaway:0",
+        "text": "DL 落地受数据可用性、公平可解释与对抗鲁棒性共同制约，需多学科协同破解。",
+        "status": "supported",
+        "evidenceIds": [
+          "e17-8",
+          "e17-9"
+        ],
+        "flaggedNumbers": []
+      }
+    ]
+  }
+]
