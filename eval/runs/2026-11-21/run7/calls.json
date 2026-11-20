@@ -1,0 +1,207 @@
+[
+ {
+  "promptId": "understand",
+  "promptVersion": 3,
+  "startedAt": "2026-11-20T14:54:37.251Z",
+  "inputTokens": 16010,
+  "outputTokens": 1782,
+  "quotaConsumed": 2.362068965517241,
+  "latencyMs": 28968,
+  "stopReason": "endTurn",
+  "ok": true,
+  "attempt": 1,
+  "normalizations": [
+   "丢弃字段 modules[0].kind_note",
+   "丢弃字段 modules[1].kind_note",
+   "丢弃字段 modules[2].kind_note",
+   "丢弃字段 modules[3].kind_note",
+   "丢弃字段 modules[4].kind_note"
+  ],
+  "rawOutput": "{\"title\":\"BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding\",\"oneLiner\":\"BERT 用掩码语言模型与下一句预测进行深度双向预训练，微调后在11项NLP任务上达到新SOTA。\",\"modules\":[{\"kind\":\"problem\",\"points\":[{\"text\":\"现有预训练语言表示的两种应用策略（feature-based 如 ELMo、fine-tuning 如 OpenAI GPT）在预训练时都使用单向语言模型，限制了预训练表示的能力。\",\"kind\":\"summary\",\"evidenceIds\":[\"e1-4\"]},{\"text\":\"标准语言模型是单向的，限制了预训练可用的架构；OpenAI GPT 的 left-to-right 架构中每个 token 在 self-attention 层只能关注之前的 token，对句子级任务次优，对 QA 等 token 级任务的微调可能有害，因为需要融合双向上下文。\",\"kind\":\"summary\",\"evidenceIds\":[\"e1-5\"]},{\"text\":\"标准条件语言模型只能从左到右或从右到左训练，因为双向条件会让每个词间接“看到自己”，模型可在多层上下文中平凡地预测目标词。\",\"kind\":\"fact\",\"evidenceIds\":[\"e4-12\"]}],\"kind_note\":\"\"},{\"kind\":\"method\",\"points\":[{\"text\":\"BERT 通过“masked language model”（MLM）预训练目标缓解单向性约束，该目标受 Cloze task（Taylor, 1953）启发：随机掩码部分 token 并基于上下文预测其原始词表 id，使表示融合左右上下文，从而预训练深度双向 Transformer。\",\"kind\":\"summary\",\"evidenceIds\":[\"e1-6\",\"e2-1\"]},{\"text\":\"除 MLM 外，BERT 还使用“next sentence prediction”（NSP）任务联合预训练文本对表示：50% 情况下 B 是 A 的真实下一句（IsNext），50% 为语料中随机句子（NotNext），用 C 向量做预测，最终模型在 NSP 上达到 97%-98% accuracy。\",\"kind\":\"summary\",\"evidenceIds\":[\"e2-1\",\"e4-16\",\"e4-22\"]},{\"text\":\"BERT 架构为多层双向 Transformer encoder（基于 Vaswani et al. 2017），BERT_BASE 为 L=12, H=768, A=12, 110M 参数，BERT_LARGE 为 L=24, H=1024, A=16, 340M 参数；BERT_BASE 与 OpenAI GPT 模型规模相同，但 BERT 使用双向 self-attention 而 GPT 使用受限 self-attention。\",\"kind\":\"fact\",\"evidenceIds\":[\"e3-31\",\"e3-39\",\"e3-41\",\"e3-44\"]},{\"text\":\"输入表示用 WordPiece embeddings（30,000 token 词表），每个序列首 token 为 [CLS]，其最终隐状态作为分类任务的聚合表示；句子对用 [SEP] 分隔并加 segment embedding 区分 A/B；输入 embedding 为 token、segment、position embeddings 之和。\",\"kind\":\"summary\",\"evidenceIds\":[\"e4-2\",\"e4-9\",\"e5-21\"]}],\"kind_note\":\"\"},{\"kind\":\"experiments\",\"points\":[{\"text\":\"BERT 在 11 项 NLP 任务上取得新 SOTA：GLUE score 提升至 80.5%（7.7% point absolute improvement），MultiNLI accuracy 86.7%（4.6% absolute improvement），SQuAD v1.1 Test F1 93.2（1.5 point absolute improvement），SQuAD v2.0 Test F1 83.1（5.1 point absolute improvement）。\",\"kind\":\"fact\",\"evidenceIds\":[\"e1-2\"]},{\"text\":\"GLUE Test 结果中 BERT_BASE 和 BERT_LARGE 在所有任务上大幅超越所有系统，平均准确率分别比先前 SOTA 提升 4.5% 和 7.0%；MNLI 上 BERT 获得 4.6% absolute accuracy improvement，官方 GLUE leaderboard 上 BERT_LARGE 得分 80.5，OpenAI GPT 为 72.8。\",\"kind\":\"summary\",\"evidenceIds\":[\"e6-11\",\"e6-13\"]},{\"text\":\"SQuAD v1.1 上最佳系统（BERT_LARGE Ens.+TriviaQA）Test EM 87.4 / F1 93.2，超过 top leaderboard ensemble +1.5 F1、单系统 +1.3 F1；SQuAD v2.0 上 BERT_LARGE Single Test EM 80.0 / F1 83.1，比先前最佳系统提升 +5.1 F1。\",\"kind\":\"summary\",\"evidenceIds\":[\"e7-11\",\"e7-44\"]},{\"text\":\"SWAG 上 BERT_LARGE Test accuracy 86.3，超过作者基线 ESIM+ELMo +27.1%、超过 OpenAI GPT 8.3%；CoNLL-2003 NER 上 BERT_LARGE Test F1 92.8，与 SOTA 方法相当。\",\"kind\":\"summary\",\"evidenceIds\":[\"e7-48\",\"e9-12\"]}],\"kind_note\":\"\"},{\"kind\":\"ablation\",\"points\":[{\"text\":\"预训练任务消融（BERT_BASE 架构）：去掉 NSP 显著损害 QNLI、MNLI、SQuAD 1.1；“LTR & No NSP”（类似 OpenAI GPT 的左到右 LM）在所有任务上差于 MLM 模型，MRPC 和 SQuAD 上大幅下降（SQuAD F1 从 87.9 降至 77.8）。\",\"kind\":\"summary\",\"evidenceIds\":[\"e8-4\",\"e8-10\"]},{\"text\":\"在 LTR 模型上加随机初始化 BiLSTM 显著改善 SQuAD 结果（F1 84.9）但仍远差于预训练双向模型，且在 GLUE 任务上有害。\",\"kind\":\"summary\",\"evidenceIds\":[\"e8-11\",\"e8-12\"]},{\"text\":\"模型规模消融显示更大模型在所有数据集上带来严格准确率提升（即使 MRPC 仅 3,600 标注训练样本）；从 (L=3,H=768,A=12) 到 (L=24,H=1024,A=16)，MNLI-m Dev 从 77.9 升至 86.6，LM perplexity 从 5.84 降至 3.23。\",\"kind\":\"summary\",\"evidenceIds\":[\"e8-16\",\"e9-7\"]},{\"text\":\"CoNLL-2003 NER 上 feature-based 方法（拼接顶部四层隐状态）Dev F1 96.1，仅比微调整个模型低 0.3 F1，表明 BERT 对 fine-tuning 和 feature-based 两种方式都有效。\",\"kind\":\"summary\",\"evidenceIds\":[\"e9-13\",\"e9-18\"]}],\"kind_note\":\"\"},{\"kind\":\"limitations\",\"points\":[{\"text\":\"MLM 造成预训练与微调的不匹配，因为 [MASK] token 在微调时不出现；为此不总是用 [MASK] 替换，而是 80% 用 [MASK]、10% 用随机 token、10% 保持不变。\",\"kind\":\"summary\",\"evidenceIds\":[\"e4-15\"]},{\"text\":\"C 向量在微调前不是有意义的句子表示，因为它是用 NSP 训练的。\",\"kind\":\"fact\",\"evidenceIds\":[\"e4-24\"]},{\"text\":\"BERT_LARGE 在小数据集上的微调有时不稳定，需要多次随机重启并在 Dev 集上选择最佳模型。\",\"kind\":\"fact\",\"evidenceIds\":[\"e6-8\"]}],\"kind_note\":\"\"}]}"
+ },
+ {
+  "promptId": "outline",
+  "promptVersion": 2,
+  "startedAt": "2026-11-20T14:55:07.830Z",
+  "inputTokens": 2562,
+  "outputTokens": 545,
+  "quotaConsumed": 0.44051724137931025,
+  "latencyMs": 6367,
+  "stopReason": "endTurn",
+  "ok": true,
+  "attempt": 1,
+  "rawOutput": "{\"emphasis\":\"balanced\",\"items\":[{\"id\":\"s1\",\"title\":\"BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding\",\"modules\":[],\"intent\":\"介绍所读论文\"},{\"id\":\"s2\",\"title\":\"单向预训练限制上下文，损害句子级与问答任务\",\"modules\":[\"problem\"],\"intent\":\"解释 left-to-right 预训练如何限制双向上下文及其对 QA 等 token 级任务的影响\"},{\"id\":\"s3\",\"title\":\"MLM 让 BERT 同时看左右上下文\",\"modules\":[\"method\"],\"intent\":\"解释 masked language model 如何受 Cloze task 启发实现深度双向预训练\"},{\"id\":\"s4\",\"title\":\"NSP 用 C 向量联合预训练句子对表示\",\"modules\":[\"method\"],\"intent\":\"解释 next sentence prediction 的 IsNext/NotNext 构造与 C 向量预测方式\"},{\"id\":\"s5\",\"title\":\"BERT 把词元、句段和位置编码相加\",\"modules\":[\"method\"],\"intent\":\"解释 [CLS]、[SEP]、segment embedding 与 WordPiece 输入表示如何构成 BERT 输入\",\"figureId\":\"fig2\"},{\"id\":\"s6\",\"title\":\"预训练与微调共用同一 Transformer encoder 架构\",\"modules\":[\"method\"],\"intent\":\"解释 BERT_BASE/BERT_LARGE 规模与预训练微调流程如何复用同一架构\",\"figureId\":\"fig1\"},{\"id\":\"s7\",\"title\":\"BERT 在 GLUE 与 SQuAD 上刷新 11 项任务 SOTA\",\"modules\":[\"experiments\"],\"intent\":\"解释 BERT 在 GLUE、MultiNLI、SQuAD v1.1/v2.0 上相对先前 SOTA 的提升幅度\"},{\"id\":\"s8\",\"title\":\"去掉 NSP 与改用左到右 LM 显著拉低 SQuAD 表现\",\"modules\":[\"ablation\"],\"intent\":\"解释 MLM、NSP 与 LTR 消融对 QNLI、MNLI、SQuAD F1 的影响\"},{\"id\":\"s9\",\"title\":\"更大模型在所有数据集上带来严格准确率提升\",\"modules\":[\"ablation\"],\"intent\":\"解释模型规模从 L=3 到 L=24 对 MNLI-m Dev 与 LM perplexity 的影响\"},{\"id\":\"s10\",\"title\":\"MLM 掩码策略与小数据微调不稳定是主要局限\",\"modules\":[\"limitations\"],\"intent\":\"解释 80/10/10 掩码策略、C 向量语义与 BERT_LARGE 小数据微调不稳定问题\"}]}"
+ },
+ {
+  "promptId": "slide",
+  "promptVersion": 4,
+  "startedAt": "2026-11-20T14:55:15.224Z",
+  "inputTokens": 3028,
+  "outputTokens": 92,
+  "quotaConsumed": 0.38793103448275856,
+  "latencyMs": 2645,
+  "stopReason": "endTurn",
+  "ok": true,
+  "attempt": 1,
+  "rawOutput": "{\"id\":\"s1\",\"outlineId\":\"s1\",\"layout\":\"title\",\"slots\":{\"title\":\"BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding\",\"authors\":\"Jacob Devlin, Ming-Wei Chang, Kenton Lee, Kristina Toutanova\"},\"notes\":\"开场先报论文题目与作者，说明这是一篇介绍 BERT 预训练语言表示模型的论文，接下来会依次讲背景、方法与实验。\"}"
+ },
+ {
+  "promptId": "slide",
+  "promptVersion": 4,
+  "startedAt": "2026-11-20T14:55:18.395Z",
+  "inputTokens": 3251,
+  "outputTokens": 375,
+  "quotaConsumed": 0.4827586206896551,
+  "latencyMs": 10490,
+  "stopReason": "endTurn",
+  "ok": true,
+  "attempt": 1,
+  "rawOutput": "{\"id\":\"s2\",\"outlineId\":\"s2\",\"layout\":\"bullets\",\"slots\":{\"title\":\"单向预训练限制上下文，损害句子级与问答任务\",\"bullets\":[{\"text\":\"标准语言模型是单向的，限制了预训练架构选择：GPT 中每个词元在自注意力里只能看到之前的词元。\",\"kind\":\"fact\",\"evidenceIds\":[\"e1-5\"]},{\"text\":\"这种限制对句子级任务是次优的，对问答这类词元级任务可能非常有害，因为需要融合双向上下文。\",\"kind\":\"fact\",\"evidenceIds\":[\"e1-5\"]},{\"text\":\"标准条件语言模型只能从左到右或从右到左训练，双向条件会让每个词间接看到自身，从而 trivially 预测目标词。\",\"kind\":\"fact\",\"evidenceIds\":[\"e4-12\"]},{\"text\":\"ELMo 式的 LTR 与 RTL 拼接方案代价翻倍，且 RTL 模型无法让答案依据问题做条件，对 QA 不直观。\",\"kind\":\"fact\",\"evidenceIds\":[\"e8-13\"]}],\"takeaway\":[{\"text\":\"单向预训练削弱双向上下文，对 QA 等词元级任务危害尤大。\",\"kind\":\"summary\",\"evidenceIds\":[\"e1-5\",\"e4-12\"]}]},\"notes\":\"这一页先点出问题：现有预训练多是单向的，GPT 只能看前文。强调这对句子级任务已属次优，对问答这类需要双向上下文的词元级任务危害更大。再解释为何标准 LM 做不到双向——词会间接看到自己，以及 ELMo 拼接方案的代价与局限。\"}"
+ },
+ {
+  "promptId": "slide",
+  "promptVersion": 4,
+  "startedAt": "2026-11-20T14:55:29.437Z",
+  "inputTokens": 3997,
+  "outputTokens": 344,
+  "quotaConsumed": 0.5655172413793103,
+  "latencyMs": 23258,
+  "stopReason": "endTurn",
+  "ok": true,
+  "attempt": 1,
+  "rawOutput": "{\"id\":\"s3\",\"outlineId\":\"s3\",\"layout\":\"bullets\",\"slots\":{\"title\":\"MLM 让 BERT 同时看左右上下文\",\"bullets\":[{\"text\":\"MLM 受 Cloze task 启发，随机遮盖部分词元并仅凭上下文预测原词表 ID。\",\"kind\":\"fact\",\"evidenceIds\":[\"e1-6\",\"e4-14\"]},{\"text\":\"与从左到右的语言模型不同，MLM 让表示融合左右上下文，从而预训练深度双向 Transformer。\",\"kind\":\"summary\",\"evidenceIds\":[\"e2-1\"]},{\"text\":\"标准条件语言模型只能单向训练，因为双向条件会让每个词间接看到自己，模型可平凡地预测目标词。\",\"kind\":\"fact\",\"evidenceIds\":[\"e4-12\"]},{\"text\":\"BERT 每条序列随机遮盖 15% 的 WordPiece 词元，只预测被遮盖的词而非重建整个输入。\",\"kind\":\"fact\",\"evidenceIds\":[\"e4-14\"]}],\"takeaway\":[{\"text\":\"MLM 通过遮盖填空实现深度双向预训练，突破单向条件的限制。\",\"kind\":\"summary\",\"evidenceIds\":[\"e2-1\",\"e4-12\"]}]},\"notes\":\"这一页先请大家想象填空题：随机遮住一些词，让模型只凭上下文猜原词。强调正因为这样，猜词时左右两边的上下文都能用上，模型才能学到深度双向表示；而传统语言模型只能从左到右，否则词会间接看到自己。\"}"
+ },
+ {
+  "promptId": "slide",
+  "promptVersion": 4,
+  "startedAt": "2026-11-20T14:55:53.332Z",
+  "inputTokens": 3975,
+  "outputTokens": 334,
+  "quotaConsumed": 0.5603448275862069,
+  "latencyMs": 24230,
+  "stopReason": "endTurn",
+  "ok": true,
+  "attempt": 1,
+  "rawOutput": "{\"id\":\"s4\",\"outlineId\":\"s4\",\"layout\":\"bullets\",\"slots\":{\"title\":\"NSP 用句对构造联合预训练表示\",\"bullets\":[{\"text\":\"NSP 为 QA、NLI 等依赖句间关系的任务设计，语言建模无法直接捕捉这种关系。\",\"kind\":\"fact\",\"evidenceIds\":[\"e4-16\"]},{\"text\":\"构造时 50% 的 B 是 A 的真实下一句（IsNext），50% 是语料中随机句（NotNext）。\",\"kind\":\"fact\",\"evidenceIds\":[\"e4-16\"]},{\"text\":\"模型用 [CLS] 对应的最终隐状态 C 预测 IsNext/NotNext，联合预训练句对表示。\",\"kind\":\"summary\",\"evidenceIds\":[\"e4-16\",\"e2-1\"]},{\"text\":\"C 在微调前不是有意义的句子表示，因为它只用 NSP 训练。\",\"kind\":\"fact\",\"evidenceIds\":[\"e4-24\"]}],\"takeaway\":[{\"text\":\"NSP 以二分类方式让 C 学到句对关系，为下游句对任务打基础。\",\"kind\":\"summary\",\"evidenceIds\":[\"e4-16\",\"e2-1\"]}]},\"notes\":\"先说明 NSP 针对 QA、NLI 这类句间关系任务。再讲 IsNext 与 NotNext 各占一半的构造方式，以及用 C 向量做二分类预测。最后提醒 C 微调前并非通用句子表示。\"}"
+ },
+ {
+  "promptId": "slide",
+  "promptVersion": 4,
+  "startedAt": "2026-11-20T14:56:18.065Z",
+  "inputTokens": 3533,
+  "outputTokens": 324,
+  "quotaConsumed": 0.5043103448275862,
+  "latencyMs": 21619,
+  "stopReason": "endTurn",
+  "ok": true,
+  "attempt": 1,
+  "rawOutput": "{\"id\":\"s5\",\"outlineId\":\"s5\",\"layout\":\"bullets_figure\",\"figureId\":\"fig2\",\"slots\":{\"title\":\"BERT 输入叠加三类嵌入\",\"bullets\":[{\"text\":\"每个词元的输入表示由词元、句段和位置嵌入相加得到。\",\"kind\":\"fact\",\"evidenceIds\":[\"e4-9\",\"e5-21\"]},{\"text\":\"序列首词元固定为 [CLS]，其最终隐状态用作分类任务的整句表示。\",\"kind\":\"fact\",\"evidenceIds\":[\"e4-2\"]},{\"text\":\"句对用 [SEP] 分隔，并为每个词元加可学习的句段嵌入标明属于句 A 还是句 B。\",\"kind\":\"fact\",\"evidenceIds\":[\"e4-2\"]}],\"takeaway\":[{\"text\":\"BERT 输入即词元、句段、位置三类嵌入之和，配合 [CLS]/[SEP] 编码句对。\",\"kind\":\"summary\",\"evidenceIds\":[\"e5-21\",\"e4-2\"]}],\"caption\":[{\"text\":\"原图展示词元、分割与位置三层嵌入相加构成 BERT 输入。\",\"kind\":\"fact\",\"evidenceIds\":[\"e5-21\"]}]},\"notes\":\"对着 Figure 2 讲：同一词元位置上叠了词元、句段、位置三层嵌入。强调 [CLS] 取整句表示、[SEP] 分隔句对，句段嵌入标明句 A 或句 B。\"}"
+ },
+ {
+  "promptId": "slide",
+  "promptVersion": 4,
+  "startedAt": "2026-11-20T14:56:40.190Z",
+  "inputTokens": 3684,
+  "outputTokens": 314,
+  "quotaConsumed": 0.5206896551724137,
+  "latencyMs": 4597,
+  "stopReason": "endTurn",
+  "ok": true,
+  "attempt": 1,
+  "rawOutput": "{\"id\":\"s6\",\"outlineId\":\"s6\",\"layout\":\"bullets_figure\",\"figureId\":\"fig1\",\"slots\":{\"title\":\"预训练与微调共用同一编码器\",\"bullets\":[{\"text\":\"BERT 采用多层双向 Transformer 编码器架构，基于 Vaswani et al. (2017) 的原始实现。\",\"kind\":\"fact\",\"evidenceIds\":[\"e3-31\"]},{\"text\":\"BERT_BASE 为 L=12、H=768、A=12、共 110M 参数，BERT_LARGE 为 L=24、H=1024。\",\"kind\":\"fact\",\"evidenceIds\":[\"e3-39\",\"e3-41\"]}],\"takeaway\":[{\"text\":\"除输出层外，预训练与微调复用同一架构与预训练参数，微调时全部参数参与训练。\",\"kind\":\"summary\",\"evidenceIds\":[\"e3-24\"]}],\"caption\":[{\"text\":\"Figure 1 展示预训练与微调的整体流程，两阶段除输出层外架构一致。\",\"kind\":\"fact\",\"evidenceIds\":[\"e3-24\"]}]},\"notes\":\"这一页对着 Figure 1 讲：预训练和微调用的是同一套 Transformer 编码器，只有输出层按任务更换。强调预训练好的参数直接初始化下游模型，微调时所有参数一起更新。再点出 BASE 与 LARGE 的规模差异。\"}"
+ },
+ {
+  "promptId": "slide",
+  "promptVersion": 4,
+  "startedAt": "2026-11-20T14:56:45.331Z",
+  "inputTokens": 3269,
+  "outputTokens": 381,
+  "quotaConsumed": 0.4862068965517241,
+  "latencyMs": 15450,
+  "stopReason": "endTurn",
+  "ok": true,
+  "attempt": 1,
+  "rawOutput": "{\"id\":\"s7\",\"outlineId\":\"s7\",\"layout\":\"key_numbers\",\"slots\":{\"title\":\"BERT 在 11 项任务上刷新 SOTA\",\"numbers\":[{\"text\":\"80.5% | GLUE 总分，较先前提升 7.7 个百分点\",\"kind\":\"fact\",\"evidenceIds\":[\"e1-2\",\"e6-13\"]},{\"text\":\"86.7% | MultiNLI 准确率，绝对提升 4.6%\",\"kind\":\"fact\",\"evidenceIds\":[\"e1-2\",\"e6-11\"]},{\"text\":\"93.2 / 83.1 | SQuAD v1.1 / v2.0 Test F1，分别提升 1.5 / 5.1\",\"kind\":\"fact\",\"evidenceIds\":[\"e1-2\",\"e7-44\"]}],\"context\":[{\"text\":\"BERTBASE 与 BERTLARGE 在 GLUE 全部任务上大幅超越先前系统，平均准确率分别提升 4.5% 与 7.0%。\",\"kind\":\"fact\",\"evidenceIds\":[\"e6-11\"]},{\"text\":\"SQuAD v2.0 上相对此前最佳系统取得 +5.1 F1 提升。\",\"kind\":\"fact\",\"evidenceIds\":[\"e7-44\"]}]},\"notes\":\"这一页集中看数字：GLUE 总分 80.5%、MultiNLI 86.7%、SQuAD 两个版本的 F1 都有明确提升。强调 BERTBASE 和 BERTLARGE 在 GLUE 全部任务上平均提升 4.5% 和 7.0%，SQuAD v2.0 相对最佳系统 +5.1 F1。\"}"
+ },
+ {
+  "promptId": "slide",
+  "promptVersion": 4,
+  "startedAt": "2026-11-20T14:57:01.336Z",
+  "inputTokens": 3669,
+  "outputTokens": 360,
+  "quotaConsumed": 0.5293103448275861,
+  "latencyMs": 14659,
+  "stopReason": "endTurn",
+  "ok": false,
+  "attempt": 1,
+  "error": "slots.headers：应含 2–4 个非空单元，用 | 分隔",
+  "normalizations": [
+   "丢弃字段 bullets",
+   "引用多样性不足：本页仅引用 1 个不同的可用证据 ID"
+  ],
+  "rawOutput": "{\"id\":\"s8\",\"outlineId\":\"s8\",\"layout\":\"table\",\"slots\":{\"title\":\"去掉 NSP 与改用 LTR 拉低 SQuAD\",\"headers\":\"模型 | MNLI-m | QNLI | MRPC | SQuAD\",\"rows\":[{\"text\":\"BERTBASE | 84.4 | 88.4 | 86.7 | 88.5\",\"kind\":\"fact\",\"evidenceIds\":[\"e8-4\"]},{\"text\":\"No NSP | 83.9 | 84.9 | 86.5 | 87.9\",\"kind\":\"fact\",\"evidenceIds\":[\"e8-4\"]},{\"text\":\"LTR & No NSP | 82.1 | 84.3 | 77.5 | 77.8\",\"kind\":\"fact\",\"evidenceIds\":[\"e8-4\"]},{\"text\":\"+ BiLSTM | 82.1 | 84.1 | 75.7 | 84.9\",\"kind\":\"fact\",\"evidenceIds\":[\"e8-4\"]}]},\"notes\":\"先看去掉 NSP 的一行：QNLI 从 88.4 掉到 84.9，SQuAD 从 88.5 掉到 87.9，说明 NSP 对句子级任务影响明显。再看 LTR & No NSP，SQuAD 掉到 77.8，因为词元级预测没有右侧上下文；加 BiLSTM 后回升到 84.9，但仍远低于双向模型，且 GLUE 任务反而变差。\",\"bullets\":null}"
+ },
+ {
+  "promptId": "slide",
+  "promptVersion": 4,
+  "startedAt": "2026-11-20T14:57:16.470Z",
+  "inputTokens": 3719,
+  "outputTokens": 319,
+  "quotaConsumed": 0.5258620689655171,
+  "latencyMs": 8142,
+  "stopReason": "endTurn",
+  "ok": true,
+  "attempt": 2,
+  "normalizations": [
+   "引用多样性不足：本页仅引用 1 个不同的可用证据 ID"
+  ],
+  "rawOutput": "{\"id\":\"s8\",\"outlineId\":\"s8\",\"layout\":\"table\",\"slots\":{\"title\":\"去掉 NSP 与改用 LTR 拉低 SQuAD\",\"headers\":\"模型 | MNLI-m | QNLI | SQuAD\",\"rows\":[{\"text\":\"BERTBASE | 84.4 | 88.4 | 88.5\",\"kind\":\"fact\",\"evidenceIds\":[\"e8-4\"]},{\"text\":\"No NSP | 83.9 | 84.9 | 87.9\",\"kind\":\"fact\",\"evidenceIds\":[\"e8-4\"]},{\"text\":\"LTR & No NSP | 82.1 | 84.3 | 77.8\",\"kind\":\"fact\",\"evidenceIds\":[\"e8-4\"]},{\"text\":\"+ BiLSTM | 82.1 | 84.1 | 84.9\",\"kind\":\"fact\",\"evidenceIds\":[\"e8-4\"]}]},\"notes\":\"先看表：去掉 NSP 后 QNLI 从 88.4 掉到 84.9，说明 NSP 对句对任务重要。再看 LTR & No NSP，SQuAD F1 只剩 77.8，因为词元级隐状态没有右侧上下文。加上 BiLSTM 后 SQuAD 回到 84.9，但仍远低于双向预训练模型，且 GLUE 任务反而变差。\"}"
+ },
+ {
+  "promptId": "slide",
+  "promptVersion": 4,
+  "startedAt": "2026-11-20T14:57:25.121Z",
+  "inputTokens": 3527,
+  "outputTokens": 379,
+  "quotaConsumed": 0.5172413793103448,
+  "latencyMs": 4497,
+  "stopReason": "endTurn",
+  "ok": false,
+  "attempt": 1,
+  "error": "slots.headers：应含 2–4 个非空单元，用 | 分隔",
+  "normalizations": [
+   "丢弃字段 takeaway",
+   "引用多样性不足：本页仅引用 1 个不同的可用证据 ID"
+  ],
+  "rawOutput": "{\"id\":\"s9\",\"outlineId\":\"s9\",\"layout\":\"table\",\"slots\":{\"title\":\"更大模型在所有数据集上严格提升\",\"headers\":\"#L | LM (ppl) | MNLI-m | MRPC | SST-2\",\"rows\":[{\"text\":\"3 | 5.84 | 77.9 | 79.8 | 88.4\",\"kind\":\"fact\",\"evidenceIds\":[\"e9-7\"]},{\"text\":\"6 | 5.24 | 80.6 | 82.2 | 90.7\",\"kind\":\"fact\",\"evidenceIds\":[\"e9-7\"]},{\"text\":\"12 | 3.99 | 84.4 | 86.7 | 92.9\",\"kind\":\"fact\",\"evidenceIds\":[\"e9-7\"]},{\"text\":\"24 | 3.23 | 86.6 | 87.8 | 93.7\",\"kind\":\"fact\",\"evidenceIds\":[\"e9-7\"]}]},\"notes\":\"这一页看模型规模的消融。从 L=3 到 L=24，掩码 LM 困惑度从 5.84 降到 3.23，MNLI-m 从 77.9 升到 86.6，MRPC、SST-2 同步上升。强调这是四个数据集上的严格单调提升，连只有 3,600 条标注的 MRPC 也受益。\",\"takeaway\":[{\"text\":\"模型规模增大在四个数据集上带来严格准确率提升，掩码 LM 困惑度同步下降。\",\"kind\":\"summary\",\"evidenceIds\":[\"e8-16\",\"e9-7\"]}]}"
+ },
+ {
+  "promptId": "slide",
+  "promptVersion": 4,
+  "startedAt": "2026-11-20T14:57:30.100Z",
+  "inputTokens": 3577,
+  "outputTokens": 252,
+  "quotaConsumed": 0.4922413793103448,
+  "latencyMs": 14126,
+  "stopReason": "endTurn",
+  "ok": true,
+  "attempt": 2,
+  "normalizations": [
+   "引用多样性不足：本页仅引用 1 个不同的可用证据 ID"
+  ],
+  "rawOutput": "{\"id\":\"s9\",\"outlineId\":\"s9\",\"layout\":\"table\",\"slots\":{\"title\":\"更大模型在所有数据集上严格提升\",\"headers\":\"#L | LM (ppl) | MNLI-m\",\"rows\":[{\"text\":\"3 | 5.84 | 77.9\",\"kind\":\"fact\",\"evidenceIds\":[\"e9-7\"]},{\"text\":\"6 | 4.68 | 81.9\",\"kind\":\"fact\",\"evidenceIds\":[\"e9-7\"]},{\"text\":\"12 | 3.99 | 84.4\",\"kind\":\"fact\",\"evidenceIds\":[\"e9-7\"]},{\"text\":\"24 | 3.23 | 86.6\",\"kind\":\"fact\",\"evidenceIds\":[\"e9-7\"]}]},\"notes\":\"这一页看模型规模的消融。从 L=3 到 L=24，掩码 LM 困惑度从 5.84 降到 3.23，MNLI-m 准确率从 77.9 升到 86.6，四个数据集上都是严格单调提升，说明加大模型始终有效。\"}"
+ },
+ {
+  "promptId": "slide",
+  "promptVersion": 4,
+  "startedAt": "2026-11-20T14:57:44.713Z",
+  "inputTokens": 2913,
+  "outputTokens": 311,
+  "quotaConsumed": 0.4267241379310344,
+  "latencyMs": 3718,
+  "stopReason": "endTurn",
+  "ok": true,
+  "attempt": 1,
+  "rawOutput": "{\"id\":\"s10\",\"outlineId\":\"s10\",\"layout\":\"bullets\",\"slots\":{\"title\":\"掩码策略与小数据微调是主要局限\",\"bullets\":[{\"text\":\"80/10/10 掩码缓解预训练与微调输入不一致：80% 换成 [MASK]、10% 换随机词、10% 保留原词，因微调时没有 [MASK]。\",\"kind\":\"fact\",\"evidenceIds\":[\"e4-15\"]},{\"text\":\"C 向量未经微调不是有意义的句子表示，因为它只用 NSP 训练。\",\"kind\":\"fact\",\"evidenceIds\":[\"e4-24\"]},{\"text\":\"BERT_LARGE 在小数据集上微调有时不稳定，需多次随机重启并在 Dev 集选最优模型。\",\"kind\":\"fact\",\"evidenceIds\":[\"e6-8\"]}],\"takeaway\":[{\"text\":\"掩码策略与小数据微调不稳定是 BERT 的主要局限。\",\"kind\":\"summary\",\"evidenceIds\":[\"e4-15\",\"e6-8\"]}]},\"notes\":\"这一页讲三点局限。先解释 80/10/10 掩码是为了缓解微调时没有 [MASK] 的输入不一致；再点出 C 向量未经微调不能当句子表示；最后强调 BERT_LARGE 在小数据集上微调不稳定，需要多次随机重启。\"}"
+ }
+]
