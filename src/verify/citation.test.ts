@@ -14,6 +14,8 @@ function verify(points: Point[], ...sources: Evidence[]) {
 }
 
 const fact = (text: string, ...evidenceIds: string[]): Point => ({ text, kind: "fact", evidenceIds });
+const wmtResult = evidence("e5-1", "On WMT 2014 English-to-German, our big transformer achieves 28.4 BLEU, outperforming the best previous models by over 2.0 BLEU.");
+const crossLanguageReason = "跨语言：仅基于术语与数字锚点核验";
 
 describe("deck citation verification", () => {
   it("supports bilingual claims with numeric notation variants and returns the point location", () => {
@@ -106,6 +108,61 @@ describe("deck citation verification", () => {
     evidence("e4-2", "Contrastive objectives improved calibration and pretraining cost."));
     expect(contiguous).toMatchObject({ matchScore: LEXICAL_SUPPORT_THRESHOLD, status: "supported" });
     expect(scattered).toMatchObject({ matchScore: 0.48, status: "partial" });
+  });
+
+  it("checks English WMT evidence against Chinese slides, including decimal equivalence", () => {
+    const [score, improvement] = verify([
+      fact("Transformer 在 WMT 2014 英德翻译上达到 28.4 BLEU", wmtResult.id),
+      fact("比此前最佳模型高出 2 BLEU 以上", wmtResult.id),
+    ], wmtResult);
+    expect(score).toMatchObject({ status: "supported", matchScore: 1, numbers: [{ value: "28.4", found: true }] });
+    expect(improvement).toMatchObject({ status: "supported", matchScore: 1, numbers: [{ value: "2", found: true }] });
+    expect(score?.reason).toContain(crossLanguageReason);
+    expect(improvement?.reason).toContain(crossLanguageReason);
+  });
+
+  it("requires every distinctive anchor and leaves translated prose with no anchors partial", () => {
+    const [partial, noAnchors, numericOnly, missingNumber] = verify([
+      fact("Transformer 在 WMT 2014 英德翻译上达到 28.4 ROUGE", wmtResult.id),
+      fact("在英德翻译上超过此前最佳模型", wmtResult.id),
+      fact("相比此前最佳模型高出 2 分以上", wmtResult.id),
+      fact("在 WMT 英德翻译上达到 29.4 BLEU", wmtResult.id),
+    ], wmtResult);
+    expect(partial).toMatchObject({ status: "partial", matchScore: 0.75 });
+    expect(noAnchors).toMatchObject({ status: "partial", matchScore: 0, numbers: [] });
+    expect(numericOnly).toMatchObject({ status: "supported", matchScore: 1 });
+    expect(missingNumber).toMatchObject({ status: "unsupported", numbers: [{ value: "29.4", found: false }] });
+    for (const result of [partial, noAnchors, numericOnly, missingNumber]) {
+      expect(result?.reason).toContain(crossLanguageReason);
+    }
+  });
+
+  it("checks distinctive English names against Chinese evidence without counting English prose as anchors", () => {
+    const source = evidence("e5-2", "在 WMT 2014 英德翻译任务中，Transformer 达到了 28.4 BLEU。");
+    const [supported, partial] = verify([
+      fact("The transformer achieved 28.4 BLEU on WMT 2014.", source.id),
+      fact("RoBERTa achieved 28.4 BLEU on WMT 2014.", source.id),
+    ], source);
+    expect(supported).toMatchObject({ status: "supported", matchScore: 1 });
+    expect(partial).toMatchObject({ status: "partial", matchScore: 0.75 });
+    expect(supported?.reason).toContain(crossLanguageReason);
+  });
+
+  it("keeps regular lexical matching when the citations include prose in the point's language", () => {
+    const chineseSource = evidence("e5-2", "比此前最佳模型高出 2 BLEU 以上");
+    const [result] = verify([
+      fact("比此前最佳模型高出 2 BLEU 以上", wmtResult.id, chineseSource.id),
+    ], wmtResult, chineseSource);
+    expect(result).toMatchObject({ status: "supported", matchScore: 1 });
+    expect(result?.reason).not.toContain(crossLanguageReason);
+  });
+
+  it("still rejects baseline numbers attributed to the paper across languages", () => {
+    const source = evidence("e5-2", "The baseline achieved 24.1 BLEU, whereas our model reached 28.4 BLEU.");
+    const [wrong] = verify([fact("本文模型达到 24.1 BLEU", source.id)], source);
+    expect(wrong).toMatchObject({ status: "unsupported", numbers: [{ value: "24.1", found: false }] });
+    expect(wrong?.reason).toContain(crossLanguageReason);
+    expect(wrong?.reason).toContain("基线");
   });
 
   it("checks all citable slots across slides and accepts an ID-keyed record", () => {
