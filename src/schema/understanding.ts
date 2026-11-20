@@ -62,7 +62,7 @@ export function understandingValidator(evidenceIds: ReadonlySet<string>, brief =
       record.modules = trimList(modules, MODULE_KINDS.length, "modules", warnings).map((entry, index) => {
         if (entry === null || typeof entry !== "object" || !Object.hasOwn(entry, "points")) return entry;
         const module = entry as Record<string, unknown>;
-        return { ...module, points: normalizePoints(module.points, maxPoints, `modules[${index}].points`, warnings) };
+        return { ...module, points: normalizePoints(module.points, maxPoints, `modules[${index}].points`, warnings, evidenceIds) };
       });
     }
     const value = parseRule(schema, record ?? input, "understanding");

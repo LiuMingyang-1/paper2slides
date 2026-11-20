@@ -1,0 +1,9 @@
+{"text":"Mask 15% of all WordPiece tokens.","ids":["e4-14"],"status":"unsupported","numbers":[{"value":"15%","found":false}]}
+{"text":"80/10/10 的比例分别用于 [MASK]、随机词、保留原词。","ids":["e4-15"],"status":"unsupported","numbers":[{"value":"80/10/10","found":false}]}
+{"text":"The GLUE score was 80.5% (7.7 percentage points of absolute improvement).","ids":["e1-2","e6-13"],"status":"unsupported","numbers":[{"value":"80.5%","found":false},{"value":"7.7 percentage points","found":false}]}
+{"text":"MultiNLI accuracy was 86.7%.","ids":["e1-2","e6-2"],"status":"unsupported","numbers":[{"value":"86.7%","found":false}]}
+{"text":"SQuAD v1.1 Test F1 was 93.2.","ids":["e1-2","e7-11"],"status":"unsupported","numbers":[{"value":"93.2","found":false}]}
+{"text":"BERTLARGE uses L=24 and H=1024.","ids":["e3-41","e3-42","e9-7"],"status":"unsupported","numbers":[{"value":"24","found":false},{"value":"1024","found":true}]}
+{"text":"Next Sentence Prediction (NSP) predicts whether B is the actual next sentence that follows A.","ids":["e4-16"],"status":"partial","numbers":[]}
+{"text":"MultiNLI accuracy was 86.7%.","ids":["e1-2","e8-4"],"status":"unsupported","numbers":[{"value":"86.7%","found":false}]}
+{"text":"SQuAD v1.1 Test F1 was 93.2.","ids":["e1-2","e6-4"],"status":"unsupported","numbers":[{"value":"93.2","found":false}]}

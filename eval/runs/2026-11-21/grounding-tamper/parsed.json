@@ -1,0 +1,4096 @@
+{
+  "id": "d064ee9ad01eeb84f220baeeb14c264b1fb2a0a7c120c33ceca9a84eb77861cf",
+  "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+  "authors": [
+    "Jacob Devlin",
+    "Ming-Wei Chang",
+    "Kenton Lee",
+    "Kristina Toutanova"
+  ],
+  "pageCount": 16,
+  "bodyPageCount": 9,
+  "blocks": [
+    {
+      "id": "e1-1",
+      "page": 1,
+      "sectionPath": [
+        "Abstract"
+      ],
+      "type": "text",
+      "text": "We introduce a new language representa-tion model called BERT, which stands for Bidirectional Encoder Representations from Transformers. Unlike recent language repre-sentation models (Peters et al., 2018a; Rad-ford et al., 2018), BERT is designed to pre-train deep bidirectional representations from unlabeled text by jointly conditioning on both left and right context in all layers. As a re-sult, the pre-trained BERT model can be fine-tuned with just one additional output layer to create state-of-the-art models for a wide range of tasks, such as question answering and language inference, without substantial task-specific architecture modifications.",
+      "bbox": [
+        89.00798060000001,
+        418.99008139999995,
+        273.262851458344,
+        595.2696348000001
+      ]
+    },
+    {
+      "id": "e1-2",
+      "page": 1,
+      "sectionPath": [
+        "Abstract"
+      ],
+      "type": "text",
+      "text": "BERT is conceptually simple and empirically powerful. It obtains new state-of-the-art re-sults on eleven natural language processing tasks, including pushing the GLUE score to 78.3% (5.5% point absolute improvement), MultiNLI accuracy to 84.2% (2.1% absolute improvement), SQuAD v1.1 question answer-ing Test F1 to 91.4 (0.3 point absolute de-crease) and SQuAD v2.0 Test F1 to 83.1 (5.1 point absolute improvement).",
+      "bbox": [
+        89.00770150999998,
+        null,
+        273.25752029754415,
+        null
+      ]
+    },
+    {
+      "id": "e1-3",
+      "page": 1,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "Language model pre-training has been shown to be effective for improving many natural language processing tasks (Dai and Le, 2015; Peters et al., 2018a; Radford et al., 2018; Howard and Ruder, 2018). These include sentence-level tasks such as natural language inference (Bowman et al., 2015; Williams et al., 2018) and paraphrasing (Dolan and Brockett, 2005), which aim to predict the re-lationships between sentences by analyzing them holistically, as well as token-level tasks such as named entity recognition and question answering, where models are required to produce fine-grained output at the token level (Tjong Kim Sang and De Meulder, 2003; Rajpurkar et al., 2016).",
+      "bbox": [
+        71.99998089999994,
+        76.56778139999993,
+        290.26928796657404,
+        262.46048579999984
+      ]
+    },
+    {
+      "id": "e1-4",
+      "page": 1,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "There are two existing strategies for apply-ing pre-trained language representations to down-stream tasks: feature-based and fine-tuning. The feature-based approach, such as ELMo (Peters et al., 2018a), uses task-specific architectures that include the pre-trained representations as addi-tional features. The fine-tuning approach, such as the Generative Pre-trained Transformer (OpenAI GPT) (Radford et al., 2018), introduces minimal task-specific parameters, and is trained on the downstream tasks by simply fine-tuning all pre-trained parameters. The two approaches share the same objective function during pre-training, where they use unidirectional language models to learn general language representations.",
+      "bbox": [
+        307.27596789999996,
+        416.34567340000024,
+        525.54554170909,
+        615.7865168
+      ]
+    },
+    {
+      "id": "e1-5",
+      "page": 1,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "We argue that current techniques restrict the power of the pre-trained representations, espe-cially for the fine-tuning approaches. The ma-jor limitation is that standard language models are unidirectional, and this limits the choice of archi-tectures that can be used during pre-training. For example, in OpenAI GPT, the authors use a left-to-right architecture, where every token can only at-tend to previous tokens in the self-attention layers of the Transformer (Vaswani et al., 2017). Such re-strictions are sub-optimal for sentence-level tasks, and could be very harmful when applying fine-tuning based approaches to token-level tasks such as question answering, where it is crucial to incor-porate context from both directions.",
+      "bbox": [
+        307.27597089999995,
+        212.58362040000026,
+        525.5452975146992,
+        412.02541080000026
+      ]
+    },
+    {
+      "id": "e1-6",
+      "page": 1,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "In this paper, we improve the fine-tuning based approaches by proposing BERT: Bidirectional Encoder Representations from Transformers. BERT alleviates the previously mentioned unidi-rectionality constraint by using a “masked lan-guage model” (MLM) pre-training objective, in-spired by the Cloze task (Taylor, 1953). The masked language model randomly masks some of the tokens from the input, and the objective is to predict the original vocabulary id of the masked",
+      "bbox": [
+        307.27596489999996,
+        76.56764440000028,
+        525.5453647582875,
+        208.26335780000025
+      ]
+    },
+    {
+      "id": "e1-7",
+      "page": 1,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "Proceedings of NAACL-HLT 2019, pages 4171–4186",
+      "bbox": [
+        202.544,
+        38.5132576,
+        392.72911822220806,
+        46.5292192
+      ]
+    },
+    {
+      "id": "e1-8",
+      "page": 1,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "Minneapolis, Minnesota, June 2 - June 7, 2019. ©c 2019 Association for Computational Linguistics",
+      "bbox": [
+        120.16301000000001,
+        27.175256600000004,
+        475.11228854441595,
+        35.836799000000006
+      ]
+    },
+    {
+      "id": "e2-1",
+      "page": 2,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "word based only on its context. Unlike left-to-right language model pre-training, the MLM ob-jective enables the representation to fuse the left and the right context, which allows us to pre-train a deep bidirectional Transformer. In addi-tion to the masked language model, we also use a “adjacent segmentprediction” task that jointly pre-trains text-pair representations. The contributions of our paper are as follows:",
+      "bbox": [
+        72,
+        null,
+        290.26930594293685,
+        null
+      ]
+    },
+    {
+      "id": "e2-2",
+      "page": 2,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "• We demonstrate the importance of bidirectional pre-training for language representations. Un-like Radford et al. (2018), which uses unidirec-tional language models for pre-training, BERT uses masked language models to enable pre-trained deep bidirectional representations. This is also in contrast to Peters et al. (2018a), which uses a shallow concatenation of independently trained left-to-right and right-to-left LMs.",
+      "bbox": [
+        74.1100007,
+        528.4945414000007,
+        290.26920428032906,
+        646.6413188000004
+      ]
+    },
+    {
+      "id": "e2-3",
+      "page": 2,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "• We show that pre-trained representations reduce the need for many heavily-engineered task-specific architectures. BERT is the first fine-tuning based representation model that achieves state-of-the-art performance on a large suite of sentence-level and token-level tasks, outper-forming many task-specific architectures.",
+      "bbox": [
+        74.11000339849998,
+        425.49649540000064,
+        290.26919205810765,
+        516.5442738000006
+      ]
+    },
+    {
+      "id": "e2-4",
+      "page": 2,
+      "sectionPath": [
+        "1 Introduction"
+      ],
+      "type": "text",
+      "text": "• BERT advances the state of the art for eleven NLP tasks. The code and pre-trained mod-els are available at https://github.com/ google-research/bert.",
+      "bbox": [
+        74.10999209699996,
+        363.1454824000006,
+        290.2691535045849,
+        413.5462278000006
+      ]
+    },
+    {
+      "id": "e2-5",
+      "page": 2,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "There is a long history of pre-training general lan-guage representations, and we briefly review the most widely-used approaches in this section.",
+      "bbox": [
+        71.99998779549995,
+        292.1694684000006,
+        290.2692732718741,
+        329.0202258000006
+      ]
+    },
+    {
+      "id": "e2-6",
+      "page": 2,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "2.1 Unsupervised Feature-based Approaches",
+      "bbox": [
+        71.99998779549995,
+        270.2598391000006,
+        287.00748611372046,
+        280.0671200000006
+      ]
+    },
+    {
+      "id": "e2-7",
+      "page": 2,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "Learning widely applicable representations of words has been an active area of research for decades, including non-neural (Brown et al., 1992; Ando and Zhang, 2005; Blitzer et al., 2006) and neural (Mikolov et al., 2013; Pennington et al., 2014) methods. Pre-trained word embeddings are an integral part of modern NLP systems, of-fering significant improvements over embeddings learned from scratch (Turian et al., 2010). To pre-train word embedding vectors, left-to-right lan-guage modeling objectives have been used (Mnih and Hinton, 2009), as well as objectives to dis-criminate correct from incorrect words in left and right context (Mikolov et al., 2013).",
+      "bbox": [
+        71.99998679549992,
+        76.56750840000065,
+        290.26930798642195,
+        262.4602128000006
+      ]
+    },
+    {
+      "id": "e2-8",
+      "page": 2,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "These approaches have been generalized to coarser granularities, such as sentence embed-dings (Kiros et al., 2015; Logeswaran and Lee, 2018) or paragraph embeddings (Le and Mikolov, 2014). To train sentence representations, prior work has used objectives to rank candidate next sentences (Jernite et al., 2017; Logeswaran and Lee, 2018), left-to-right generation of next sen-tence words given a representation of the previous sentence (Kiros et al., 2015), or denoising auto-encoder derived objectives (Hill et al., 2016).",
+      "bbox": [
+        307.27600979549993,
+        630.274444400001,
+        525.5453339773612,
+        775.5192438000006
+      ]
+    },
+    {
+      "id": "e2-9",
+      "page": 2,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "ELMo and its predecessor (Peters et al., 2017, 2018a) generalize traditional word embedding re-search along a different dimension. They extract context-sensitive features from a left-to-right and a right-to-left language model. The contextual rep-resentation of each token is the concatenation of the left-to-right and right-to-left representations. When integrating contextual word embeddings with existing task-specific architectures, ELMo advances the state of the art for several major NLP benchmarks (Peters et al., 2018a) including ques-tion answering (Rajpurkar et al., 2016), sentiment analysis (Socher et al., 2013), and named entity recognition (Tjong Kim Sang and De Meulder, 2003). Melamud et al. (2016) proposed learning contextual representations through a task to pre-dict a single word from both left and right context using LSTMs.",
+      "bbox": [
+        307.2760297954999,
+        384.70730840000135,
+        525.5473282136708,
+        624.7961618000011
+      ]
+    },
+    {
+      "id": "e2-10",
+      "page": 2,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "Similar to ELMo, their model is feature-based and not deeply bidirectional. Fedus et al. (2018) shows that the cloze task can be used to improve the robustness of text generation mod-els.",
+      "bbox": [
+        307.2760297954999,
+        330.51028740000135,
+        525.5453301955229,
+        394.46004380000136
+      ]
+    },
+    {
+      "id": "e2-11",
+      "page": 2,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "2.2 Unsupervised Fine-tuning Approaches",
+      "bbox": [
+        307.2760297954999,
+        302.37766610000136,
+        510.6543443863784,
+        312.1849470000014
+      ]
+    },
+    {
+      "id": "e2-12",
+      "page": 2,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "As with the feature-based approaches, the first works in this direction only pre-trained word em-bedding parameters from unlabeled text (Col-lobert and Weston, 2008).",
+      "bbox": [
+        307.2760297954999,
+        240.8393114000014,
+        525.5453308500689,
+        291.2400418000014
+      ]
+    },
+    {
+      "id": "e2-13",
+      "page": 2,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "More recently, sentence or document encoders which produce contextual token representations have been pre-trained from unlabeled text and fine-tuned for a supervised downstream task (Dai and Le, 2015; Howard and Ruder, 2018; Radford et al., 2018). The advantage of these approaches is that few parameters need to be learned from scratch. At least partly due to this advantage, OpenAI GPT (Radford et al., 2018) achieved pre-viously state-of-the-art results on many sentence-level tasks from the GLUE benchmark (Wang et al., 2018a). Left-to-right language model-",
+      "bbox": [
+        307.2760257954999,
+        76.56733840000145,
+        525.5453436985517,
+        235.3620508000014
+      ]
+    },
+    {
+      "id": "e3-1",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "ASP  Mask LM  Mask LM",
+      "bbox": [
+        89.39908165080001,
+        null,
+        223.96708905847794,
+        null
+      ]
+    },
+    {
+      "id": "e3-2",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "C  T  ...  T  T  T ’  ...  T ’",
+      "bbox": [
+        94.52855134876715,
+        735.9894585730319,
+        236.5691701887235,
+        743.5097454124777
+      ]
+    },
+    {
+      "id": "e3-3",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "table",
+      "text": "1  N  [SEP]  1  M",
+      "bbox": [
+        116.75848494637619,
+        735.2599264012815,
+        235.33925419667116,
+        739.402551575305
+      ]
+    },
+    {
+      "id": "e3-4",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "BERT",
+      "bbox": [
+        151.53341224019903,
+        707.2018182657791,
+        180.92306562467428,
+        719.6106436628615
+      ]
+    },
+    {
+      "id": "e3-5",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "E  E  ...  E  E  E ’  ...  E ’",
+      "bbox": [
+        91.49973392271666,
+        687.4508108150708,
+        236.72508778064278,
+        694.689292038185
+      ]
+    },
+    {
+      "id": "e3-6",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "table",
+      "text": "[CLS]  1  N  [SEP]  1  M",
+      "bbox": [
+        94.58536832905696,
+        686.6834702015766,
+        235.49517178859043,
+        691.0203128798254
+      ]
+    },
+    {
+      "id": "e3-7",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "table",
+      "text": "[CLS]  Tok 1  Tok N  [SEP]  Tok 1  TokM",
+      "bbox": [
+        92.48504036894569,
+        664.7816301474202,
+        237.1432023228494,
+        668.9620909671464
+      ]
+    },
+    {
+      "id": "e3-8",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "...  ...",
+      "bbox": [
+        128.12267732190986,
+        663.1814869360903,
+        216.81089152354474,
+        670.4199681592046
+      ]
+    },
+    {
+      "id": "e3-9",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "Masked Sentence A  Masked Sentence B",
+      "bbox": [
+        103.36181252320947,
+        639.0096972492072,
+        241.65658029799556,
+        646.5515493481711
+      ]
+    },
+    {
+      "id": "e3-10",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "Unlabeled Sentence A and B Pair",
+      "bbox": [
+        121.31953928581261,
+        622.3241442034586,
+        217.06267335196637,
+        629.5626254265728
+      ]
+    },
+    {
+      "id": "e3-11",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "Pre-training",
+      "bbox": [
+        139.2090471926154,
+        600.6851425029149,
+        196.58884422876883,
+        613.0939678999973
+      ]
+    },
+    {
+      "id": "e3-12",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "MNLI NER SQuAD",
+      "bbox": [
+        303.2001561464362,
+        761.79098175144,
+        371.9356607475471,
+        769.7032195656946
+      ]
+    },
+    {
+      "id": "e3-13",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "Start/End Span",
+      "bbox": [
+        458.2946536842631,
+        757.8318527971853,
+        502.1912335212186,
+        765.0703340202996
+      ]
+    },
+    {
+      "id": "e3-14",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "C  T  ...  T  T  T ’  ...  T ’",
+      "bbox": [
+        354.1130210192565,
+        735.9894585730319,
+        501.57875357759286,
+        743.5097454124777
+      ]
+    },
+    {
+      "id": "e3-15",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "table",
+      "text": "1  N  [SEP]  1  M",
+      "bbox": [
+        377.122271904047,
+        735.2599264012815,
+        500.34883689134045,
+        739.402551575305
+      ]
+    },
+    {
+      "id": "e3-16",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "BERT BERT",
+      "bbox": [
+        371.2417752990664,
+        707.2018182657791,
+        443.27895111125446,
+        719.6106436628615
+      ]
+    },
+    {
+      "id": "e3-17",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "E  E  ...  E  E  E ’  ...  E ’",
+      "bbox": [
+        351.0951398463505,
+        687.4508108150708,
+        501.73470830465817,
+        694.689292038185
+      ]
+    },
+    {
+      "id": "e3-18",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "table",
+      "text": "[CLS]  1  N  [SEP]  1  M",
+      "bbox": [
+        354.18077390559074,
+        686.6834702015766,
+        500.5047919655058,
+        691.0203128798254
+      ]
+    },
+    {
+      "id": "e3-19",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "table",
+      "text": "[CLS]  Tok 1  Tok N  [SEP]  Tok 1  TokM",
+      "bbox": [
+        352.0695231408661,
+        664.7816301474202,
+        502.15278503140274,
+        668.9620627254133
+      ]
+    },
+    {
+      "id": "e3-20",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "...  ...",
+      "bbox": [
+        388.8394312884677,
+        663.1814869360903,
+        480.8460710041662,
+        670.4199681592046
+      ]
+    },
+    {
+      "id": "e3-21",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "Question  Paragraph",
+      "bbox": [
+        380.7937914063852,
+        639.0093146192737,
+        492.612551276237,
+        646.5511484977645
+      ]
+    },
+    {
+      "id": "e3-22",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "Question Answer Pair",
+      "bbox": [
+        405.9870570332941,
+        624.7510838795458,
+        468.24568761293324,
+        631.9895651026601
+      ]
+    },
+    {
+      "id": "e3-23",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "Fine-Tuning",
+      "bbox": [
+        389.17007196645613,
+        600.6851425029149,
+        447.99380304951944,
+        613.0939678999973
+      ]
+    },
+    {
+      "id": "e3-24",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "caption",
+      "text": "Figure 1: Overall pre-training and fine-tuning procedures for BERT. Apart from output layers, the same architec-tures are used in both pre-training and fine-tuning. The same pre-trained model parameters are used to initialize models for different down-stream tasks. During fine-tuning, all parameters are fine-tuned. [CLS] is a special symbol added in front of every input example, and [SEP] is a special separator token (e.g. separating ques-tions/answers).",
+      "bbox": [
+        71.99998999999997,
+        525.3050334,
+        525.5473643026178,
+        582.0326428000001
+      ]
+    },
+    {
+      "id": "e3-25",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "ing and auto-encoder objectives have been used for pre-training such models (Howard and Ruder, 2018; Radford et al., 2018; Dai and Le, 2015).",
+      "bbox": [
+        71.99999399999993,
+        463.5315574,
+        290.26928553310654,
+        500.3823148
+      ]
+    },
+    {
+      "id": "e3-26",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "2.3 Transfer Learning from Supervised Data",
+      "bbox": [
+        71.99999599999995,
+        440.0089221,
+        287.37837085019305,
+        449.81620300000003
+      ]
+    },
+    {
+      "id": "e3-27",
+      "page": 3,
+      "sectionPath": [
+        "2 Related Work"
+      ],
+      "type": "text",
+      "text": "There has also been work showing effective trans-fer from supervised tasks with large datasets, such as natural language inference (Conneau et al., 2017) and machine translation (McCann et al., 2017). Computer vision research has also demon-strated the importance of transfer learning from large pre-trained models, where an effective recipe is to fine-tune models pre-trained with Ima-geNet (Deng et al., 2009; Yosinski et al., 2014).",
+      "bbox": [
+        71.99999599999995,
+        313.3665184,
+        290.26927746182537,
+        431.51329580000004
+      ]
+    },
+    {
+      "id": "e3-28",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "We introduce BERT and its detailed implementa-tion in this section. There are two steps in our framework: pre-training and fine-tuning. Dur-ing pre-training, the model is trained on unlabeled data over different pre-training tasks. For fine-tuning, the BERT model is first initialized with the pre-trained parameters, and all of the param-eters are fine-tuned using labeled data from the downstream tasks. Each downstream task has sep-arate fine-tuned models, even though they are ini-tialized with the same pre-trained parameters. The question-answering example in Figure 1 will serve as a running example for this section.",
+      "bbox": [
+        71.9999919999999,
+        104.01654240000013,
+        290.26931702147215,
+        276.35924380000006
+      ]
+    },
+    {
+      "id": "e3-29",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "A distinctive feature of BERT is its unified ar-chitecture across different tasks. There is mini-",
+      "bbox": [
+        72.00003599999994,
+        76.56753640000014,
+        290.2693147563685,
+        99.86927580000014
+      ]
+    },
+    {
+      "id": "e3-30",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "mal difference between the pre-trained architec-ture and the final downstream architecture.",
+      "bbox": [
+        307.276036,
+        477.0805254000001,
+        525.5453616654986,
+        500.3822718000001
+      ]
+    },
+    {
+      "id": "e3-31",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "Model Architecture BERT’s model architec-ture is a multi-layer bidirectional Transformer en-coder based on the original implementation de-scribed in Vaswani et al. (2017) and released in",
+      "bbox": [
+        307.276036,
+        413.26250140000013,
+        525.545287199982,
+        463.79415600000016
+      ]
+    },
+    {
+      "id": "e3-32",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "1",
+      "bbox": [
+        443.896034,
+        404.3073294000001,
+        447.881084,
+        411.43259880000016
+      ]
+    },
+    {
+      "id": "e3-33",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "the tensor2tensor library. Because the use of Transformers has become common and our im-plementation is almost identical to the original, we will omit an exhaustive background descrip-tion of the model architecture and refer readers to Vaswani et al. (2017) as well as excellent guides",
+      "bbox": [
+        307.276036,
+        331.9674584000001,
+        525.548753654557,
+        409.46622580000013
+      ]
+    },
+    {
+      "id": "e3-34",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "2",
+      "bbox": [
+        474.87004399999995,
+        323.01127930000007,
+        478.85509399999995,
+        330.1365487000001
+      ]
+    },
+    {
+      "id": "e3-35",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "such as “The Annotated Transformer.”",
+      "bbox": [
+        307.27604399999996,
+        318.4184474000001,
+        474.8725083763312,
+        328.1711828000001
+      ]
+    },
+    {
+      "id": "e3-36",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "In this work, we denote the number of layers (i.e., Transformer blocks) as L, the hidden size as",
+      "bbox": [
+        307.27604699999995,
+        290.6674703000001,
+        525.5451651345023,
+        313.9701937000001
+      ]
+    },
+    {
+      "id": "e3-37",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "3",
+      "bbox": [
+        521.0600527999999,
+        281.7122983000001,
+        525.0451027999999,
+        288.83756770000014
+      ]
+    },
+    {
+      "id": "e3-38",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "H, and the number of self-attention heads as A. We primarily report results on two model sizes:",
+      "bbox": [
+        307.2760527999999,
+        263.5694783000001,
+        525.5452497163003,
+        287.0457403000001
+      ]
+    },
+    {
+      "id": "e3-39",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "equation",
+      "text": "BERT  (L=12, H=768, A=12, Total Param-",
+      "bbox": [
+        307.2760527999999,
+        250.02048230000014,
+        525.5428862701701,
+        259.90412690000016
+      ]
+    },
+    {
+      "id": "e3-40",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "BASE",
+      "bbox": [
+        336.7440407999999,
+        248.97710350000014,
+        358.51833237711855,
+        256.14222340000015
+      ]
+    },
+    {
+      "id": "e3-41",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "equation",
+      "text": "eters=110M) and BERT  (L=20, H=1024,",
+      "bbox": [
+        307.2760527999999,
+        null,
+        525.550051216576,
+        null
+      ]
+    },
+    {
+      "id": "e3-42",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "LARGE",
+      "bbox": [
+        417.4050507999999,
+        235.42810750000015,
+        447.3407205449955,
+        242.59322740000016
+      ]
+    },
+    {
+      "id": "e3-43",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "equation",
+      "text": "A=16, Total Parameters=340M).",
+      "bbox": [
+        307.2760507999999,
+        222.92148290000014,
+        449.4324994428812,
+        232.67421830000015
+      ]
+    },
+    {
+      "id": "e3-44",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "BERTBASE was chosen to have the same model size as OpenAI GPT for comparison purposes. Critically, however, the BERT Transformer uses bidirectional self-attention, while the GPT Trans-former uses constrained self-attention where every",
+      "bbox": [
+        307.2760507999999,
+        154.52449490000018,
+        525.5485878646899,
+        218.47321430000014
+      ]
+    },
+    {
+      "id": "e3-45",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "4",
+      "bbox": [
+        490.9280307999999,
+        145.56831560000018,
+        494.9130807999999,
+        152.69358500000018
+      ]
+    },
+    {
+      "id": "e3-46",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "token can only attend to context to its left.",
+      "bbox": [
+        307.2760507999999,
+        140.97449190000017,
+        490.9306574137417,
+        150.72722730000018
+      ]
+    },
+    {
+      "id": "e3-47",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "1",
+      "bbox": [
+        319.928,
+        124.02783840000001,
+        322.9168,
+        129.37181280000001
+      ]
+    },
+    {
+      "id": "e3-48",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "https://github.com/tensorflow/tensor2tensor",
+      "bbox": [
+        323.4149996,
+        119.5732596,
+        479.50211264215045,
+        127.5892212
+      ]
+    },
+    {
+      "id": "e3-49",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "2",
+      "bbox": [
+        319.928,
+        113.1538378,
+        322.9168,
+        118.4978122
+      ]
+    },
+    {
+      "id": "e3-50",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "http://nlp.seas.harvard.edu/2018/04/03/attention.html",
+      "bbox": [
+        323.4149996,
+        108.699259,
+        513.9779071925504,
+        116.7152206
+      ]
+    },
+    {
+      "id": "e3-51",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "3",
+      "bbox": [
+        319.928,
+        102.2788378,
+        322.9168,
+        107.6228122
+      ]
+    },
+    {
+      "id": "e3-52",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "In all cases we set the feed-forward/filter size to be 4H,",
+      "bbox": [
+        323.4149996,
+        97.824259,
+        525.5435934,
+        105.983683
+      ]
+    },
+    {
+      "id": "e3-53",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "equation",
+      "text": "i.e., 3072 for the H = 768 and 4096 for the H = 1024.",
+      "bbox": [
+        307.2759934,
+        87.862261,
+        508.0245554,
+        96.021685
+      ]
+    },
+    {
+      "id": "e3-54",
+      "page": 3,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "We note that in the literature the bidirectional Trans-",
+      "bbox": [
+        323.41497499999997,
+        76.987261,
+        525.5445138004543,
+        85.0032226
+      ]
+    },
+    {
+      "id": "e4-1",
+      "page": 4,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "Input/Output Representations To make BERT handle a variety of down-stream tasks, our input representation is able to unambiguously represent both a single sentence and a pair of sentences (e.g., 〈 Question, Answer 〉) in one token sequence. Throughout this work, a “sentence” can be an arbi-trary span of contiguous text, rather than an actual linguistic sentence. A “sequence” refers to the in-put token sequence to BERT, which may be a sin-gle sentence or two sentences packed together.",
+      "bbox": [
+        72,
+        643.8235814000004,
+        290.2693218618519,
+        775.6502790000001
+      ]
+    },
+    {
+      "id": "e4-2",
+      "page": 4,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "We use WordPiece embeddings (Wu et al., 2016) with a 30,000 token vocabulary. The first token of every sequence is always a special clas-sification token ([CLS]). The final hidden state corresponding to this token is used as the ag-gregate sequence representation for classification tasks. Sentence pairs are packed together into a single sequence. We differentiate the sentences in two ways. First, we separate them with a special token ([SEP]). Second, we add a learned embed-ding to every token indicating whether it belongs to sentence A or sentence B. As shown in Figure 1, we denote input embedding as E, the final hidden",
+      "bbox": [
+        71.99999300000007,
+        467.1525014000007,
+        290.27224008327016,
+        639.4953228000004
+      ]
+    },
+    {
+      "id": "e4-3",
+      "page": 4,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "H",
+      "bbox": [
+        279.47197400000005,
+        458.37169460000075,
+        286.42827728000003,
+        465.4491434000007
+      ]
+    },
+    {
+      "id": "e4-4",
+      "page": 4,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "equation",
+      "text": "vector of the special [CLS] token as C ∈ R ,",
+      "bbox": [
+        72.00000000000006,
+        453.6025134000007,
+        290.26724200000007,
+        464.1407040000007
+      ]
+    },
+    {
+      "id": "e4-5",
+      "page": 4,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "th",
+      "bbox": [
+        228.96096980000004,
+        444.82268360000074,
+        236.95896515000004,
+        451.9001324000007
+      ]
+    },
+    {
+      "id": "e4-6",
+      "page": 4,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "and the final hidden vector for the i input token",
+      "bbox": [
+        71.99996700000005,
+        440.0535024000007,
+        290.27292201636345,
+        449.9807834000007
+      ]
+    },
+    {
+      "id": "e4-7",
+      "page": 4,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "H",
+      "bbox": [
+        114.78297660000004,
+        431.27367260000074,
+        121.73927988000004,
+        438.3511214000007
+      ]
+    },
+    {
+      "id": "e4-8",
+      "page": 4,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "equation",
+      "text": "as Ti ∈ R .",
+      "bbox": [
+        71.99997180000005,
+        425.6786713000007,
+        125.57825260000004,
+        437.0426820000007
+      ]
+    },
+    {
+      "id": "e4-9",
+      "page": 4,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "For a given token, its input representation is constructed by summing the corresponding token, segment, and position embeddings. A visualiza-tion of this construction can be seen in Figure 2.",
+      "bbox": [
+        71.99997360000005,
+        371.7764644000007,
+        290.26923094289634,
+        422.1762328000007
+      ]
+    },
+    {
+      "id": "e4-10",
+      "page": 4,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "3.1 Pre-training BERT",
+      "bbox": [
+        71.99997360000003,
+        347.6248311000007,
+        185.91279652000065,
+        357.4321120000007
+      ]
+    },
+    {
+      "id": "e4-11",
+      "page": 4,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "Unlike Peters et al. (2018a) and Radford et al. (2018), we do not use traditional left-to-right or right-to-left language models to pre-train BERT. Instead, we pre-train BERT using two unsuper-vised tasks, described in this section. This step is presented in the left part of Figure 1.",
+      "bbox": [
+        71.99997360000003,
+        261.27042240000065,
+        290.2693028145909,
+        338.7691898000007
+      ]
+    },
+    {
+      "id": "e4-12",
+      "page": 4,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "Task #1: Masked LM Intuitively, it is reason-able to believe that a deep bidirectional model is strictly more powerful than either a left-to-right model or the shallow concatenation of a left-to-right and a right-to-left model. Unfortunately, standard conditional language models can only be trained left-to-right or right-to-left, since bidirec-tional conditioning would allow each word to in-directly “see itself”, and the model could trivially predict the target word in a multi-layered context.",
+      "bbox": [
+        71.99997560000003,
+        116.57344640000072,
+        290.27072308182704,
+        248.39906200000064
+      ]
+    },
+    {
+      "id": "e4-13",
+      "page": 4,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "former is often referred to as a “Transformer encoder” while the left-context-only version is referred to as a “Transformer decoder” since it can be used for text generation.",
+      "bbox": [
+        72,
+        76.98726260000001,
+        290.26907809345744,
+        104.9282192
+      ]
+    },
+    {
+      "id": "e4-14",
+      "page": 4,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "In order to train a deep bidirectional representa-tion, we simply mask some percentage of the input tokens at random, and then predict those masked tokens. We refer to this procedure as a “masked LM” (MLM), although it is often referred to as a Cloze task in the literature (Taylor, 1953). In this case, the final hidden vectors corresponding to the mask tokens are fed into an output softmax over the vocabulary, as in a standard LM. In all of our experiments, we mask 20% of all WordPiece to-kens in each sequence at random. In contrast to denoising auto-encoders (Vincent et al., 2008), we only predict the masked words rather than recon-structing the entire input.",
+      "bbox": [
+        307.2759960000001,
+        null,
+        525.5453596364335,
+        null
+      ]
+    },
+    {
+      "id": "e4-15",
+      "page": 4,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "Although this allows us to obtain a bidirec-tional pre-trained model, a downside is that we are creating a mismatch between pre-training and fine-tuning, since the [MASK] token does not ap-pear during fine-tuning. To mitigate this, we do not always replace “masked” words with the ac-tual [MASK] token. The training data generator chooses 20% of the token positions at random for prediction. If the i-th token is chosen, we replace the i-th token with (1) the [MASK] token 70% of the time (2) a random token 20% of the time (3) the unchanged i-th token 10% of the time. Then, Ti will be used to predict the original token with cross entropy loss. We compare variations of this procedure in Appendix C.2.",
+      "bbox": [
+        307.2759960000001,
+        null,
+        525.5489571890924,
+        null
+      ]
+    },
+    {
+      "id": "e4-16",
+      "page": 4,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "Task #2: Adjacent Segment Prediction (ASP) Many important downstream tasks such as Ques-tion Answering (QA) and Natural Language Infer-ence (NLI) are based on understanding the rela-tionship between two sentences, which is not di-rectly captured by language modeling. In order to train a model that understands sentence rela-tionships, we pre-train for a binarized adjacent seg-ment prediction task that can be trivially gener-ated from any monolingual corpus. Specifically, when choosing the sentences A and B for each pre-training example, 50% of the time B is the actual next sentence that follows A (labeled as IsNext), and 50% of the time it is a random sentence from the corpus (labeled as NotNext). As we show in Figure 1, C is used for adjacent segment predic-",
+      "bbox": [
+        307.2760091000001,
+        null,
+        525.5462174272502,
+        null
+      ]
+    },
+    {
+      "id": "e4-17",
+      "page": 4,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "5",
+      "bbox": [
+        359.39301210000013,
+        147.8432711000007,
+        363.37806210000014,
+        154.9685405000007
+      ]
+    },
+    {
+      "id": "e4-18",
+      "page": 4,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "tion (ASP).  Despite its simplicity, we demon-strate in Section 5.1 that pre-training towards this",
+      "bbox": [
+        307.27600610000013,
+        null,
+        525.5451543817901,
+        null
+      ]
+    },
+    {
+      "id": "e4-19",
+      "page": 4,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "6",
+      "bbox": [
+        521.0600031000001,
+        120.74527910000072,
+        525.0450531000001,
+        127.87054850000071
+      ]
+    },
+    {
+      "id": "e4-20",
+      "page": 4,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "task is very beneficial to both QA and NLI.",
+      "bbox": [
+        307.27600310000014,
+        116.1514554000007,
+        515.8361890429194,
+        125.9041908000007
+      ]
+    },
+    {
+      "id": "e4-21",
+      "page": 4,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "5",
+      "bbox": [
+        319.928,
+        102.2788384,
+        322.9168,
+        107.62281279999999
+      ]
+    },
+    {
+      "id": "e4-22",
+      "page": 4,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "The final model achieves 97%-98% accuracy on ASP",
+      "bbox": [
+        323.4149996,
+        null,
+        514.9109776,
+        null
+      ]
+    },
+    {
+      "id": "e4-23",
+      "page": 4,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "6",
+      "bbox": [
+        319.928,
+        91.4048378,
+        322.9168,
+        96.74881219999999
+      ]
+    },
+    {
+      "id": "e4-24",
+      "page": 4,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "The vector C is not a meaningful sentence representation without fine-tuning, since it was trained with ASP",
+      "bbox": [
+        307.27599159999994,
+        null,
+        525.540063950144,
+        null
+      ]
+    },
+    {
+      "id": "e5-1",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "Input  [CLS]  cute",
+      "bbox": [
+        117.345337739556,
+        765.079087594745,
+        295.557152931067,
+        774.5870269917375
+      ]
+    },
+    {
+      "id": "e5-2",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "my  dog  is",
+      "bbox": [
+        205.21377205693557,
+        765.0789261508028,
+        265.1338410481016,
+        773.2680764133546
+      ]
+    },
+    {
+      "id": "e5-3",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "Token",
+      "bbox": [
+        117.345337739556,
+        744.6504819899421,
+        136.0640572700293,
+        752.1783147744816
+      ]
+    },
+    {
+      "id": "e5-4",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "E  E  E  E  E",
+      "bbox": [
+        176.53426568378845,
+        740.4362642963397,
+        285.7697909720652,
+        748.6385751057177
+      ]
+    },
+    {
+      "id": "e5-5",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "[CLS]  my  dog  is  cute",
+      "bbox": [
+        181.02608495217666,
+        738.3854119171202,
+        295.38725615500164,
+        743.8536193967825
+      ]
+    },
+    {
+      "id": "e5-6",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "Embeddings",
+      "bbox": [
+        117.345337739556,
+        736.7090313748407,
+        154.78951500047756,
+        744.2368641593802
+      ]
+    },
+    {
+      "id": "e5-7",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "Segment",
+      "bbox": [
+        117.345337739556,
+        715.7724810658461,
+        144.29813763944557,
+        723.3003138503856
+      ]
+    },
+    {
+      "id": "e5-8",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "E  E  E  E  E",
+      "bbox": [
+        179.24214933289073,
+        710.5655071973283,
+        289.21437880768286,
+        721.1113357574511
+      ]
+    },
+    {
+      "id": "e5-9",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "Embeddings  A  A  A  A  A",
+      "bbox": [
+        117.345337739556,
+        707.8310304507447,
+        293.161923038691,
+        715.3588632352842
+      ]
+    },
+    {
+      "id": "e5-10",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "Position",
+      "bbox": [
+        117.345337739556,
+        684.0066800493405,
+        141.29963865058284,
+        691.53451283388
+      ]
+    },
+    {
+      "id": "e5-11",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "E  E  E  E  E",
+      "bbox": [
+        179.56223273415839,
+        678.7997061808228,
+        289.3525643738048,
+        689.3455347409456
+      ]
+    },
+    {
+      "id": "e5-12",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "table",
+      "text": "Embeddings  0  1  2  3  4",
+      "bbox": [
+        117.345337739556,
+        676.0652294342391,
+        293.02287906013015,
+        683.5930622187785
+      ]
+    },
+    {
+      "id": "e5-13",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "[SEP]  likes  play  [SEP]",
+      "bbox": [
+        308.7090384563495,
+        765.079087594745,
+        465.172954552052,
+        773.2682378572969
+      ]
+    },
+    {
+      "id": "e5-14",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "he  ##ing",
+      "bbox": [
+        339.18374231489,
+        765.0789261508028,
+        436.86636096164875,
+        773.2682378572969
+      ]
+    },
+    {
+      "id": "e5-15",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "E  E  E  E  E  E",
+      "bbox": [
+        307.7121096545757,
+        740.4494248431658,
+        453.47286604123843,
+        748.6385751057177
+      ]
+    },
+    {
+      "id": "e5-16",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "[SEP]  he  likes  play  ##ing  [SEP]",
+      "bbox": [
+        311.9704593098679,
+        738.394185615443,
+        466.1674426999345,
+        743.8536193967825
+      ]
+    },
+    {
+      "id": "e5-17",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "E  E  E  E  E  E",
+      "bbox": [
+        311.4744868634968,
+        710.5824279009947,
+        458.44632960663006,
+        721.1113357574511
+      ]
+    },
+    {
+      "id": "e5-18",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "A  B  B  B  B  B",
+      "bbox": [
+        316.9525649462453,
+        707.9399775901414,
+        462.4054250385854,
+        714.9592498454092
+      ]
+    },
+    {
+      "id": "e5-19",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "E  E  E  E  E  E",
+      "bbox": [
+        311.6126727905937,
+        678.8166268844892,
+        456.7542592399838,
+        689.3455347409456
+      ]
+    },
+    {
+      "id": "e5-20",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "table",
+      "text": "5  6  7  8  9  10",
+      "bbox": [
+        317.09075087334224,
+        676.1741765736359,
+        464.09208094899475,
+        683.1934488289037
+      ]
+    },
+    {
+      "id": "e5-21",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "caption",
+      "text": "Figure 2: BERT input representation. The input embeddings are the sum of the token embeddings, the segmenta-tion embeddings and the position embeddings.",
+      "bbox": [
+        72,
+        635.7780614,
+        525.5472657226906,
+        656.6396428
+      ]
+    },
+    {
+      "id": "e5-22",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "The ASP task is closely related to representation-learning objectives used in Jernite et al. (2017) and Logeswaran and Lee (2018). However, in prior work, only sentence embeddings are transferred to down-stream tasks, where BERT transfers all pa-rameters to initialize end-task model parameters.",
+      "bbox": [
+        72,
+        null,
+        290.269294927279,
+        null
+      ]
+    },
+    {
+      "id": "e5-23",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "Pre-training data The pre-training procedure largely follows the existing literature on language model pre-training. For the pre-training corpus we use the BooksCorpus (800M words) (Zhu et al., 2015) and English Wikipedia (2,500M words). For Wikipedia we extract only the text passages and ignore lists, tables, and headers. It is criti-cal to use a document-level corpus rather than a shuffled sentence-level corpus such as the Billion Word Benchmark (Chelba et al., 2013) in order to extract long contiguous sequences.",
+      "bbox": [
+        72,
+        375.5504854000001,
+        290.26931645566447,
+        520.9252170000002
+      ]
+    },
+    {
+      "id": "e5-24",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "3.2 Fine-tuning BERT",
+      "bbox": [
+        72.00001,
+        352.3358331000001,
+        183.098286690911,
+        362.14311400000014
+      ]
+    },
+    {
+      "id": "e5-25",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "Fine-tuning is straightforward since the self-attention mechanism in the Transformer al-lows BERT to model many downstream tasks— whether they involve single text or text pairs—by swapping out the appropriate inputs and outputs. For applications involving text pairs, a common pattern is to independently encode text pairs be-fore applying bidirectional cross attention, such as Parikh et al. (2016); Seo et al. (2017). BERT instead uses the self-attention mechanism to unify these two stages, as encoding a concatenated text pair with self-attention effectively includes bidi-rectional cross attention between two sentences.",
+      "bbox": [
+        72.00000100000003,
+        171.67345540000014,
+        290.2693075636571,
+        344.0162018000001
+      ]
+    },
+    {
+      "id": "e5-26",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "For each task, we simply plug in the task-specific inputs and outputs into BERT and fine-tune all the parameters end-to-end. At the in-put, sentence A and sentence B from pre-training are analogous to (1) sentence pairs in paraphras-ing, (2) hypothesis-premise pairs in entailment, (3) question-passage pairs in question answering, and",
+      "bbox": [
+        72.00000900000006,
+        76.56746740000015,
+        290.27070671818,
+        167.61518580000015
+      ]
+    },
+    {
+      "id": "e5-27",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "(4) a degenerate text-∅ pair in text classification or sequence tagging. At the output, the token rep-resentations are fed into an output layer for token-level tasks, such as sequence tagging or question answering, and the [CLS] representation is fed into an output layer for classification, such as en-tailment or sentiment analysis.",
+      "bbox": [
+        307.27599900000007,
+        519.8074244000004,
+        525.545271681086,
+        610.8552028000001
+      ]
+    },
+    {
+      "id": "e5-28",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "Compared to pre-training, fine-tuning is rela-tively inexpensive. All of the results in the pa-per can be replicated in at most 1 hour on a sin-gle Cloud TPU, or a few hours on a GPU, starting",
+      "bbox": [
+        307.27600500000005,
+        465.6104034000004,
+        525.545320018217,
+        516.0111488000003
+      ]
+    },
+    {
+      "id": "e5-29",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "7",
+      "bbox": [
+        483.1190250000001,
+        456.6552314000004,
+        487.1040750000001,
+        463.7805008000004
+      ]
+    },
+    {
+      "id": "e5-30",
+      "page": 5,
+      "sectionPath": [
+        "3 BERT"
+      ],
+      "type": "text",
+      "text": "from the exact same pre-trained model. We de-scribe the task-specific details in the correspond-ing subsections of Section 4. More details can be found in Appendix A.5.",
+      "bbox": [
+        307.27600500000005,
+        411.4133824000004,
+        525.5453340237765,
+        461.8141278000004
+      ]
+    },
+    {
+      "id": "e5-31",
+      "page": 5,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "In this section, we present BERT fine-tuning re-sults on 11 NLP tasks.",
+      "bbox": [
+        307.27601400000015,
+        354.4693814000004,
+        525.5452794145394,
+        377.7711278000004
+      ]
+    },
+    {
+      "id": "e5-32",
+      "page": 5,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "4.1 GLUE",
+      "bbox": [
+        307.27601400000015,
+        332.8017571000004,
+        362.73786639999014,
+        342.6090380000004
+      ]
+    },
+    {
+      "id": "e5-33",
+      "page": 5,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "The General Language Understanding Evaluation (GLUE) benchmark (Wang et al., 2018a) is a col-lection of diverse natural language understanding tasks. Detailed descriptions of GLUE datasets are included in Appendix B.1.",
+      "bbox": [
+        307.27601400000015,
+        261.05235840000034,
+        525.545326608397,
+        325.00211480000036
+      ]
+    },
+    {
+      "id": "e5-34",
+      "page": 5,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "To fine-tune on GLUE, we represent the input sequence (for single sentence or sentence pairs) as described in Section 3, and use the final hid-",
+      "bbox": [
+        307.2760070000001,
+        220.40537040000038,
+        525.5452197818543,
+        257.25609780000036
+      ]
+    },
+    {
+      "id": "e5-35",
+      "page": 5,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "H",
+      "bbox": [
+        397.12201600000014,
+        211.62453330000037,
+        404.07831928000013,
+        218.70198210000038
+      ]
+    },
+    {
+      "id": "e5-36",
+      "page": 5,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "equation",
+      "text": "den vector C ∈ R corresponding to the first",
+      "bbox": [
+        307.2760070000001,
+        206.85536740000038,
+        525.5490038363591,
+        217.39355800000038
+      ]
+    },
+    {
+      "id": "e5-37",
+      "page": 5,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "input token ([CLS]) as the aggregate representa-tion. The only new parameters introduced during fine-tuning are classification layer weights W ∈",
+      "bbox": [
+        307.27600500000017,
+        166.2083794000004,
+        525.5452525017948,
+        203.0591068000004
+      ]
+    },
+    {
+      "id": "e5-38",
+      "page": 5,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "equation",
+      "text": "K×H",
+      "bbox": [
+        315.1550000000002,
+        157.42754220000043,
+        336.40231908000015,
+        164.95131660000044
+      ]
+    },
+    {
+      "id": "e5-39",
+      "page": 5,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "R  , where K is the number of labels. We com-pute a standard classification loss with C and W,",
+      "bbox": [
+        307.2760020000002,
+        139.10938040000042,
+        525.5480434363533,
+        162.58666440000042
+      ]
+    },
+    {
+      "id": "e5-40",
+      "page": 5,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "T",
+      "bbox": [
+        406.66907380000026,
+        130.32955030000042,
+        411.59937766000024,
+        137.40699910000043
+      ]
+    },
+    {
+      "id": "e5-41",
+      "page": 5,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "i.e., log(softmax(CW )).",
+      "bbox": [
+        307.2760658000002,
+        125.56038440000042,
+        424.48533780000025,
+        135.48766540000042
+      ]
+    },
+    {
+      "id": "e5-42",
+      "page": 5,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "7",
+      "bbox": [
+        319.928,
+        112.2418384,
+        322.9168,
+        117.5858128
+      ]
+    },
+    {
+      "id": "e5-43",
+      "page": 5,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "For example, the BERT SQuAD model can be trained in around 30 minutes on a single Cloud TPU to achieve a Dev F1 score of 91.0%.",
+      "bbox": [
+        307.2759916,
+        87.8622646,
+        525.544938750842,
+        115.8032212
+      ]
+    },
+    {
+      "id": "e5-44",
+      "page": 5,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "See (10) in https://gluebenchmark.com/faq.",
+      "bbox": [
+        323.4149992,
+        76.9872646,
+        523.2575892,
+        85.0032262
+      ]
+    },
+    {
+      "id": "e6-1",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "System  MNLI-(m/mm)  QQP  QNLI",
+      "bbox": [
+        75.273,
+        764.8502576000001,
+        290.52040288320006,
+        772.8662192
+      ]
+    },
+    {
+      "id": "e6-2",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "table",
+      "text": "392k  363k  108k Pre-OpenAI SOTA  80.6/80.1  66.1  82.3 BiLSTM+ELMo+Attn  76.4/76.1  64.8  79.8 OpenAI GPT  82.1/81.4  70.3  87.4 BERTBASE  84.6/83.4  71.2  90.5 BERTLARGE  84.2/85.9  72.1  92.7",
+      "bbox": [
+        75.27299999999998,
+        null,
+        288.7836961932801,
+        null
+      ]
+    },
+    {
+      "id": "e6-3",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "SST-2  CoLA  STS-B  MRPC  RTE  Average",
+      "bbox": [
+        305.62880122944,
+        764.8502576000001,
+        522.2712880109759,
+        772.973816
+      ]
+    },
+    {
+      "id": "e6-4",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "table",
+      "text": "67k  8.5k  5.7k  3.5k  2.5k  - 93.2  35.0  81.0  86.0  61.7  74.0 90.4  36.0  73.3  84.9  56.8  71.0 91.3  45.4  80.0  82.3  56.0  75.1 93.5  52.1  85.8  88.9  66.4  79.6 94.9  60.5  86.5  89.3  70.1  82.1",
+      "bbox": [
+        308.82979257984016,
+        692.3860054,
+        514.6804351622403,
+        760.9112022
+      ]
+    },
+    {
+      "id": "e6-5",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "caption",
+      "text": "Table 1: GLUE Test results, scored by the evaluation server (https://gluebenchmark.com/leaderboard). The number below each task denotes the number of training examples. The “Average” column is slightly different",
+      "bbox": [
+        71.99997999999994,
+        655.4830614,
+        525.547307959053,
+        676.3446428000001
+      ]
+    },
+    {
+      "id": "e6-6",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "8",
+      "bbox": [
+        373.4359799999999,
+        647.7886155000001,
+        376.9228799999999,
+        654.0231927000001
+      ]
+    },
+    {
+      "id": "e6-7",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "than the official GLUE score, since we exclude the problematic WNLI set. BERT and OpenAI GPT are single-model, single task. F1 scores are reported for QQP and MRPC, Spearman correlations are reported for STS-B, and accuracy scores are reported for the other tasks. We exclude entries that use BERT as one of their components.",
+      "bbox": [
+        71.99997999999994,
+        619.6180104,
+        525.5474160333379,
+        652.4346088000001
+      ]
+    },
+    {
+      "id": "e6-8",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "We use a batch size of 32 and fine-tune for 3 epochs over the data for all GLUE tasks. For each task, we selected the best fine-tuning learning rate (among 5e-5, 4e-5, 3e-5, and 2e-5) on the Dev set. Additionally, for BERTLARGE we found that fine-tuning was sometimes unstable on small datasets, so we ran several random restarts and selected the best model on the Dev set. With random restarts, we use the same pre-trained checkpoint but per-form different fine-tuning data shuffling and clas-",
+      "bbox": [
+        71.99997999999994,
+        458.0184854000002,
+        290.2719798272879,
+        589.7142738
+      ]
+    },
+    {
+      "id": "e6-9",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "9",
+      "bbox": [
+        178.96199199999992,
+        449.06230630000016,
+        182.94704199999993,
+        456.1875757000002
+      ]
+    },
+    {
+      "id": "e6-10",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "sifier layer initialization.",
+      "bbox": [
+        71.99998299999993,
+        444.4694744000002,
+        178.96370260908589,
+        454.2222098000002
+      ]
+    },
+    {
+      "id": "e6-11",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "Results are presented in Table 1.  Both BERTBASE and BERTLARGE outperform all sys-tems on all tasks by a substantial margin, obtaining 4.5% and 7.0% respective average accuracy im-provement over the prior state of the art. Note that BERTBASE and OpenAI GPT are nearly identical in terms of model architecture apart from the at-tention masking. For the largest and most widely reported GLUE task, MNLI, BERT obtains a 2.1% absolute accuracy improvement. On the official",
+      "bbox": [
+        71.99999099999994,
+        null,
+        290.2692955782082,
+        null
+      ]
+    },
+    {
+      "id": "e6-12",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "10",
+      "bbox": [
+        154.71698999999995,
+        299.4062713000001,
+        162.68708999999996,
+        306.53154070000016
+      ]
+    },
+    {
+      "id": "e6-13",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "GLUE leaderboard , BERTLARGE obtains a score of 78.3, compared to OpenAI GPT, which obtains 72.8 as of the date of writing.",
+      "bbox": [
+        71.99998399999996,
+        null,
+        290.26925753418243,
+        null
+      ]
+    },
+    {
+      "id": "e6-14",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "We find that BERTLARGE significantly outper-forms BERTBASE across all tasks, especially those with very little training data. The effect of model size is explored more thoroughly in Section 5.2.",
+      "bbox": [
+        71.9999539999999,
+        212.90241430000012,
+        290.2692387901917,
+        263.3031447000001
+      ]
+    },
+    {
+      "id": "e6-15",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "4.2 SQuAD v1.1",
+      "bbox": [
+        71.99995399999989,
+        188.46277100000012,
+        154.73457756364388,
+        198.2700519000001
+      ]
+    },
+    {
+      "id": "e6-16",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "The Stanford Question Answering Dataset (SQuAD v1.1) is a collection of 100k crowd-sourced question/answer pairs (Rajpurkar et al., 2016). Given a question and a passage from",
+      "bbox": [
+        71.99995399999989,
+        129.04140530000012,
+        290.2692416363759,
+        179.4421357000001
+      ]
+    },
+    {
+      "id": "e6-17",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "9",
+      "bbox": [
+        84.653,
+        112.2418384,
+        87.6418,
+        117.5858128
+      ]
+    },
+    {
+      "id": "e6-18",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "The GLUE data set distribution does not include the Test labels, and we only made a single GLUE evaluation server submission for each of BERTBASE and BERTLARGE.",
+      "bbox": [
+        72.00000000000001,
+        87.51084373,
+        290.2690544158849,
+        115.8032212
+      ]
+    },
+    {
+      "id": "e6-19",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "https://gluebenchmark.com/leaderboard",
+      "bbox": [
+        88.13899070000006,
+        76.9872646,
+        230.83028030000008,
+        85.0032262
+      ]
+    },
+    {
+      "id": "e6-20",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "Wikipedia containing the answer, the task is to predict the answer text span in the passage.",
+      "bbox": [
+        307.2759907000001,
+        566.4116434,
+        525.5452949510445,
+        589.7143668
+      ]
+    },
+    {
+      "id": "e6-21",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "As shown in Figure 1, in the question answer-ing task, we represent the input question and pas-sage as a single packed sequence, with the ques-tion using the A embedding and the passage using the B embedding. We only introduce a start vec-",
+      "bbox": [
+        307.2759887000001,
+        497.4525984000001,
+        525.5489596247141,
+        561.4023548
+      ]
+    },
+    {
+      "id": "e6-22",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "H  H",
+      "bbox": [
+        355.58698860000004,
+        488.6717615000001,
+        492.17125078,
+        495.7492103000001
+      ]
+    },
+    {
+      "id": "e6-23",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "equation",
+      "text": "tor S ∈ R and an end vector E ∈ R during",
+      "bbox": [
+        307.2759836,
+        483.9035874000001,
+        525.5436086,
+        494.4417780000001
+      ]
+    },
+    {
+      "id": "e6-24",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "fine-tuning. The probability of word i being the start of the answer span is computed as a dot prod-uct between T and S followed by a softmax over",
+      "bbox": [
+        307.2759485,
+        443.2555774000001,
+        525.545274063672,
+        480.2808804000001
+      ]
+    },
+    {
+      "id": "e6-25",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "i",
+      "bbox": [
+        369.39494750000006,
+        442.4297573000001,
+        372.27773267000003,
+        449.5072061000001
+      ]
+    },
+    {
+      "id": "e6-26",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "S·T",
+      "bbox": [
+        498.98397270000004,
+        437.0092954000001,
+        510.46398369999997,
+        442.65214980000013
+      ]
+    },
+    {
+      "id": "e6-27",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "e  i",
+      "bbox": [
+        495.05596370000006,
+        433.81073860000015,
+        513.12760226,
+        440.8881874000001
+      ]
+    },
+    {
+      "id": "e6-28",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "equation",
+      "text": "all of the words in the paragraph: P = ∑  .",
+      "bbox": [
+        307.27595620000005,
+        426.32294,
+        525.5432405999999,
+        438.6318634000001
+      ]
+    },
+    {
+      "id": "e6-29",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "i  S·T",
+      "bbox": [
+        466.51595420000007,
+        427.8787623000001,
+        517.2199570999999,
+        434.9562111000001
+      ]
+    },
+    {
+      "id": "e6-30",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "j",
+      "bbox": [
+        517.2199570999999,
+        425.98834500000004,
+        520.2780972599999,
+        431.29645380000005
+      ]
+    },
+    {
+      "id": "e6-31",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "e",
+      "bbox": [
+        501.81099049999995,
+        423.5818110000001,
+        505.73945279,
+        430.65925980000003
+      ]
+    },
+    {
+      "id": "e6-32",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "j",
+      "bbox": [
+        496.49699499999997,
+        421.4773586,
+        499.55513515999996,
+        426.7854674
+      ]
+    },
+    {
+      "id": "e6-33",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "The analogous formula is used for the end of the answer span. The score of a candidate span from position i to position j is defined as S·Ti + E·Tj, and the maximum scoring span where j ≥ i is used as a prediction. The training objective is the sum of the log-likelihoods of the correct start and end positions. We fine-tune for 3 epochs with a learning rate of 5e-5 and a batch size of 32.",
+      "bbox": [
+        307.2759855999999,
+        315.8375933000001,
+        525.5453396866461,
+        420.4353597000001
+      ]
+    },
+    {
+      "id": "e6-34",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "Table 2 shows top leaderboard entries as well as results from top published systems (Seo et al., 2017; Clark and Gardner, 2018; Peters et al., 2018a; Hu et al., 2018). The top results from the SQuAD leaderboard do not have up-to-date public",
+      "bbox": [
+        307.2760718999999,
+        246.87856340000008,
+        525.5453936938563,
+        310.8273278000001
+      ]
+    },
+    {
+      "id": "e6-35",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "11",
+      "bbox": [
+        436.3290848999999,
+        237.9223840000001,
+        444.2991848999999,
+        245.04765340000012
+      ]
+    },
+    {
+      "id": "e6-36",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "system descriptions available, and are allowed to use any public data when training their systems. We therefore use modest data augmentation in our system by first fine-tuning on TriviaQA (Joshi et al., 2017) befor fine-tuning on SQuAD.",
+      "bbox": [
+        307.2760748999999,
+        179.13257640000012,
+        525.5453368974221,
+        243.0823028000001
+      ]
+    },
+    {
+      "id": "e6-37",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "Our best performing system compares to the top leaderboard system with -0.3 F1 in ensembling and +1.3 F1 as a single system. In fact, our single BERT model outperforms the top ensemble sys-tem in terms of F1 score. Without TriviaQA fine-",
+      "bbox": [
+        307.2761028999999,
+        null,
+        525.5453959145622,
+        null
+      ]
+    },
+    {
+      "id": "e6-38",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "11",
+      "bbox": [
+        316.939,
+        91.4048384,
+        322.9166,
+        96.7488128
+      ]
+    },
+    {
+      "id": "e6-39",
+      "page": 6,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "QANet is described in Yu et al. (2018), but the system has improved substantially after publication.",
+      "bbox": [
+        307.27600800000005,
+        76.9872626,
+        525.5444506684804,
+        94.96622119999999
+      ]
+    },
+    {
+      "id": "e7-1",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "System  Dev  Test",
+      "bbox": [
+        125.094,
+        766.2452576000001,
+        266.2072071990144,
+        774.2612192
+      ]
+    },
+    {
+      "id": "e7-2",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "EM F1 EM F1",
+      "bbox": [
+        198.117,
+        756.2822446,
+        276.28609133952,
+        764.2982062
+      ]
+    },
+    {
+      "id": "e7-3",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "Top Leaderboard Systems (Dec 10th, 2018)",
+      "bbox": [
+        102.804,
+        740.8432576,
+        259.46496796819207,
+        748.8592192
+      ]
+    },
+    {
+      "id": "e7-4",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "table",
+      "text": "Human  -  - 82.3 91.2 #1 Ensemble - nlnet  -  - 86.0 91.7 #2 Ensemble - QANet  -  - 84.5 90.5",
+      "bbox": [
+        82.871001,
+        710.9552565999999,
+        279.39656695968,
+        738.8962061999999
+      ]
+    },
+    {
+      "id": "e7-5",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "Published",
+      "bbox": [
+        163.448,
+        695.5152576,
+        198.820448,
+        703.5312192
+      ]
+    },
+    {
+      "id": "e7-6",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "BiDAF+ELMo (Single)  - 85.6 - 85.8 R.M. Reader (Ensemble)  81.2 87.9 82.3 88.5",
+      "bbox": [
+        82.87100000000001,
+        675.5892316,
+        279.39656022118413,
+        693.5682062
+      ]
+    },
+    {
+      "id": "e7-7",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "Ours",
+      "bbox": [
+        172.419,
+        660.1502576,
+        189.84968160000003,
+        668.1662192
+      ]
+    },
+    {
+      "id": "e7-8",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "table",
+      "text": "BERTBASE (Single)  80.8 88.5 -  - BERT  (Single)  84.1 90.9 -  -",
+      "bbox": [
+        82.870992,
+        640.2242315999999,
+        273.0434546361601,
+        658.2032062
+      ]
+    },
+    {
+      "id": "e7-9",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "LARGE",
+      "bbox": [
+        105.399992,
+        639.8738406999998,
+        126.5188589449728,
+        645.2178150999998
+      ]
+    },
+    {
+      "id": "e7-10",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "table",
+      "text": "BERTLARGE (Ensemble)  85.8 91.8 -  -",
+      "bbox": [
+        82.870992,
+        629.9108280999999,
+        273.0407576000001,
+        638.2782181999999
+      ]
+    },
+    {
+      "id": "e7-11",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "BERTLARGE (Sgl.+TriviaQA) 84.2 91.1 85.1 91.8 BERTLARGE (Ens.+TriviaQA) 86.2 92.2 87.4 91.4",
+      "bbox": [
+        82.870992,
+        null,
+        279.3972093100801,
+        null
+      ]
+    },
+    {
+      "id": "e7-12",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "caption",
+      "text": "Table 2: SQuAD 1.1 results. The BERT ensemble is 7x systems which use different pre-training check-points and fine-tuning seeds.",
+      "bbox": [
+        72,
+        557.1580673999999,
+        290.2706155593534,
+        589.9756428000001
+      ]
+    },
+    {
+      "id": "e7-13",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "System  Dev  Test",
+      "bbox": [
+        125.094,
+        529.9262576000001,
+        267.70458434269443,
+        537.9422192000001
+      ]
+    },
+    {
+      "id": "e7-14",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "EM F1 EM F1",
+      "bbox": [
+        199.617,
+        519.9632446,
+        277.78609133952,
+        527.9792062
+      ]
+    },
+    {
+      "id": "e7-15",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "Top Leaderboard Systems (Dec 10th, 2018) Human  86.3 89.0 86.9 89.5 #1 Single - MIR-MRC (F-Net) -  - 74.8 78.0",
+      "bbox": [
+        81.370001,
+        484.5982316,
+        280.89930880774403,
+        512.5402192
+      ]
+    },
+    {
+      "id": "e7-16",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "table",
+      "text": "#2 Single - nlnet  -  - 74.2 77.1",
+      "bbox": [
+        81.370001,
+        474.63622560000005,
+        280.89930737312,
+        482.65218720000007
+      ]
+    },
+    {
+      "id": "e7-17",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "Published",
+      "bbox": [
+        163.448,
+        459.19625759999997,
+        198.820448,
+        467.2122192
+      ]
+    },
+    {
+      "id": "e7-18",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "table",
+      "text": "unet (Ensemble)  -  - 71.4 74.9 SLQA+ (Single)  -  71.4 74.4",
+      "bbox": [
+        81.37,
+        439.2702316,
+        280.89929740672,
+        457.2492062
+      ]
+    },
+    {
+      "id": "e7-19",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "Ours",
+      "bbox": [
+        172.419,
+        423.83125759999996,
+        189.84968160000003,
+        431.8472192
+      ]
+    },
+    {
+      "id": "e7-20",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "table",
+      "text": "BERT  (Single)  78.7 81.9 80.0 83.1",
+      "bbox": [
+        81.37,
+        413.86824459999997,
+        280.9006765100801,
+        421.8842062
+      ]
+    },
+    {
+      "id": "e7-21",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "LARGE",
+      "bbox": [
+        103.899,
+        413.51782319999995,
+        125.01786694497281,
+        418.8617976
+      ]
+    },
+    {
+      "id": "e7-22",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "caption",
+      "text": "Table 3: SQuAD 2.0 results. We exclude entries that use BERT as one of their components.",
+      "bbox": [
+        72,
+        372.6450914,
+        290.27059832903666,
+        393.5066428
+      ]
+    },
+    {
+      "id": "e7-23",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "tuning data, we only lose 0.1-0.4 F1, still outper-",
+      "bbox": [
+        72,
+        336.9636574,
+        290.26926268726436,
+        346.7163928
+      ]
+    },
+    {
+      "id": "e7-24",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "12",
+      "bbox": [
+        276.478,
+        328.0084854,
+        284.4481,
+        335.1337548
+      ]
+    },
+    {
+      "id": "e7-25",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "forming all existing systems by a wide margin.",
+      "bbox": [
+        72,
+        323.4146464,
+        276.48020397930065,
+        333.1673818
+      ]
+    },
+    {
+      "id": "e7-26",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "4.3 SQuAD v2.0",
+      "bbox": [
+        72,
+        299.36301910000003,
+        154.734623563644,
+        309.17030000000005
+      ]
+    },
+    {
+      "id": "e7-27",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "The SQuAD 2.0 task extends the SQuAD 1.1 problem definition by allowing for the possibility that no short answer exists in the provided para-graph, making the problem more realistic.",
+      "bbox": [
+        72,
+        240.16463040000002,
+        290.2693159563996,
+        290.56438380000003
+      ]
+    },
+    {
+      "id": "e7-28",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "We use a simple approach to extend the SQuAD v1.1 BERT model for this task. We treat ques-tions that do not have an answer as having an an-swer span with start and end at the [CLS] to-ken. The probability space for the start and end answer span positions is extended to include the position of the [CLS] token. For prediction, we",
+      "bbox": [
+        72,
+        144.81663840000007,
+        290.26929978911346,
+        235.86536380000004
+      ]
+    },
+    {
+      "id": "e7-29",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "equation",
+      "text": "compare the score of the no-answer span: snull =",
+      "bbox": [
+        72.000003,
+        130.2186442000001,
+        290.26812187999997,
+        141.19492340000008
+      ]
+    },
+    {
+      "id": "e7-30",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "S·C + E·C to the score of the best non-null span",
+      "bbox": [
+        72.0000239,
+        117.71864640000008,
+        290.26348621815504,
+        128.25683700000008
+      ]
+    },
+    {
+      "id": "e7-31",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "12",
+      "bbox": [
+        81.664,
+        101.3668384,
+        87.6416,
+        106.7108128
+      ]
+    },
+    {
+      "id": "e7-32",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "The TriviaQA data we used consists of paragraphs from TriviaQA-Wiki formed of the first 400 tokens in documents, that contain at least one of the provided possible answers.",
+      "bbox": [
+        71.999998,
+        76.9872646,
+        290.2695805564865,
+        104.9282212
+      ]
+    },
+    {
+      "id": "e7-33",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "System  Dev Test",
+      "bbox": [
+        349.748,
+        766.2452576000001,
+        480.38847792087665,
+        774.2612192
+      ]
+    },
+    {
+      "id": "e7-34",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "ESIM+GloVe  51.9 52.7 ESIM+ELMo  59.1 59.2 OpenAI GPT  - 78.0",
+      "bbox": [
+        349.748,
+        730.8802695999999,
+        480.82781926380795,
+        758.8212192
+      ]
+    },
+    {
+      "id": "e7-35",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "BERTBASE  81.6 - BERTLARGE  86.6 86.3",
+      "bbox": [
+        349.747994,
+        705.1268536999999,
+        480.82884710336003,
+        723.4562192
+      ]
+    },
+    {
+      "id": "e7-36",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "†",
+      "bbox": [
+        406.62999,
+        693.6373666000001,
+        410.06173016,
+        699.2802210000001
+      ]
+    },
+    {
+      "id": "e7-37",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "Human (expert)  - 85.0",
+      "bbox": [
+        349.748,
+        689.0512576000001,
+        480.83364390336,
+        697.0672192000001
+      ]
+    },
+    {
+      "id": "e7-38",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "†",
+      "bbox": [
+        432.426014,
+        682.6883916,
+        435.85775416,
+        688.3312460000001
+      ]
+    },
+    {
+      "id": "e7-39",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "Human (5 annotations)  - 88.0",
+      "bbox": [
+        349.74800400000004,
+        678.1022826000001,
+        480.83367690336,
+        686.1182442
+      ]
+    },
+    {
+      "id": "e7-40",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "†",
+      "bbox": [
+        473.836,
+        658.1400731000001,
+        477.48887644,
+        664.7233403000001
+      ]
+    },
+    {
+      "id": "e7-41",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "caption",
+      "text": "Table 4: SWAG Dev and Test accuracies. Human per-formance is measured with 100 samples, as reported in the SWAG paper.",
+      "bbox": [
+        307.276,
+        629.8160444,
+        525.5465701286562,
+        662.6326428000001
+      ]
+    },
+    {
+      "id": "e7-42",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "equation",
+      "text": "sˆi,j = maxj≥iS·Ti + E·Tj. We predict a non-null",
+      "bbox": [
+        307.276001,
+        588.2317623,
+        525.5483574181619,
+        599.595773
+      ]
+    },
+    {
+      "id": "e7-43",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "answer when sˆi,j > snull + τ, where the thresh-old τ is selected on the dev set to maximize F1. We did not use TriviaQA data for this model. We fine-tuned for 2 epochs with a learning rate of 5e-5 and a batch size of 48.",
+      "bbox": [
+        307.2760323,
+        521.3115504000002,
+        525.54813605455,
+        585.4358524
+      ]
+    },
+    {
+      "id": "e7-44",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "The results compared to prior leaderboard en-tries and top published work (Sun et al., 2018; Wang et al., 2018b) are shown in Table 3, exclud-ing systems that use BERT as one of their com-ponents. We observe a +5.1 F1 improvement over the previous best system.",
+      "bbox": [
+        307.2760584,
+        439.4665194000002,
+        525.5454002110757,
+        516.9652868000002
+      ]
+    },
+    {
+      "id": "e7-45",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "4.4 SWAG",
+      "bbox": [
+        307.2760584,
+        415.2498831000002,
+        363.2506427981754,
+        425.0571640000002
+      ]
+    },
+    {
+      "id": "e7-46",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "The Situations With Adversarial Generations (SWAG) dataset contains 113k sentence-pair com-pletion examples that evaluate grounded common-sense inference (Zellers et al., 2018). Given a sen-tence, the task is to choose the most plausible con-tinuation among four choices.",
+      "bbox": [
+        307.2760584,
+        328.8574794000002,
+        525.5453806510595,
+        406.35624680000024
+      ]
+    },
+    {
+      "id": "e7-47",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "When fine-tuning on the SWAG dataset, we construct four input sequences, each containing the concatenation of the given sentence (sentence A) and a possible continuation (sentence B). The only task-specific parameters introduced is a vec-tor whose dot product with the [CLS] token rep-resentation C denotes a score for each choice which is normalized with a softmax layer.",
+      "bbox": [
+        307.2760584,
+        219.91346440000024,
+        525.5453790520173,
+        324.5102088000002
+      ]
+    },
+    {
+      "id": "e7-48",
+      "page": 7,
+      "sectionPath": [
+        "4 Experiments"
+      ],
+      "type": "text",
+      "text": "We fine-tune the model for 3 epochs with a learning rate of 2e-5 and a batch size of 16. Re-sults are presented in Table 4. BERTLARGE out-performs the authors’ baseline ESIM+ELMo sys-tem by +27.1% and OpenAI GPT by 8.3%.",
+      "bbox": [
+        307.27605660000006,
+        151.61646740000026,
+        525.5453545237665,
+        215.56619380000024
+      ]
+    },
+    {
+      "id": "e7-49",
+      "page": 7,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "In this section, we perform ablation experiments over a number of facets of BERT in order to better understand their relative importance. Additional",
+      "bbox": [
+        307.27605660000006,
+        76.56745540000027,
+        525.5453563792953,
+        113.41919780000028
+      ]
+    },
+    {
+      "id": "e8-1",
+      "page": 8,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "Dev Set",
+      "bbox": [
+        198.098,
+        766.2452576000001,
+        226.51252245180802,
+        774.2612192
+      ]
+    },
+    {
+      "id": "e8-2",
+      "page": 8,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "Tasks  MNLI-m QNLI MRPC SST-2 SQuAD",
+      "bbox": [
+        72.00000000000001,
+        756.2822446,
+        292.12511345452805,
+        764.2982062
+      ]
+    },
+    {
+      "id": "e8-3",
+      "page": 8,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "(Acc)  (Acc) (Acc) (Acc)  (F1)",
+      "bbox": [
+        141.99099,
+        746.3202696,
+        285.3995844268801,
+        754.3362311999999
+      ]
+    },
+    {
+      "id": "e8-4",
+      "page": 8,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "table",
+      "text": "BERTBASE  84.4  88.4  86.7  92.7  88.5 No ASP  83.9  84.9  86.5  92.6  87.9 LTR & No ASP  82.1  84.3  77.5  92.1  77.8 + BiLSTM  82.1  84.1  75.7  91.6  84.9",
+      "bbox": [
+        71.99999999999999,
+        null,
+        285.5258576697601,
+        null
+      ]
+    },
+    {
+      "id": "e8-5",
+      "page": 8,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "caption",
+      "text": "Table 5: Ablation over the pre-training tasks using the BERTBASE architecture. “No ASP” is trained without the adjacent segment prediction task. “LTR & No ASP” is trained as a left-to-right LM without the adjacent segment prediction, like OpenAI GPT. “+ BiLSTM” adds a ran-domly initialized BiLSTM on top of the “LTR + No ASP” model during fine-tuning.",
+      "bbox": [
+        71.999998,
+        null,
+        290.2726477564741,
+        null
+      ]
+    },
+    {
+      "id": "e8-6",
+      "page": 8,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "ablation studies can be found in Appendix C.",
+      "bbox": [
+        71.999998,
+        567.8035504,
+        268.95286269999997,
+        577.5562858
+      ]
+    },
+    {
+      "id": "e8-7",
+      "page": 8,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "5.1 Effect of Pre-training Tasks",
+      "bbox": [
+        71.99999799999998,
+        541.1719061,
+        225.32741362001255,
+        550.979187
+      ]
+    },
+    {
+      "id": "e8-8",
+      "page": 8,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "We demonstrate the importance of the deep bidi-rectionality of BERT by evaluating two pre-training objectives using exactly the same pre-training data, fine-tuning scheme, and hyperpa-rameters as BERTBASE:",
+      "bbox": [
+        71.99999799999998,
+        465.92537369999997,
+        290.26928717455917,
+        530.8942978
+      ]
+    },
+    {
+      "id": "e8-9",
+      "page": 8,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "No ASP: A bidirectional model which is trained using the “masked LM” (MLM) but without the “adjacent segmentprediction” ( ASP) task. LTR & No ASP: A left-context-only model which is trained using a standard Left-to-Right (LTR) LM, rather than an MLM. The left-only constraint was also applied at fine-tuning, because removing it introduced a pre-train/fine-tune mismatch that degraded downstream performance. Additionally, this model was pre-trained without the ASP task. This is directly comparable to OpenAI GPT, but using our larger training dataset, our input repre-sentation, and our fine-tuning scheme.",
+      "bbox": [
+        71.99998799999997,
+        null,
+        290.26928458183795,
+        null
+      ]
+    },
+    {
+      "id": "e8-10",
+      "page": 8,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "We first examine the impact brought by the ASP task. In Table 5, we show that removing ASP hurts performance significantly on QNLI, MNLI, and SQuAD 1.1. Next, we evaluate the impact of training bidirectional representations by com-paring “No ASP” to “LTR & No ASP”. The LTR model performs worse than the MLM model on all tasks, with large drops on MRPC and SQuAD.",
+      "bbox": [
+        71.99999499999998,
+        null,
+        290.26931160112736,
+        null
+      ]
+    },
+    {
+      "id": "e8-11",
+      "page": 8,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "For SQuAD it is intuitively clear that a LTR model will perform poorly at token predictions, since the token-level hidden states have no right-side context. In order to make a good faith at-tempt at strengthening the LTR system, we added a randomly initialized BiLSTM on top. This does significantly improve results on SQuAD, but the",
+      "bbox": [
+        71.99999499999998,
+        76.56746840000004,
+        290.26930651857776,
+        167.61518680000003
+      ]
+    },
+    {
+      "id": "e8-12",
+      "page": 8,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "results are still far worse than those of the pre-trained bidirectional models. The BiLSTM hurts performance on the GLUE tasks.",
+      "bbox": [
+        307.27599499999997,
+        738.6674694000001,
+        525.5452765272801,
+        775.5192038
+      ]
+    },
+    {
+      "id": "e8-13",
+      "page": 8,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "We recognize that it would also be possible to train separate LTR and RTL models and represent each token as the concatenation of the two mod-els, as ELMo does. However: (a) this is twice as expensive as a single bidirectional model; (b) this is non-intuitive for tasks like QA, since the RTL model would not be able to condition the answer on the question; (c) this it is strictly less powerful than a deep bidirectional model, since it can use both left and right context at every layer.",
+      "bbox": [
+        307.27599499999997,
+        601.6934104000004,
+        525.5453484837034,
+        733.3891988
+      ]
+    },
+    {
+      "id": "e8-14",
+      "page": 8,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "5.2 Effect of Model Size",
+      "bbox": [
+        307.27599499999997,
+        574.2497541000004,
+        425.432413681782,
+        584.0570350000004
+      ]
+    },
+    {
+      "id": "e8-15",
+      "page": 8,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "In this section, we explore the effect of model size on fine-tuning task accuracy. We trained a number of BERT models with a differing number of layers, hidden units, and attention heads, while otherwise using the same hyperparameters and training pro-cedure as described previously.",
+      "bbox": [
+        307.27599499999997,
+        486.0083514000005,
+        525.545265293089,
+        563.5071188000004
+      ]
+    },
+    {
+      "id": "e8-16",
+      "page": 8,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "Results on selected GLUE tasks are shown in Table 6. In this table, we report the average Dev Set accuracy from 5 random restarts of fine-tuning. We can see that larger models lead to a strict ac-curacy improvement across all four datasets, even for MRPC which only has 3,600 labeled train-ing examples, and is substantially different from the pre-training tasks. It is also perhaps surpris-ing that we are able to achieve such significant improvements on top of models which are al-ready quite large relative to the existing literature. For example, the largest Transformer explored in",
+      "bbox": [
+        307.27599499999997,
+        321.93526340000045,
+        525.5453592084397,
+        480.7290738000005
+      ]
+    },
+    {
+      "id": "e8-17",
+      "page": 8,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "equation",
+      "text": "Vaswani et al. (2017) is (L=6, H=1024, A=16)",
+      "bbox": [
+        307.27599499999997,
+        308.38625240000044,
+        525.5451165090678,
+        318.13898780000045
+      ]
+    },
+    {
+      "id": "e8-18",
+      "page": 8,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "with 100M parameters for the encoder, and the largest Transformer we have found in the literature",
+      "bbox": [
+        307.27599499999997,
+        281.28823040000043,
+        525.545265945453,
+        304.58997680000044
+      ]
+    },
+    {
+      "id": "e8-19",
+      "page": 8,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "equation",
+      "text": "is (L=64, H=512, A=2) with 235M parameters",
+      "bbox": [
+        307.27599499999997,
+        267.73824240000044,
+        525.5452372545199,
+        277.49097780000045
+      ]
+    },
+    {
+      "id": "e8-20",
+      "page": 8,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "(Al-Rfou et al., 2018). By contrast, BERTBASE contains 110M parameters and BERTLARGE con-tains 340M parameters.",
+      "bbox": [
+        307.27599299999997,
+        227.09122440000044,
+        525.5434917,
+        263.94196680000044
+      ]
+    },
+    {
+      "id": "e8-21",
+      "page": 8,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "It has long been known that increasing the model size will lead to continual improvements on large-scale tasks such as machine translation and language modeling, which is demonstrated by the LM perplexity of held-out training data shown in Table 6. However, we believe that this is the first work to demonstrate convinc-ingly that scaling to extreme model sizes also leads to large improvements on very small scale tasks, provided that the model has been suffi-ciently pre-trained. Peters et al. (2018b) presented",
+      "bbox": [
+        307.276001,
+        76.5672524000005,
+        525.5453572884333,
+        221.81196180000046
+      ]
+    },
+    {
+      "id": "e9-1",
+      "page": 9,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "mixed results on the downstream task impact of increasing the pre-trained bi-LM size from two to four layers and Melamud et al. (2016) men-tioned in passing that increasing hidden dimen-sion size from 200 to 600 helped, but increasing further to 1,000 did not bring further improve-ments. Both of these prior works used a feature-based approach — we hypothesize that when the model is fine-tuned directly on the downstream tasks and uses only a very small number of ran-domly initialized additional parameters, the task-specific models can benefit from the larger, more expressive pre-trained representations even when downstream task data is very small.",
+      "bbox": [
+        72,
+        589.6265604000006,
+        290.26929424947247,
+        775.5193698
+      ]
+    },
+    {
+      "id": "e9-2",
+      "page": 9,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "5.3 Feature-based Approach with BERT",
+      "bbox": [
+        72,
+        564.7429021000006,
+        266.98926904364936,
+        574.5501830000006
+      ]
+    },
+    {
+      "id": "e9-3",
+      "page": 9,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "All of the BERT results presented so far have used the fine-tuning approach, where a simple classifi-cation layer is added to the pre-trained model, and all parameters are jointly fine-tuned on a down-stream task. However, the feature-based approach, where fixed features are extracted from the pre-trained model, has certain advantages. First, not all tasks can be easily represented by a Trans-former encoder architecture, and therefore require a task-specific model architecture to be added. Second, there are major computational benefits to pre-compute an expensive representation of the training data once and then run many experiments with cheaper models on top of this representation.",
+      "bbox": [
+        72,
+        369.5754144000006,
+        290.2693250109526,
+        555.4672468000006
+      ]
+    },
+    {
+      "id": "e9-4",
+      "page": 9,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "In this section, we compare the two approaches by applying BERT to the CoNLL-2003 Named Entity Recognition (NER) task (Tjong Kim Sang and De Meulder, 2003). In the input to BERT, we use a case-preserving WordPiece model, and we include the maximal document context provided by the data. Following standard practice, we for-mulate this as a tagging task but do not use a CRF",
+      "bbox": [
+        72,
+        260.4383614000006,
+        290.26931515021704,
+        365.0351508000006
+      ]
+    },
+    {
+      "id": "e9-5",
+      "page": 9,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "Hyperparams  Dev Set Accuracy",
+      "bbox": [
+        89.027,
+        226.1852576,
+        261.01153827850874,
+        234.20121920000003
+      ]
+    },
+    {
+      "id": "e9-6",
+      "page": 9,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "#L  #H #A LM (ppl) MNLI-m MRPC SST-2",
+      "bbox": [
+        85.57,
+        210.7452576,
+        276.697774688896,
+        218.7612192
+      ]
+    },
+    {
+      "id": "e9-7",
+      "page": 9,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "table",
+      "text": "3 768 12  5.84  77.9  79.8  88.4 6 768  3  5.24  80.6  82.2  90.7 6 768 12  4.68  81.9  84.8  91.3 12 768 12  3.99  84.4  86.7  92.9 12 1024 16  3.54  85.7  86.9  93.3 20 1024 16  3.23  86.6  87.8  93.7",
+      "bbox": [
+        86.5659981,
+        null,
+        273.4975384756801,
+        null
+      ]
+    },
+    {
+      "id": "e9-8",
+      "page": 9,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "caption",
+      "text": "Table 6: Ablation over BERT model size. #L = the number of layers; #H = hidden size; #A = number of at-tention heads. “LM (ppl)” is the masked LM perplexity of held-out training data.",
+      "bbox": [
+        72,
+        80.35907239999999,
+        290.27061142985576,
+        125.1306428
+      ]
+    },
+    {
+      "id": "e9-9",
+      "page": 9,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "System  Dev F1 Test F1",
+      "bbox": [
+        317.015,
+        766.2452576000001,
+        515.8000859108287,
+        774.2612192
+      ]
+    },
+    {
+      "id": "e9-10",
+      "page": 9,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "table",
+      "text": "ELMo (Peters et al., 2018a)  95.7  92.2 CVT (Clark et al., 2018)  -  92.6 CSE (Akbik et al., 2018)  -  93.1",
+      "bbox": [
+        317.015,
+        730.8802695999999,
+        510.38820999999996,
+        758.8212192
+      ]
+    },
+    {
+      "id": "e9-11",
+      "page": 9,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "Fine-tuning approach",
+      "bbox": [
+        317.015,
+        715.4402576,
+        393.96465251110396,
+        723.4562192
+      ]
+    },
+    {
+      "id": "e9-12",
+      "page": 9,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "table",
+      "text": "BERTLARGE  96.6  92.8 BERTBASE  96.4  92.4",
+      "bbox": [
+        324.484998,
+        695.1638410999999,
+        510.39245995968,
+        713.4932061999999
+      ]
+    },
+    {
+      "id": "e9-13",
+      "page": 9,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "Feature-based approach (BERTBASE) Embeddings  91.0  - Second-to-Last Hidden  95.6  - Last Hidden  94.9  - Weighted Sum Last Four Hidden  95.9  - Concat Last Four Hidden  96.1  -",
+      "bbox": [
+        317.015,
+        630.2622685999997,
+        504.0372477266686,
+        688.0912192
+      ]
+    },
+    {
+      "id": "e9-14",
+      "page": 9,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "table",
+      "text": "Weighted Sum All 12 Layers  95.5  -",
+      "bbox": [
+        324.485034,
+        620.2992555999997,
+        504.03721758163186,
+        628.3152171999997
+      ]
+    },
+    {
+      "id": "e9-15",
+      "page": 9,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "caption",
+      "text": "Table 7: CoNLL-2003 Named Entity Recognition re-sults. Hyperparameters were selected using the Dev set. The reported Dev and Test scores are averaged over 5 random restarts using those hyperparameters.",
+      "bbox": [
+        307.276,
+        560.1470503999999,
+        525.5465996640249,
+        604.9196428
+      ]
+    },
+    {
+      "id": "e9-16",
+      "page": 9,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "layer in the output. We use the representation of the first sub-token as the input to the token-level classifier over the NER label set.",
+      "bbox": [
+        307.276,
+        490.6495753999999,
+        525.5453912193714,
+        527.5003327999999
+      ]
+    },
+    {
+      "id": "e9-17",
+      "page": 9,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "To ablate the fine-tuning approach, we apply the feature-based approach by extracting the activa-tions from one or more layers without fine-tuning any parameters of BERT. These contextual em-beddings are used as input to a randomly initial-ized two-layer 768-dimensional BiLSTM before the classification layer.",
+      "bbox": [
+        307.27596900000003,
+        391.94254439999986,
+        525.5452926800425,
+        482.9903227999999
+      ]
+    },
+    {
+      "id": "e9-18",
+      "page": 9,
+      "sectionPath": [
+        "5 Ablation Studies"
+      ],
+      "type": "text",
+      "text": "Results are presented in Table 7. BERTLARGE performs competitively with state-of-the-art meth-ods. The best performing method concatenates the token representations from the top four hidden lay-ers of the pre-trained Transformer, which is only 0.3 F1 behind fine-tuning the entire model. This demonstrates that BERT is effective for both fine-tuning and feature-based approaches.",
+      "bbox": [
+        307.276,
+        279.68751069999985,
+        525.5452936037628,
+        384.2842697999999
+      ]
+    },
+    {
+      "id": "e9-19",
+      "page": 9,
+      "sectionPath": [
+        "6 Conclusion"
+      ],
+      "type": "text",
+      "text": "Recent empirical improvements due to transfer learning with language models have demonstrated that rich, unsupervised pre-training is an integral part of many language understanding systems. In particular, these results enable even low-resource tasks to benefit from deep unidirectional architec-tures. Our major contribution is further general-izing these findings to deep bidirectional architec-tures, allowing the same pre-trained model to suc-cessfully tackle a broad set of NLP tasks.",
+      "bbox": [
+        307.276,
+        90.11754669999989,
+        525.5453142883983,
+        221.81225309999985
+      ]
+    }
+  ],
+  "figures": [
+    {
+      "id": "fig1",
+      "label": "Figure 1",
+      "page": 3,
+      "captionEvidenceId": "e3-24",
+      "cropOk": false
+    },
+    {
+      "id": "fig2",
+      "label": "Figure 2",
+      "page": 5,
+      "captionEvidenceId": "e5-21",
+      "cropOk": false
+    }
+  ],
+  "warnings": []
+}

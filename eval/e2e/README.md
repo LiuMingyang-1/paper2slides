@@ -40,9 +40,11 @@ node eval/e2e/real.mjs --pdf eval/papers/bert.pdf --out /tmp/p2s-real --stop-aft
 ```
 
 - `--pdf <路径>` 默认为仓库中的 `eval/papers/bert.pdf`。Demo 使用内置 BERT PDF。
+- `--tamper <替换表>` 先在输出目录生成 `input-tampered.pdf`，然后走同一上传流程。BERT 替换表校验原始 PDF 的 SHA-256 和每条规则的匹配次数。生成器依赖 Python 3 和 PyMuPDF 2.1。
+- `--quota-limit <额度> --quota-prior <已用额度>` 对本地 Anna harness 的模型请求保留额度，并用服务端返回的 `quotaConsumed` 结算。T16 的费率依据 run7 向上取整，预留按 UTF-8 字节数估算输入、按 `maxTokens` 估算输出。每次重启脚本前，将之前的实际消耗之和传给 `--quota-prior`。调用结果缺少额度时，守卫会拦截后续模型调用。
 - `--url <地址>` 可覆盖默认地址。Harness 默认使用 `http://127.0.0.1:5182/`，Demo 默认使用 `http://127.0.0.1:5173/`。
 - `--stop-after <阶段>` 支持 `parse`、`understand`、`slides`、`export`，默认跑到 `export`。`understand` 包括生成大纲，`slides` 包括逐页截图和核验面板文字。
-- `--out <目录>` 指定产物目录。默认在 `eval/out/` 下创建新的运行目录。每轮产物包括适用的 `outline.txt`、`slide-01.png` 到末页截图、对应的 `slide-01-verification.txt`、`calls-final.json` 和 `deck.pptx`。导出时检查 ZIP 文件头、中央目录、PPTX 入口和文件大小。
+- `--out <目录>` 指定产物目录。默认在 `eval/out/` 下创建新的运行目录。每轮产物包括适用的 `outline.txt`、`slide-01.png` 到末页截图、对应的 `slide-01-verification.txt`、`slides.json`（预览要点、引用 ID 与逐条核验状态）、`calls-final.json` 和 `deck.pptx`。导出时检查 ZIP 文件头、中央目录、PPTX 入口和文件大小。
 - 根输出目录的 `progress.log` 与终端同步写入。等待阶段每 5 秒记录进度与累计额度。遇到「操作失败」立即停止，保存 `<阶段>-fail.png`、`calls-<阶段>-fail.json`，并以非零状态退出。
 - `--repeat <次数>` 在同一个页面和 App 实例内用「更换论文」重复运行，产物写到 `run-01/`、`run-02/` 等子目录。额度和调用日志按会话累计，进度日志显示每轮新增调用数。
 

@@ -1,0 +1,415 @@
+[
+  {
+    "text": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding\n\nBERT 用掩码语言模型与相邻片段预测进行深度双向预训练，微调即可在多项 NLP 任务取得领先结果\n\nJacob Devlin, Ming-Wei Chang, Kenton Lee, Kristina Toutanova",
+    "claims": []
+  },
+  {
+    "text": "单向预训练限制上下文融合，对 QA 任务有害\n单向语言模型是现有预训练的主要局限：OpenAI GPT 中每个词元在自注意力里只能看到之前的词元。 [1]\n这种限制对句子级任务已属次优，对 QA 这类词元级任务可能非常有害，因为需要融合双向上下文。 [2]\n标准条件语言模型只能单向训练，双向条件会让词元间接看到自身，从而 trivially 预测目标词。 [3]\n要点\n单向预训练丢掉反向上下文，正是 BERT 要用 MLM 解决的核心问题。 解读 [4]\np.1, p.4",
+    "claims": [
+      {
+        "slot": "bullets:0",
+        "text": "单向语言模型是现有预训练的主要局限：OpenAI GPT 中每个词元在自注意力里只能看到之前的词元。",
+        "status": "supported",
+        "evidenceIds": [
+          "e1-5",
+          "e1-4"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:1",
+        "text": "这种限制对句子级任务已属次优，对 QA 这类词元级任务可能非常有害，因为需要融合双向上下文。",
+        "status": "supported",
+        "evidenceIds": [
+          "e1-5"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:2",
+        "text": "标准条件语言模型只能单向训练，双向条件会让词元间接看到自身，从而 trivially 预测目标词。",
+        "status": "supported",
+        "evidenceIds": [
+          "e4-12"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "takeaway:0",
+        "text": "单向预训练丢掉反向上下文，正是 BERT 要用 MLM 解决的核心问题。",
+        "status": "partial",
+        "evidenceIds": [
+          "e1-5",
+          "e4-12"
+        ],
+        "flaggedNumbers": []
+      }
+    ]
+  },
+  {
+    "text": "MLM 通过掩码预测让表示融合左右上下文\n标准条件语言模型只能从左到右或从右到左训练，因为双向条件会让每个词间接看到自身。 [1]\nMLM 随机遮盖部分词元并预测其原词表编号，只依据上下文完成预测。 [2]\n与从左到右预训练不同，MLM 让表示融合左右上下文，从而可预训练深度双向 Transformer。 [3]\n要点\nMLM 借鉴 Cloze 任务，使 BERT 预训练出真正双向的表示。 [4]\np.1, p.2, p.4",
+    "claims": [
+      {
+        "slot": "bullets:0",
+        "text": "标准条件语言模型只能从左到右或从右到左训练，因为双向条件会让每个词间接看到自身。",
+        "status": "supported",
+        "evidenceIds": [
+          "e4-12"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:1",
+        "text": "MLM 随机遮盖部分词元并预测其原词表编号，只依据上下文完成预测。",
+        "status": "supported",
+        "evidenceIds": [
+          "e1-6",
+          "e4-14"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:2",
+        "text": "与从左到右预训练不同，MLM 让表示融合左右上下文，从而可预训练深度双向 Transformer。",
+        "status": "supported",
+        "evidenceIds": [
+          "e2-1"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "takeaway:0",
+        "text": "MLM 借鉴 Cloze 任务，使 BERT 预训练出真正双向的表示。",
+        "status": "supported",
+        "evidenceIds": [
+          "e1-6",
+          "e2-1"
+        ],
+        "flaggedNumbers": []
+      }
+    ]
+  },
+  {
+    "text": "ASP 用 IsNext/NotNext 联合学习句对关系\nASP 用二分类判断句 B 是否为句 A 的真实下一句，弥补语言建模对句间关系的缺失。 [1]\n采样时 50% 的句 B 取真实下一句标为 IsNext，50% 从语料随机取标为 NotNext。 [2]\n该任务可从任意单语语料平凡生成，[CLS] 对应的向量 C 用于相邻句段预测。 [3]\n要点\nASP 通过 50/50 的 IsNext/NotNext 采样联合学习句对表示。 [4]\np.4",
+    "claims": [
+      {
+        "slot": "bullets:0",
+        "text": "ASP 用二分类判断句 B 是否为句 A 的真实下一句，弥补语言建模对句间关系的缺失。",
+        "status": "supported",
+        "evidenceIds": [
+          "e4-16"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:1",
+        "text": "采样时 50% 的句 B 取真实下一句标为 IsNext，50% 从语料随机取标为 NotNext。",
+        "status": "supported",
+        "evidenceIds": [
+          "e4-16"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:2",
+        "text": "该任务可从任意单语语料平凡生成，[CLS] 对应的向量 C 用于相邻句段预测。",
+        "status": "partial",
+        "evidenceIds": [
+          "e4-16",
+          "e4-24"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "takeaway:0",
+        "text": "ASP 通过 50/50 的 IsNext/NotNext 采样联合学习句对表示。",
+        "status": "unsupported",
+        "evidenceIds": [
+          "e4-16"
+        ],
+        "flaggedNumbers": [
+          "50",
+          "50"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "BERT 输入由词元、句段与位置编码相加构成\n每个词元的输入表示由词元、句段、位置三类嵌入相加得到。 [1]\n序列首词元固定为 [CLS]，其最后隐状态作为整句聚合表示用于分类。 [2]\n句对用 [SEP] 分隔，并为每个词元加可学习嵌入标明属于句 A 还是句 B。 [3]\n要点\nBERT 输入是词元、句段、位置三类嵌入之和，[CLS] 与 [SEP] 承担句级语义。 [4]\nFigure 2 展示输入嵌入为词元、分割与位置嵌入之和。 [5]\np.4, p.5",
+    "claims": [
+      {
+        "slot": "bullets:0",
+        "text": "每个词元的输入表示由词元、句段、位置三类嵌入相加得到。",
+        "status": "supported",
+        "evidenceIds": [
+          "e4-9",
+          "e5-21"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:1",
+        "text": "序列首词元固定为 [CLS]，其最后隐状态作为整句聚合表示用于分类。",
+        "status": "supported",
+        "evidenceIds": [
+          "e4-2"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:2",
+        "text": "句对用 [SEP] 分隔，并为每个词元加可学习嵌入标明属于句 A 还是句 B。",
+        "status": "supported",
+        "evidenceIds": [
+          "e4-2"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "takeaway:0",
+        "text": "BERT 输入是词元、句段、位置三类嵌入之和，[CLS] 与 [SEP] 承担句级语义。",
+        "status": "supported",
+        "evidenceIds": [
+          "e5-21",
+          "e4-2"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "caption:0",
+        "text": "Figure 2 展示输入嵌入为词元、分割与位置嵌入之和。",
+        "status": "supported",
+        "evidenceIds": [
+          "e5-21"
+        ],
+        "flaggedNumbers": []
+      }
+    ]
+  },
+  {
+    "text": "70/20/10 掩码策略缓解预训练与微调不匹配\n微调时 [MASK] 不出现，预训练若总用它会与下游输入不一致。 [1]\n选中位置按 70% 换 [MASK]、20% 换随机词、10% 保留原词，缓解不匹配。 [2]\n预训练须用文档级语料以抽取长连续序列，而非打乱的句子级语料。 [3]\n要点\n70/20/10 混合替换让模型适应微调时无 [MASK] 的输入。 [4]\np.4, p.5",
+    "claims": [
+      {
+        "slot": "bullets:0",
+        "text": "微调时 [MASK] 不出现，预训练若总用它会与下游输入不一致。",
+        "status": "supported",
+        "evidenceIds": [
+          "e4-15"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:1",
+        "text": "选中位置按 70% 换 [MASK]、20% 换随机词、10% 保留原词，缓解不匹配。",
+        "status": "supported",
+        "evidenceIds": [
+          "e4-15"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:2",
+        "text": "预训练须用文档级语料以抽取长连续序列，而非打乱的句子级语料。",
+        "status": "partial",
+        "evidenceIds": [
+          "e5-23"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "takeaway:0",
+        "text": "70/20/10 混合替换让模型适应微调时无 [MASK] 的输入。",
+        "status": "unsupported",
+        "evidenceIds": [
+          "e4-15"
+        ],
+        "flaggedNumbers": [
+          "70",
+          "20",
+          "10"
+        ]
+      }
+    ]
+  },
+  {
+    "text": "预训练与微调共享架构，微调一小时内完成\n分类任务用 [CLS] 最终隐状态作整句表示，微调只新增分类层权重 W。 [1]\n词元级任务把各词元表示送入输出层，用于序列标注或问答等任务。 [2]\n微调成本低，论文结果在单个 Cloud TPU 上至多 1 小时即可复现。 [3]\n要点\n除输出层外预训练与微调共用同一架构，微调时全部参数一起更新。 [4]\nFigure 1 展示预训练与微调的整体流程，两阶段除输出层外架构相同。 [5]\np.3, p.4, p.5",
+    "claims": [
+      {
+        "slot": "bullets:0",
+        "text": "分类任务用 [CLS] 最终隐状态作整句表示，微调只新增分类层权重 W。",
+        "status": "supported",
+        "evidenceIds": [
+          "e4-2",
+          "e5-37"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:1",
+        "text": "词元级任务把各词元表示送入输出层，用于序列标注或问答等任务。",
+        "status": "supported",
+        "evidenceIds": [
+          "e5-27"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "bullets:2",
+        "text": "微调成本低，论文结果在单个 Cloud TPU 上至多 1 小时即可复现。",
+        "status": "supported",
+        "evidenceIds": [
+          "e5-28"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "takeaway:0",
+        "text": "除输出层外预训练与微调共用同一架构，微调时全部参数一起更新。",
+        "status": "partial",
+        "evidenceIds": [
+          "e3-24"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "caption:0",
+        "text": "Figure 1 展示预训练与微调的整体流程，两阶段除输出层外架构相同。",
+        "status": "supported",
+        "evidenceIds": [
+          "e3-24"
+        ],
+        "flaggedNumbers": []
+      }
+    ]
+  },
+  {
+    "text": "BERT 在 GLUE、SQuAD、SWAG 上刷新最佳成绩\n基准\tBERT 表现\t相对先前 SOTA 提升\nGLUE\tBERTLARGE 78.3 分\t平均提升 4.5%/7.0%，MNLI +2.1% [1]\nSQuAD v1.1\tTest F1 91.4\t单系统超先前集成系统 +1.3 F1 [2]\nSQuAD v2.0\tTest F1 83.1\t较先前最佳 +5.1 F1 [3]\nSWAG\tBERTLARGE 超基线\t较 ESIM+ELMo +27.1%，较 GPT +8.3% [4]\np.1, p.6, p.7",
+    "claims": [
+      {
+        "slot": "rows:0",
+        "text": "GLUE | BERTLARGE 78.3 分 | 平均提升 4.5%/7.0%，MNLI +2.1%",
+        "status": "supported",
+        "evidenceIds": [
+          "e6-11",
+          "e6-13"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "rows:1",
+        "text": "SQuAD v1.1 | Test F1 91.4 | 单系统超先前集成系统 +1.3 F1",
+        "status": "supported",
+        "evidenceIds": [
+          "e1-2",
+          "e6-37"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "rows:2",
+        "text": "SQuAD v2.0 | Test F1 83.1 | 较先前最佳 +5.1 F1",
+        "status": "supported",
+        "evidenceIds": [
+          "e1-2",
+          "e7-44"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "rows:3",
+        "text": "SWAG | BERTLARGE 超基线 | 较 ESIM+ELMo +27.1%，较 GPT +8.3%",
+        "status": "partial",
+        "evidenceIds": [
+          "e7-48"
+        ],
+        "flaggedNumbers": []
+      }
+    ]
+  },
+  {
+    "text": "移除 ASP 与改用单向 LTR 均显著降低性能\n模型\tMRPC\tSQuAD 1.1\nBERTBASE\t88.5\t92.7 [1]\nNo ASP\t87.9\t92.6 [2]\nLTR & No ASP\t77.8\t77.5 [3]\n+ BiLSTM\t84.9\t75.7 [4]\np.8",
+    "claims": [
+      {
+        "slot": "rows:0",
+        "text": "BERTBASE | 88.5 | 92.7",
+        "status": "supported",
+        "evidenceIds": [
+          "e8-4"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "rows:1",
+        "text": "No ASP | 87.9 | 92.6",
+        "status": "supported",
+        "evidenceIds": [
+          "e8-4"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "rows:2",
+        "text": "LTR & No ASP | 77.8 | 77.5",
+        "status": "supported",
+        "evidenceIds": [
+          "e8-4"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "rows:3",
+        "text": "+ BiLSTM | 84.9 | 75.7",
+        "status": "supported",
+        "evidenceIds": [
+          "e8-4"
+        ],
+        "flaggedNumbers": []
+      }
+    ]
+  },
+  {
+    "text": "更大模型带来严格提升，微调与 feature-based 均有效\n模型规模消融\n更大模型在四个 GLUE 任务上均严格提升，MRPC 仅 3,600 条训练样本也不例外。 [1]\nCoNLL-2003 NER 上参数量从 5.84M 增至 3.23M 时 Dev F1 由 77.9 升至 86.6。 [2]\n微调与 feature-based\n拼接顶部四层隐层的 feature-based 方法仅比整体微调低 0.3 F1。 [3]\nBERTLARGE 在小数据集上微调不稳定，需多次随机重启并按 Dev 选最优。 [4]\np.6, p.8, p.9",
+    "claims": [
+      {
+        "slot": "left:0",
+        "text": "更大模型在四个 GLUE 任务上均严格提升，MRPC 仅 3,600 条训练样本也不例外。",
+        "status": "supported",
+        "evidenceIds": [
+          "e8-16"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "left:1",
+        "text": "CoNLL-2003 NER 上参数量从 5.84M 增至 3.23M 时 Dev F1 由 77.9 升至 86.6。",
+        "status": "unsupported",
+        "evidenceIds": [
+          "e9-7"
+        ],
+        "flaggedNumbers": [
+          "5.84M",
+          "3.23M"
+        ]
+      },
+      {
+        "slot": "right:0",
+        "text": "拼接顶部四层隐层的 feature-based 方法仅比整体微调低 0.3 F1。",
+        "status": "supported",
+        "evidenceIds": [
+          "e9-18",
+          "e9-13"
+        ],
+        "flaggedNumbers": []
+      },
+      {
+        "slot": "right:1",
+        "text": "BERTLARGE 在小数据集上微调不稳定，需多次随机重启并按 Dev 选最优。",
+        "status": "supported",
+        "evidenceIds": [
+          "e6-8"
+        ],
+        "flaggedNumbers": []
+      }
+    ]
+  }
+]

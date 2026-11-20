@@ -1,0 +1,155 @@
+[
+  {
+    "promptId": "understand",
+    "promptVersion": 3,
+    "startedAt": "2026-11-20T15:31:27.439Z",
+    "inputTokens": 8382,
+    "outputTokens": 2210,
+    "quotaConsumed": 1.5448275862068963,
+    "latencyMs": 20477,
+    "stopReason": "endTurn",
+    "ok": true,
+    "attempt": 1,
+    "normalizations": [
+      "截断 modules[1].points：10 项保留前 4 项",
+      "截断 modules[1].points[0].evidenceIds：5 项保留前 4 项"
+    ],
+    "rawOutput": "{\"title\":\"Ten simple rules for developing visualization tools in genomics\",\"oneLiner\":\"面向基因组学可视化工具开发，提出覆盖设计、开发、发布与社区运营的10条实用规则。\",\"modules\":[{\"kind\":\"problem\",\"points\":[{\"text\":\"经典静态图形往往不足以有效传达数据复杂性，而从绘制静态图到从零构建可视化工具之间存在明显落差，容易让人在这一非平凡过程中迷失方向。\",\"kind\":\"summary\",\"evidenceIds\":[\"e1-6\",\"e1-10\",\"e1-12\"]},{\"text\":\"随着Next Generation Sequencing技术发展，草图或高质量组装参考基因组数量激增，跨组装、跨物种的(基因)组数据整合与可视化成为重大挑战。\",\"kind\":\"fact\",\"evidenceIds\":[\"e2-1\"]},{\"text\":\"基因组数据集呈指数增长，曾经的庞大数据集5年后可能沦为玩具数据集，工具设计的可扩展性与视觉编码效率因此成为必须考虑的问题。\",\"kind\":\"fact\",\"evidenceIds\":[\"e3-1\"]},{\"text\":\"截至May 30, 2022，awesome-genome-visualization列表已收录434个可视化工具，Europe PMC检索到151篇相关研究论文，工具极易被淹没而遭遗忘。\",\"kind\":\"fact\",\"evidenceIds\":[\"e7-5\"]}]},{\"kind\":\"method\",\"points\":[{\"text\":\"Rule 1要求先明确可视化需求：先问自己要可视化什么、为什么，梳理数据类型与已有工具，通过文献综述、工具评测、GitHub feature request/pull request或插件扩展（如MetaPGN基于Cytoscape插件、JBrowse plugin store）来匹配需求，确无匹配再自研新工具并明确范围与目标。\",\"kind\":\"summary\",\"evidenceIds\":[\"e2-2\",\"e2-3\",\"e2-4\",\"e2-5\",\"e2-6\"]},{\"text\":\"Rule 2强调尽早引入协作者：Sedlmair等人识别出6种非互斥的协作者角色，其中front-line analysts（最终用户）最为关键，应通过访谈、问卷、design sprints、hands-on sessions等方式尽早参与，帮助定义任务、提供测试数据与反馈；还可借助Data Visualization Society、BioVis等社区。\",\"kind\":\"summary\",\"evidenceIds\":[\"e2-7\",\"e2-8\",\"e2-9\"]},{\"text\":\"Rule 3关注视觉可扩展性与分辨率：Venn图超过3个集合即混乱，UpSet虽聚焦交集但集合增多仍可读性下降，网络图在大数据下出现hairball effect；应针对不同数据类型（Hi-C、表观基因组信号、转录因子结合位点等）设计互补的视觉表征而非all-in-one。\",\"kind\":\"summary\",\"evidenceIds\":[\"e3-2\",\"e3-4\"]},{\"text\":\"Rule 4主张在技术、可用性与美学之间取得平衡：VR/AR已用于GWAS、染色体3D结构与genome graphs，Graphia用透视与阴影在2D模拟3D；应关注配色、照顾占全球人口3%以上的视障人群并支持自定义配色，遵循UX设计流程测试不同图形策略。\",\"kind\":\"summary\",\"evidenceIds\":[\"e4-1\",\"e4-2\",\"e4-4\",\"e4-5\"]},{\"text\":\"Rule 5提出让数据复杂性可理解：借鉴Anscombe's quartet与Datasaurus Dozen说明可视化对发现模式的必要性，利用preattentive processing与主动探索，遵循Shneiderman's mantra“Overview first, zoom and filter, then details-on-demand”，通过动态tooltip与linked views降低工作记忆负担。\",\"kind\":\"summary\",\"evidenceIds\":[\"e4-6\",\"e4-7\",\"e4-8\",\"e5-3\"]},{\"text\":\"Rule 6指出技术是手段而非目的：可靠方法优于盲目追新（如BioCocoa自2011年无更新），需关注技术迭代（如genome browsers从HTML image-maps转向client-side JavaScript）；Web可视化需区分SVG与HTML5 Canvas，D3.js是必备库，海量元素渲染可考虑WebGL、Three.js、GenomeSpy或Gosling。\",\"kind\":\"summary\",\"evidenceIds\":[\"e5-4\",\"e5-5\",\"e5-6\",\"e5-7\"]},{\"text\":\"Rule 7要求用多样化数据集做基准测试：小模拟数据集用于开发调试，大模拟数据集用于压力测试评估可扩展性，真实数据用于检验实际表现；性能需从count capacity与size capacity两个维度衡量（如1,000 HIV genomes约9.2 Mb，不足单个人类基因组的0.14%）。\",\"kind\":\"summary\",\"evidenceIds\":[\"e6-2\",\"e6-3\",\"e6-4\",\"e6-5\"]},{\"text\":\"Rule 8强调生态互操作性：实现上应轻量、OS agnostic、尽量client-side运行并实现标准Genomics API；分发上可用Docker/Singularity容器或Conda/Bioconda；JBrowse即为跨平台典范，提供web与desktop版本、Drupal module、JBrowseR（R markdown/R Shiny）及Jupyter package。\",\"kind\":\"summary\",\"evidenceIds\":[\"e6-9\",\"e6-10\",\"e7-2\"]},{\"text\":\"Rule 9建议紧跟相关工作：基因组学快速演进，需保持数据与技术更新，同时避免目标漂移——“A polished and thoroughly executed idea is better than a hybrid monstrosity of hastily (re)defined goals”，并通过会议、文章、Twitter等让工作被看见。\",\"kind\":\"summary\",\"evidenceIds\":[\"e7-5\",\"e7-6\"]},{\"text\":\"Rule 10聚焦培育与支持用户社区：维护README/手册与示例，利用GitHub Discussions/Issues（支持polls）集中答疑，用Zenodo为发布版本签发持久DOI以鼓励引用，会议报告以1到2个关于新功能或最大问题的提问收尾，并借助社交媒体扩大影响。\",\"kind\":\"summary\",\"evidenceIds\":[\"e7-8\",\"e7-9\",\"e8-1\",\"e8-2\"]}]},{\"kind\":\"theory\",\"points\":[{\"text\":\"10条规则按可视化工具生命周期的时间顺序组织：设计阶段（Rules 1到5）、开发阶段（Rules 5到8-ish）直至与世界分享，但规则在全过程中均适用，且开发很少是完全线性的过程。\",\"kind\":\"fact\",\"evidenceIds\":[\"e1-31\",\"e1-35\",\"e1-36\"]},{\"text\":\"Sedlmair等人识别出6种非互斥的协作者角色，front-line analysts是其中主要角色之一，即使用工具完成任务的最终用户。\",\"kind\":\"fact\",\"evidenceIds\":[\"e2-7\"]},{\"text\":\"Shneiderman's mantra“Overview first, zoom and filter, then details-on-demand”是被普遍赞誉的经验法则，鼓励开发者充分利用可视化工具相对于静态图形的核心优势——交互性。\",\"kind\":\"fact\",\"evidenceIds\":[\"e4-8\"]},{\"text\":\"reproducible research与FAIR-sharing原则同样适用于软件产品，可借助Zenodo为发布版本签发持久Digital Object Identifiers (DOI)以鼓励用户引用。\",\"kind\":\"fact\",\"evidenceIds\":[\"e7-9\"]}]},{\"kind\":\"limitations\",\"points\":[{\"text\":\"作者明确指出这10条规则无法替代trial-and-error获得的经验，且仅覆盖冰山一角；未纳入正文的议题包括visual design validation、inclusion与accessibility、visual representation of uncertainty等子领域。\",\"kind\":\"fact\",\"evidenceIds\":[\"e8-3\"]},{\"text\":\"VR/AR等新技术虽在技术上可行，但尚未普及，采用此类技术可能会减少最终用户数量。\",\"kind\":\"fact\",\"evidenceIds\":[\"e4-2\"]},{\"text\":\"追逐最新框架或小众技术可能带来稳定性问题、削弱长期稳健性，且难以找到具备相应技能的人来维护或协助开发工具。\",\"kind\":\"summary\",\"evidenceIds\":[\"e5-4\"]},{\"text\":\"在网站上托管软件示例便于试用，但长期维护可能较为困难。\",\"kind\":\"fact\",\"evidenceIds\":[\"e7-3\"]}]},{\"kind\":\"future_work\",\"points\":[{\"text\":\"基因组学未来发展与挑战涉及更多样化、应用型的omics方法（尤其在健康领域）、数据伦理与安全、reference-free研究等，均伴随数据量增长与对集成方案日益增长的需求。\",\"kind\":\"fact\",\"evidenceIds\":[\"e7-4\"]},{\"text\":\"可视化工具的开发与支持是持续多年的循环过程，初始发布并非终点，需长期持续开发与维护。\",\"kind\":\"fact\",\"evidenceIds\":[\"e1-36\"]},{\"text\":\"多数规则同样适用于非基因组学的datavis工具；基因组学的特殊性在于数据集快速增长、受众为具有覆盖多尺度数据类型专业问题的科学家，可能需要支持既定分析流程、探索性使用与静态快照导出的多用途工具。\",\"kind\":\"summary\",\"evidenceIds\":[\"e8-4\",\"e8-5\"]}]},{\"kind\":\"taxonomy\",\"points\":[{\"text\":\"Rule 7将基准测试数据集分为三类：小模拟数据集（开发调试、快速迭代）、大模拟数据集（压力测试、评估可扩展性与性能）、真实数据（检验真实场景表现与边界情况）。\",\"kind\":\"summary\",\"evidenceIds\":[\"e6-2\",\"e6-3\",\"e6-4\"]},{\"text\":\"性能需从两个维度衡量：count capacity（可添加的基因组或测量数量）与size capacity（可高效处理及最大文件尺寸）。\",\"kind\":\"fact\",\"evidenceIds\":[\"e6-5\"]},{\"text\":\"Rule 8从implementation、distribution、documentation、deployment四个方面降低工具采用门槛。\",\"kind\":\"fact\",\"evidenceIds\":[\"e6-8\"]},{\"text\":\"规则按生命周期分为设计阶段（Rules 1到5）与开发阶段（Rules 5到8-ish）直至发布分享。\",\"kind\":\"fact\",\"evidenceIds\":[\"e1-31\",\"e1-35\"]}]}]}"
+  },
+  {
+    "promptId": "outline",
+    "promptVersion": 2,
+    "startedAt": "2026-11-20T15:31:50.028Z",
+    "inputTokens": 2334,
+    "outputTokens": 521,
+    "quotaConsumed": 0.4077586206896551,
+    "latencyMs": 5178,
+    "stopReason": "endTurn",
+    "ok": true,
+    "attempt": 1,
+    "rawOutput": "{\"emphasis\":\"balanced\",\"items\":[{\"id\":\"s1\",\"title\":\"Ten simple rules for developing visualization tools in genomics\",\"modules\":[],\"intent\":\"介绍所读论文标题与主题\"},{\"id\":\"s2\",\"title\":\"从静态图到可视化工具的落差与数据爆炸构成核心问题\",\"modules\":[\"problem\"],\"intent\":\"解释为何从绘制静态图到构建基因组可视化工具存在落差，以及NGS与数据指数增长带来的挑战\"},{\"id\":\"s3\",\"title\":\"10条规则按工具生命周期组织：设计、开发到发布\",\"modules\":[\"theory\",\"taxonomy\"],\"intent\":\"说明10条规则如何按设计阶段(Rules 1-5)、开发阶段(Rules 5-8)与发布分享的时间顺序组织\"},{\"id\":\"s4\",\"title\":\"Rule 1-2：先明确可视化需求并尽早引入协作者\",\"modules\":[\"method\"],\"intent\":\"解释Rule 1如何通过文献综述与插件扩展匹配需求，Rule 2如何引入front-line analysts等6种协作者角色\"},{\"id\":\"s5\",\"title\":\"Rule 3-4：视觉可扩展性与技术、可用性、美学的平衡\",\"modules\":[\"method\"],\"intent\":\"解释Venn图、UpSet与hairball effect的可扩展性问题，以及VR/AR、配色与Shneiderman mantra的交互设计权衡\",\"figureId\":\"fig1\"},{\"id\":\"s6\",\"title\":\"Rule 7：三类基准测试数据集与性能双维度衡量\",\"modules\":[\"taxonomy\"],\"intent\":\"解释小模拟、大模拟与真实数据三类基准数据集的用途，以及count capacity与size capacity两个性能维度\"},{\"id\":\"s7\",\"title\":\"Rule 8：从实现、分发、文档、部署降低采用门槛\",\"modules\":[\"taxonomy\"],\"intent\":\"解释Rule 8如何从implementation、distribution、documentation、deployment四方面降低工具采用门槛\"},{\"id\":\"s8\",\"title\":\"发布与社区运营：DOI引用与长期维护的循环\",\"modules\":[\"theory\",\"limitations\"],\"intent\":\"解释FAIR-sharing与Zenodo DOI如何鼓励引用，以及追逐新框架与网站托管示例带来的长期维护风险\",\"figureId\":\"fig2\"},{\"id\":\"s9\",\"title\":\"规则的局限与未来：未覆盖议题与跨领域适用性\",\"modules\":[\"limitations\",\"future_work\"],\"intent\":\"解释10条规则无法替代trial-and-error、未纳入的议题，以及规则向非基因组学datavis工具的推广与未来挑战\"}]}"
+  },
+  {
+    "promptId": "slide",
+    "promptVersion": 4,
+    "startedAt": "2026-11-20T15:31:55.937Z",
+    "inputTokens": 2929,
+    "outputTokens": 122,
+    "quotaConsumed": 0.38275862068965516,
+    "latencyMs": 2986,
+    "stopReason": "endTurn",
+    "ok": true,
+    "attempt": 1,
+    "rawOutput": "{\"id\":\"s1\",\"outlineId\":\"s1\",\"layout\":\"title\",\"slots\":{\"title\":\"Ten simple rules for developing visualization tools in genomics\",\"authors\":\"Eloi Durant, Mathieu Rouard, Eric W. Ganko, Cedric Muller, Alan M. Cleary, Andrew D. Farmer, Matthieu Conte, Francois Sabot\"},\"notes\":\"开场先报论文标题，说明这是一篇面向基因组可视化工具开发的十条准则类文章，作者团队来自多个研究机构。提醒大家本次组会重点是理解这十条规则如何指导工具开发实践。\"}"
+  },
+  {
+    "promptId": "slide",
+    "promptVersion": 4,
+    "startedAt": "2026-11-20T15:31:59.820Z",
+    "inputTokens": 2853,
+    "outputTokens": 245,
+    "quotaConsumed": 0.40344827586206894,
+    "latencyMs": 2732,
+    "stopReason": "endTurn",
+    "ok": true,
+    "attempt": 1,
+    "rawOutput": "{\"id\":\"s2\",\"outlineId\":\"s2\",\"layout\":\"two_column\",\"slots\":{\"title\":\"静态图到工具的落差与数据爆炸\",\"leftHeading\":\"从静态图到可视化工具的落差\",\"left\":[{\"text\":\"静态图不足以传达数据复杂性，从零构建工具与画图差距大，易低估难度。\",\"kind\":\"summary\",\"evidenceIds\":[\"e1-6\",\"e1-10\",\"e1-12\"]}],\"rightHeading\":\"NGS 带来的数据爆炸挑战\",\"right\":[{\"text\":\"NGS 使参考基因组数量激增，跨组装、跨物种的数据整合与可视化成主要挑战。\",\"kind\":\"fact\",\"evidenceIds\":[\"e2-1\"]},{\"text\":\"基因组数据指数增长，小数据集上好看的编码在大数据集上扩展性差。\",\"kind\":\"summary\",\"evidenceIds\":[\"e3-1\"]}]},\"notes\":\"先讲左边：画静态图和从零做工具是两回事，容易低估难度。再讲右边：NGS 让基因组数量爆炸，跨组装整合成为主要挑战，也逼着我们考虑可扩展性。\"}"
+  },
+  {
+    "promptId": "slide",
+    "promptVersion": 4,
+    "startedAt": "2026-11-20T15:32:03.089Z",
+    "inputTokens": 3848,
+    "outputTokens": 294,
+    "quotaConsumed": 0.5353448275862068,
+    "latencyMs": 3421,
+    "stopReason": "endTurn",
+    "ok": true,
+    "attempt": 1,
+    "rawOutput": "{\"id\":\"s3\",\"outlineId\":\"s3\",\"layout\":\"bullets\",\"slots\":{\"title\":\"10条规则按工具生命周期排序\",\"bullets\":[{\"text\":\"规则按时间顺序组织：设计阶段(Rules 1-5)、开发阶段(Rules 5-8)直至工具发布分享。\",\"kind\":\"fact\",\"evidenceIds\":[\"e1-35\",\"e1-31\"]},{\"text\":\"规则并非严格线性，创建可视化工具的过程很少完全线性，发布后仍需持续开发与支持。\",\"kind\":\"fact\",\"evidenceIds\":[\"e1-35\",\"e1-36\"]},{\"text\":\"规则面向生物学与生物信息学背景的开发者，覆盖从需求论证到用户社区培育的完整链条。\",\"kind\":\"summary\",\"evidenceIds\":[\"e1-15\",\"e7-9\"]}],\"takeaway\":[{\"text\":\"10条规则按生命周期组织，但实际开发是需长期维护的循环过程。\",\"kind\":\"summary\",\"evidenceIds\":[\"e1-31\",\"e1-36\"]}]},\"notes\":\"这一页先说明论文的组织逻辑：规则不是按主题而是按工具从设计、开发到发布的时间顺序排列。强调作者提醒这些规则并非严格线性，发布后仍要持续开发和支持，是循环过程。最后点出规则面向生物学和生物信息学背景的读者。\"}"
+  },
+  {
+    "promptId": "slide",
+    "promptVersion": 4,
+    "startedAt": "2026-11-20T15:32:07.018Z",
+    "inputTokens": 4660,
+    "outputTokens": 306,
+    "quotaConsumed": 0.6362068965517241,
+    "latencyMs": 3690,
+    "stopReason": "endTurn",
+    "ok": true,
+    "attempt": 1,
+    "rawOutput": "{\"id\":\"s4\",\"outlineId\":\"s4\",\"layout\":\"two_column\",\"slots\":{\"title\":\"先明确需求，再尽早引入协作者\",\"leftHeading\":\"Rule 1：明确可视化需求\",\"left\":[{\"text\":\"先问清要可视化什么、为什么，再驱动工具选型。\",\"kind\":\"summary\",\"evidenceIds\":[\"e2-2\",\"e2-3\"]},{\"text\":\"第一步查文献综述与工具评测，或用插件扩展现有工具。\",\"kind\":\"summary\",\"evidenceIds\":[\"e2-4\",\"e2-5\"]}],\"rightHeading\":\"Rule 2：尽早引入协作者\",\"right\":[{\"text\":\"Sedlmair 等提出 6 种非互斥协作者角色，front-line analysts 是核心。\",\"kind\":\"fact\",\"evidenceIds\":[\"e2-7\"]},{\"text\":\"尽早与最终用户讨论，可定义任务、提供测试数据与反馈。\",\"kind\":\"summary\",\"evidenceIds\":[\"e2-8\"]},{\"text\":\"还可求助视觉感知、HCI 领域与 BioVis 等社区。\",\"kind\":\"summary\",\"evidenceIds\":[\"e2-9\"]}]},\"notes\":\"这一页对比 Rule 1 和 Rule 2：前者是先想清楚要做什么，可查综述或用插件；后者是尽早拉人进来，尤其是最终用户，他们能帮你定任务、给测试数据，还能发现你自己找不到的边界情况。\"}"
+  },
+  {
+    "promptId": "slide",
+    "promptVersion": 4,
+    "startedAt": "2026-11-20T15:32:11.215Z",
+    "inputTokens": 4542,
+    "outputTokens": 348,
+    "quotaConsumed": 0.631896551724138,
+    "latencyMs": 4604,
+    "stopReason": "endTurn",
+    "ok": true,
+    "attempt": 1,
+    "normalizations": [
+      "删除 notes 第 2 句：引用证据中缺少数字 4"
+    ],
+    "rawOutput": "{\"id\":\"s5\",\"outlineId\":\"s5\",\"layout\":\"bullets_figure\",\"figureId\":\"fig1\",\"slots\":{\"title\":\"可扩展性与技术可用性需权衡\",\"bullets\":[{\"text\":\"Venn 图最多约 3 个集合，UpSet 随集合增多仍会读不清，网络图则易出现 hairball effect。\",\"kind\":\"fact\",\"evidenceIds\":[\"e3-2\"]},{\"text\":\"VR/AR 已用于 GWAS 与染色质 3D 结构，但尚未普及，会缩小可用用户群；Graphia 以透视投影折中。\",\"kind\":\"fact\",\"evidenceIds\":[\"e4-2\"]},{\"text\":\"美学部分主观，配色需照顾视觉障碍者并允许自定义，交互遵循 Shneiderman mantra 分层呈现。\",\"kind\":\"summary\",\"evidenceIds\":[\"e4-4\",\"e4-8\"]}],\"takeaway\":[{\"text\":\"技术、可用性与美学的平衡决定工具能否在真实规模下被采用。\",\"kind\":\"opinion\",\"evidenceIds\":[\"e4-1\",\"e3-2\"]}],\"caption\":[{\"text\":\"原图说明视觉编码的可读性取决于所给数据。\",\"kind\":\"fact\",\"evidenceIds\":[\"e3-5\"]}]},\"notes\":\"先看图 1，说明同一编码在不同数据下可读性不同。再讲 Rule 3 的 Venn、UpSet 与 hairball 局限，接着引 Rule 4：VR/AR 虽可行但会劝退用户，配色与 Shneiderman mantra 是可用性与美学的折中。\"}"
+  },
+  {
+    "promptId": "slide",
+    "promptVersion": 4,
+    "startedAt": "2026-11-20T15:32:16.362Z",
+    "inputTokens": 3383,
+    "outputTokens": 392,
+    "quotaConsumed": 0.5025862068965516,
+    "latencyMs": 3697,
+    "stopReason": "endTurn",
+    "ok": true,
+    "attempt": 1,
+    "normalizations": [
+      "丢弃字段 takeaway"
+    ],
+    "rawOutput": "{\"id\":\"s6\",\"outlineId\":\"s6\",\"layout\":\"two_column\",\"slots\":{\"title\":\"三类基准数据与双维度性能衡量\",\"leftHeading\":\"三类基准数据集\",\"left\":[{\"text\":\"小模拟数据集用于开发调试，快速迭代并核对可视化是否忠实于数据。\",\"kind\":\"fact\",\"evidenceIds\":[\"e6-2\"]},{\"text\":\"大模拟数据集用于压力测试，评估可扩展性与性能上限。\",\"kind\":\"fact\",\"evidenceIds\":[\"e6-3\"]},{\"text\":\"真实数据用于验证工具在真实场景下正常工作，排查边缘情况。\",\"kind\":\"fact\",\"evidenceIds\":[\"e6-4\"]}],\"rightHeading\":\"性能双维度\",\"right\":[{\"text\":\"count capacity 指可加入的基因组或测量数量上限。\",\"kind\":\"fact\",\"evidenceIds\":[\"e6-5\"]},{\"text\":\"size capacity 指高效与最大可用文件规模。\",\"kind\":\"fact\",\"evidenceIds\":[\"e6-5\"]},{\"text\":\"1,000 HIV 基因组约 9.2 Mb，不足单个人类基因组的 0.14%。\",\"kind\":\"fact\",\"evidenceIds\":[\"e6-5\"]}]},\"notes\":\"先讲三类数据集各司其职：小模拟管调试、大模拟管压测、真实数据管落地。再强调性能要看两个轴——数量与规模，并用 1,000 个 HIV 基因组仅约 9.2 Mb 的例子说明基因组数量不等于数据体量。\",\"takeaway\":[{\"text\":\"基准测试需兼顾三类数据集，并从数量与规模两轴衡量性能。\",\"kind\":\"summary\",\"evidenceIds\":[\"e6-2\",\"e6-3\",\"e6-4\",\"e6-5\"]}]}"
+  },
+  {
+    "promptId": "slide",
+    "promptVersion": 4,
+    "startedAt": "2026-11-20T15:32:20.588Z",
+    "inputTokens": 3567,
+    "outputTokens": 329,
+    "quotaConsumed": 0.5103448275862068,
+    "latencyMs": 13067,
+    "stopReason": "endTurn",
+    "ok": true,
+    "attempt": 1,
+    "rawOutput": "{\"id\":\"s7\",\"outlineId\":\"s7\",\"layout\":\"two_column\",\"slots\":{\"title\":\"四方面降低工具采用门槛\",\"leftHeading\":\"实现与分发\",\"left\":[{\"text\":\"实现尽量轻量、跨操作系统并优先客户端运行，配标准 Genomics API 便于集成。\",\"kind\":\"summary\",\"evidenceIds\":[\"e6-9\"]},{\"text\":\"提供命令行与配套脚本输出，方便用户纳入自动化工作流。\",\"kind\":\"summary\",\"evidenceIds\":[\"e6-9\"]},{\"text\":\"分发可用 Docker/Singularity 容器或 Conda/Bioconda 环境，简化复杂安装。\",\"kind\":\"summary\",\"evidenceIds\":[\"e6-10\"]}],\"rightHeading\":\"文档与部署\",\"right\":[{\"text\":\"安装时提供依赖细节，降低配置出错的可能。\",\"kind\":\"summary\",\"evidenceIds\":[\"e6-10\"]},{\"text\":\"工具需在既有数据库与工具生态中协作，即使作为独立实例开发。\",\"kind\":\"summary\",\"evidenceIds\":[\"e6-8\"]},{\"text\":\"文档与部署同实现、分发一起被列为降低采用门槛的四个关注点。\",\"kind\":\"summary\",\"evidenceIds\":[\"e6-8\"]}]},\"notes\":\"这一页讲 Rule 8 的落点：从实现、分发、文档、部署四方面降低采用门槛。左边强调轻量、跨平台、客户端运行与容器化分发，右边强调依赖说明与生态协作，提醒大家工具往往要嵌入既有数据库与工具生态。\"}"
+  },
+  {
+    "promptId": "slide",
+    "promptVersion": 4,
+    "startedAt": "2026-11-20T15:32:34.204Z",
+    "inputTokens": 3700,
+    "outputTokens": 255,
+    "quotaConsumed": 0.5077586206896552,
+    "latencyMs": 2502,
+    "stopReason": "endTurn",
+    "ok": true,
+    "attempt": 1,
+    "rawOutput": "{\"id\":\"s8\",\"outlineId\":\"s8\",\"layout\":\"two_column\",\"slots\":{\"title\":\"DOI 引用与长期维护形成循环\",\"leftHeading\":\"鼓励引用的机制\",\"left\":[{\"text\":\"FAIR-sharing 与可复现原则适用于软件，Zenodo 为发布版本签发持久 DOI 以鼓励引用。\",\"kind\":\"fact\",\"evidenceIds\":[\"e7-9\"]}],\"rightHeading\":\"长期维护的风险\",\"right\":[{\"text\":\"追逐最新框架可能带来稳定性问题，如 BioCocoa 自 2011 年起再无更新。\",\"kind\":\"fact\",\"evidenceIds\":[\"e5-4\"]},{\"text\":\"网站托管示例便于试用但难以长期维护，小众技术叠加也难找到维护者。\",\"kind\":\"summary\",\"evidenceIds\":[\"e7-3\",\"e5-4\"]}]},\"notes\":\"先讲 Zenodo DOI 如何把发布版本变成可引用对象，呼应 FAIR 原则。再转到风险侧：新框架虽时髦但可能不稳定，BioCocoa 就是例子；网站托管示例和小众技术会加重维护负担。强调引用与维护是需要多年持续投入的循环。\"}"
+  },
+  {
+    "promptId": "slide",
+    "promptVersion": 4,
+    "startedAt": "2026-11-20T15:32:37.208Z",
+    "inputTokens": 3811,
+    "outputTokens": 344,
+    "quotaConsumed": 0.543103448275862,
+    "latencyMs": 4868,
+    "stopReason": "endTurn",
+    "ok": true,
+    "attempt": 1,
+    "rawOutput": "{\"id\":\"s9\",\"outlineId\":\"s9\",\"layout\":\"bullets\",\"slots\":{\"title\":\"规则无法替代试错，且仅覆盖冰山一角\",\"bullets\":[{\"text\":\"10条规则不能取代trial-and-error积累的经验，只能让开发过程少走弯路。\",\"kind\":\"fact\",\"evidenceIds\":[\"e8-3\"]},{\"text\":\"规则仅触及冰山一角，未纳入的议题包括视觉设计验证、包容与可及性、不确定性表达。\",\"kind\":\"fact\",\"evidenceIds\":[\"e8-3\"]},{\"text\":\"多数内容同样适用于非基因组学datavis工具，基因组学的特殊性在于数据集快速增长、受众问题专业且数据类型与尺度跨度大。\",\"kind\":\"summary\",\"evidenceIds\":[\"e8-4\"]},{\"text\":\"未来挑战与更多元的应用组学（尤其健康领域）、数据伦理与安全、无参考基因组研究等相关，数据量持续增长且需要集成方案。\",\"kind\":\"fact\",\"evidenceIds\":[\"e7-4\"]}],\"takeaway\":[{\"text\":\"规则是起点而非替代品，跨领域推广时仍需结合具体目标与场景。\",\"kind\":\"opinion\",\"evidenceIds\":[\"e8-3\",\"e8-4\"]}]},\"notes\":\"这一页讲规则的边界：作者明确说10条规则不能替代trial-and-error，只是让开发少些痛苦。强调未覆盖的议题如设计验证、可及性和不确定性表达，各自都是独立子领域。最后点出多数规则可迁移到非基因组学工具，但基因组学数据增长快、受众问题更专。\"}"
+  }
+]
