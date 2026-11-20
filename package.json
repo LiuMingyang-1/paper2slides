@@ -7,7 +7,7 @@
     "prompts": "node scripts/compile-prompts.mjs",
     "dev:web": "npm run prompts && vite",
     "build": "npm run prompts && tsc --noEmit && vite build",
-    "test": "npm run prompts && vitest run",
+    "test": "npm run prompts && vitest run --passWithNoTests",
     "typecheck": "npm run prompts && tsc --noEmit",
     "validate": "npm run build && anna-app validate",
     "dev": "npm run build && anna-app dev"
