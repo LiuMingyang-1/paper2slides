@@ -148,6 +148,60 @@ describe("deck citation verification", () => {
     expect(supported?.reason).toContain(crossLanguageReason);
   });
 
+  it.each([
+    ["对问答这类词元级任务，缺少双向上下文可能非常有害。",
+      "For token-level tasks such as Ques-tion Answering, both directions matter.",
+      "For token-level tasks such as Ques-tion Answering, incorporate context from both directions."],
+    ["标准条件语言模型只能单向训练，因双向条件会让词间接看到自身。",
+      "Standard conditional language models cannot use bidirec-tional conditioning.",
+      "Standard conditional language models cannot use bidirec-tional conditioning, which lets each word see itself."],
+    ["每个词元的输入表示由词元、句段与位置三类嵌入相加得到。",
+      "The input representation is formed by summing token, segment, and time embeddings.",
+      "The input representation is formed by summing token, segment, and position embeddings."],
+    ["预训练与微调除输出层外架构相同，用同一预训练参数初始化不同下游任务。",
+      "Apart from output layers, the same architec-tures are used. We train from scratch on different down-stream tasks.",
+      "Apart from output layers, the same architec-tures are used. The same pre-trained model parameters are used to initialize models for different down-stream tasks."],
+    ["统一架构使微调只需换输入输出，全部参数一起更新。",
+      "Fine-tuning is done by swapping out the appropriate inputs and outputs. Only the classifier is fine-tuned.",
+      "Fine-tuning is done by swapping out the appropriate inputs and outputs. All parameters are fine-tuned."],
+  ])("requires all translated anchors for %s", (claim, incomplete, complete) => {
+    const [supported, missingConcept, missingTerm, missingNumber] = verify([
+      fact(claim, "e4-1"),
+      fact(claim, "e4-2"),
+      fact(`RoBERTa：${claim}`, "e4-1"),
+      fact(`${claim}共 99 次。`, "e4-1"),
+    ], evidence("e4-1", complete), evidence("e4-2", incomplete));
+    expect([supported, missingConcept, missingTerm, missingNumber].map((result) => result?.status))
+      .toEqual(["supported", "partial", "partial", "unsupported"]);
+    expect(missingNumber?.numbers).toEqual([{ value: "99", found: false }]);
+  });
+
+  it("keeps translated opinions partial even with recognized phrases", () => {
+    const source = evidence("e4-1", "The input representation is formed by summing token, segment, and position embeddings.");
+    const [check] = verify([
+      { ...fact("每个词元的输入表示由词元、句段与位置三类嵌入相加得到。", source.id), kind: "opinion" },
+    ], source);
+    expect(check?.status).toBe("partial");
+  });
+
+  it("matches ordered percentage splits without reusing a single percentage or raw counts", () => {
+    const paired = evidence("e4-1", "NSP selects an actual next sentence 60% of the time, and a random sentence 40% of the time.");
+    const lone = evidence("e4-2", "NSP selects an actual next sentence 50% of the time.");
+    const counts = evidence("e4-3", "NSP sampled 60 positive and 40 negative examples.");
+    const [correct, swapped, invented, repeated, plainCounts, withUnknownTerm] = verify([
+      fact("NSP 以 60/40 构造正负句对。", paired.id),
+      fact("NSP 以 40/60 构造正负句对。", paired.id),
+      fact("NSP 以 65/35 构造正负句对。", paired.id),
+      fact("NSP 以 50/50 构造正负句对。", lone.id),
+      fact("NSP 以 60/40 构造正负句对。", counts.id),
+      fact("NSP 用 RoBERTa 按 60/40 比例构造正负句对。", paired.id),
+    ], paired, lone, counts);
+    expect(correct).toMatchObject({ status: "supported", numbers: [{ value: "60/40", found: true }] });
+    expect([swapped, invented, repeated, plainCounts].map((result) => result?.status))
+      .toEqual(Array(4).fill("unsupported"));
+    expect(withUnknownTerm?.status).toBe("partial");
+  });
+
   it("keeps regular lexical matching when the citations include prose in the point's language", () => {
     const chineseSource = evidence("e5-2", "比此前最佳模型高出 2 BLEU 以上");
     const [result] = verify([
