@@ -1,0 +1,44 @@
+body {
+  margin: 0;
+  padding: 24px clamp(12px, 4vw, 64px) 48px;
+  background: #eef1f2;
+  color: #17232d;
+  font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+}
+
+.preview-header, #previews {
+  max-width: 1280px;
+  margin-inline: auto;
+}
+
+.preview-header h1 {
+  font-size: 22px;
+}
+
+.preview-header button {
+  border: 1px solid #205f71;
+  padding: 8px 14px;
+  border-radius: 4px;
+  background: white;
+  color: #205f71;
+  font: inherit;
+}
+
+.preview-label {
+  margin: 24px 0 8px;
+  font-size: 15px;
+}
+
+.preview-frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: white;
+  outline: 1px solid #d8dfe2;
+}
+
+.preview-frame .p2s-slide {
+  position: absolute;
+  transform-origin: top left;
+  transform: scale(var(--preview-scale, 1));
+}

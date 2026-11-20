@@ -115,3 +115,75 @@ npm 表中的日期为所列版本的 UTC 发布日期，周下载为 npm API �
 | PPTX 生成 | `pptxgenjs@4.0.1` | 复用当前版本，按槽位测量结果生成原生 PPTX 元素。 |
 
 新增三包的独立探针合计约 37.9 KiB 原始 / 13.8 KiB gzip，另有现有 PDF.js 的 viewer 增量约 244.0 / 66.8 KiB。实际部署产物仍需在 UI 集成后测量。所有建议都可在构建时打包，运行时从同源加载资源。
+
+## 迁移验证
+
+### 检索
+
+用 `eval/papers/*.parsed.json` 的 738 个证据块做离线双跑。每篇预先选 10 条英文查询，覆盖数字、术语和自然语言意图。按证据 ID 集合比较前八项。overlap@8 是交集大小除以旧结果数，旧结果不足 8 时按实际长度计。默认试跑使用同一分词器、关闭模糊及前缀匹配，并按原规则稳定排序。
+
+| 论文 | 查询数 | MiniSearch 默认平均 | 默认低于 0.75 | 迁移后平均 | 前八项顺序完全一致 |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| BERT | 10 | 0.8875 | 0 | 1.000 | 10/10 |
+| Visualization | 10 | 0.9500 | 1 | 1.000 | 10/10 |
+| Deep Learning Review | 10 | 0.7125 | 5 | 1.000 | 10/10 |
+| 合计 | 30 | 0.8500 | 6 | 1.000 | 30/30 |
+
+| 论文 | 查询 | 默认 overlap@8 | 迁移后 |
+| --- | --- | ---: | ---: |
+| BERT | `80.5% GLUE improvement` | 0.875 | 1.000 |
+| BERT | `93.2 SQuAD 1.1 F1` | 0.875 | 1.000 |
+| BERT | `1024 hidden size 16 attention heads` | 0.875 | 1.000 |
+| BERT | `masked language model` | 0.875 | 1.000 |
+| BERT | `next sentence prediction` | 1.000 | 1.000 |
+| BERT | `WordPiece embeddings` | 1.000 | 1.000 |
+| BERT | `bidirectional Transformer encoder` | 0.750 | 1.000 |
+| BERT | `why train with a masking objective` | 1.000 | 1.000 |
+| BERT | `does the benefit depend on model size` | 0.875 | 1.000 |
+| BERT | `how to adapt pretrained weights to downstream tasks` | 0.750 | 1.000 |
+| Visualization | `10 simple rules` | 1.000 | 1.000 |
+| Visualization | `6 non-mutually exclusive categories collaborators` | 1.000 | 1.000 |
+| Visualization | `Venn diagrams up to 3 sets` | 1.000 | 1.000 |
+| Visualization | `JBrowse Ensembl IGV` | 1.000 | 1.000 |
+| Visualization | `UpSet intersections` | 1.000 | 1.000 |
+| Visualization | `Datasaurus visual encoding` | 1.000 | 1.000 |
+| Visualization | `WebGL browser rendering` | 1.000 | 1.000 |
+| Visualization | `how to decide whether to build a new tool` | 0.875 | 1.000 |
+| Visualization | `why test on both simulated and real data` | 1.000 | 1.000 |
+| Visualization | `how to keep a tool useful after release` | 0.625 | 1.000 |
+| Deep Learning Review | `Table 2 22–74 deep learning models` | 0.625 | 1.000 |
+| Deep Learning Review | `Table 7 instance feature model parameter` | 0.750 | 1.000 |
+| Deep Learning Review | `Table 8 77–143 federated centralized` | 0.625 | 1.000 |
+| Deep Learning Review | `convolutional neural network CNN` | 0.500 | 1.000 |
+| Deep Learning Review | `deep belief network restricted Boltzmann machine` | 0.625 | 1.000 |
+| Deep Learning Review | `deep Q-network reinforcement learning` | 0.750 | 1.000 |
+| Deep Learning Review | `vertical horizontal federated learning` | 1.000 | 1.000 |
+| Deep Learning Review | `how to learn when all data cannot be stored in memory` | 0.875 | 1.000 |
+| Deep Learning Review | `why transfer knowledge to a different task` | 0.500 | 1.000 |
+| Deep Learning Review | `privacy and communication challenges across clients` | 0.875 | 1.000 |
+
+逐条复核默认试跑中低于 0.75 的证据交换。
+
+| 查询 | 默认结果判读 |
+| --- | --- |
+| `how to keep a tool useful after release` | 变差。新增的 `e5-5` 提供了技术过时后的改造案例，但关于数据规模的 `e6-5` 占据前八，直接说明发布后持续开发和支持的 `e1-36` 掉出。 |
+| `Table 2 22–74 deep learning models` | 改善。表题 `e5-1` 保持第一，DBN、AE、GAN 三段正文进入前八，替代了表 3、表 4、表 5 的表题。 |
+| `Table 8 77–143 federated centralized` | 变差。表题 `e17-1` 保持第一，`e16-24` 补充了横向和纵向联邦学习的通信对比，但两段综述背景 `e1-11` 和 `e3-3` 也挤入前八，章节标记 `e16-14`、`e16-18` 和横向对比片段 `e17-7` 掉出。 |
+| `convolutional neural network CNN` | 改善。CNN 的定义和结构说明 `e4-10` 进入前八，掉出的结果包括仅讲浅层网络或 RNN 的 `e5-4`、`e5-7`。 |
+| `deep belief network restricted Boltzmann machine` | 改善。解释 RBM 结构与 DBN 训练的 `e7-17` 从第 4 升到第 1，解释 DBN 训练细节的 `e8-19` 进入前八，替代了部分只有模型名称的表格条目。 |
+| `why transfer knowledge to a different task` | 改善。直接解释标注数据稀缺、训练成本和算力收益的 `e12-24` 进入前八，掉出的结果包括单独图题 `e13-1` 和在线学习表格片段 `e12-7`。 |
+
+为保持检索接口的评分及排序约定，最终版采用 MiniSearch 的 `k=1.2`、`b=0.75`、`d=0`，在索引时按实际 token 出现次数计文档长度，查询词去重，并去掉库对匹配词数量的乘数。两条退化查询恢复原 Top-8，另外四条也按同一规则恢复原顺序。旧打分仅保留在测试目录，30 条查询继续逐项检查有序证据 ID。测试还覆盖中文 bigram、数值 token、类型和章节过滤、同分按 ID 排序，以及用本地 mock 验证的 RRF 和向量失败回退。全程未调用 Anna。
+
+### Schema
+
+Valibot 承担对象、枚举、数组、Unicode 长度、证据 ID 格式和去重校验，跨字段约束继续按业务规则执行。失败仍抛出 `SchemaError`，给重试提示最多三条「字段路径＋中文原因」。新测试覆盖嵌套数组路径、缺字段、额外字段和 Unicode 长度边界。返回值继续提供 `value` 和 `missingEvidenceIds`，版式定义文件保持原样。
+
+### 构建体积
+
+同一环境运行 `npm run build`，下表使用 Vite 6.4.6 输出的 kB。当前 SPA 入口仍是 T5 占位页，两次正式构建都只包含占位代码。组件探针在前后构建使用同一个临时入口，把 `HybridRetriever` 和四个校验函数挂到 `globalThis`，以保留组件参与打包。测量后恢复入口。
+
+| JS 产物 | 替换前 kB / gzip | 替换后 kB / gzip | 增量 kB / gzip |
+| --- | ---: | ---: | ---: |
+| 当前 SPA 入口 | 1.05 / 0.59 | 1.05 / 0.59 | 0 / 0 |
+| 检索与校验组件探针 | 12.36 / 5.60 | 35.96 / 12.93 | +23.60 / +7.33 |

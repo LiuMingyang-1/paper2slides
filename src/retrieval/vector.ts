@@ -11,7 +11,8 @@ export interface VectorOptions {
 
 // Send enough paragraphs to amortize each call while bounding request size.
 // Callers can lower the size to suit their embedding provider's limits.
-const DEFAULT_BATCH_SIZE = 32;
+// Platform caps llm.embed at 64 inputs per call and bills a per-call floor, so use the max batch (docs/PLATFORM-PROBE.md).
+const DEFAULT_BATCH_SIZE = 64;
 
 interface CacheEntry {
   source: { id: string; text: string }[];

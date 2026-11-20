@@ -1,9 +1,5 @@
+import MiniSearch from "minisearch";
 import type { Evidence, RetrievalFilter, RetrievalHit } from "../types";
-
-// These standard BM25 values keep repeated terms from dominating and partially
-// compensate for length variation between captions and full paragraphs.
-const K1 = 1.2;
-const B = 0.75;
 
 // Keep negation, comparison words, and domain vocabulary searchable.
 const STOP_WORDS = new Set("a an and are as at be by for from in is of on or that the this to was were with".split(" "));
@@ -41,42 +37,38 @@ export function limitHits(hits: RetrievalHit[], k: number): RetrievalHit[] {
 }
 
 export class BM25Index {
-  private readonly documents: { evidence: Evidence; length: number; counts: Map<string, number> }[];
-  private readonly idf = new Map<string, number>();
-  private readonly averageLength: number;
+  private readonly index: MiniSearch<{ indexId: number; text: string }>;
+  private readonly documents: Evidence[];
 
   constructor(evidence: readonly Evidence[]) {
-    const documentFrequency = new Map<string, number>();
-    let totalLength = 0;
-    this.documents = evidence.map((block) => {
-      const tokens = tokenize(block.text);
-      const counts = new Map<string, number>();
-      for (const term of tokens) counts.set(term, (counts.get(term) ?? 0) + 1);
-      for (const term of counts.keys()) {
-        documentFrequency.set(term, (documentFrequency.get(term) ?? 0) + 1);
-      }
-      totalLength += tokens.length;
-      return { evidence: block, length: tokens.length, counts };
+    this.documents = [...evidence];
+    this.index = new MiniSearch({
+      idField: "indexId",
+      fields: ["text"],
+      // MiniSearch measures length before processTerm, using distinct tokens.
+      // Tag each occurrence there, then index it under the original term.
+      tokenize: (text) => tokenize(text).map((term, i) => `${term} ${i}`),
+      processTerm: (term) => term.slice(0, term.indexOf(" ")),
+      searchOptions: {
+        tokenize: (query) => [...new Set(tokenize(query))],
+        processTerm: (term) => term,
+        fuzzy: false,
+        prefix: false,
+        bm25: { k: 1.2, b: 0.75, d: 0 },
+      },
     });
-    this.averageLength = totalLength / evidence.length || 1;
-    for (const [term, frequency] of documentFrequency) {
-      this.idf.set(term, Math.log1p((evidence.length - frequency + 0.5) / (frequency + 0.5)));
-    }
+    this.index.addAll(evidence.map(({ text }, indexId) => ({ indexId, text })));
   }
 
   search(query: string, k: number, filter?: RetrievalFilter): RetrievalHit[] {
-    const terms = new Set(tokenize(query));
-    const hits: RetrievalHit[] = [];
-    for (const document of this.documents) {
-      if (!matchesFilter(document.evidence, filter)) continue;
-      const lengthPenalty = K1 * (1 - B + B * document.length / this.averageLength);
-      let score = 0;
-      for (const term of terms) {
-        const frequency = document.counts.get(term);
-        if (frequency) score += this.idf.get(term)! * frequency * (K1 + 1) / (frequency + lengthPenalty);
-      }
-      if (score > 0) hits.push({ evidenceId: document.evidence.id, score });
-    }
+    if (!(k >= 1)) return [];
+    const hits = this.index.search(query, {
+      filter: ({ id }) => matchesFilter(this.documents[id as number]!, filter),
+    }).map(({ id, score, queryTerms }) => ({
+      evidenceId: this.documents[id as number]!.id,
+      // Undo MiniSearch's matched-query-term multiplier to retain additive BM25.
+      score: score / queryTerms.length,
+    }));
     return limitHits(hits.sort(compareHits), k);
   }
 }
