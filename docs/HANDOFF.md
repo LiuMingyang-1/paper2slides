@@ -4,16 +4,16 @@
 
 ## 1. 一句话现状
 
-**功能完成，真实模型端到端已跑通，内容来源测试已通过，README 已写好，已知 bug 已修。** 剩下的是：**由用户决定**发布、仓库是否公开，最后用另一个账号装一次。
+**功能完成并已提交审核（v0.1.0，pending_review），仓库已公开。** 剩下的是：等审核通过 → 用另一个账号安装验收 → `apps release 0.1.0` 上架。
 
 ## 2. 环境与入口
 
 | 项 | 值 |
 |---|---|
 | 本地路径 | 仓库根目录（本机克隆位置） |
-| 仓库 | 私有 `LiuMingyang-1/paper2slides`，分支 `main` |
+| 仓库 | **公开** https://github.com/LiuMingyang-1/paper2slides ，分支 `main` |
 | Anna 账号 | staging，已开通开发者，`anna-app login` 已登录（PAT 约 90 天） |
-| Anna App | `[DRAFT] paper2slides (id=288)`，slug `paper2slides`（不可改） |
+| Anna App | `paper2slides (id=288)`，slug `paper2slides`；**v0.1.0 已提交审核（pending_review）** |
 | 平台模型 | `xiaomi/mimo-v2.5`（平台分配，App 不能改） |
 | 额度 | 已用约 69 / 1000 |
 
@@ -51,13 +51,16 @@ npm run build && anna-app dev --port 5182 --no-watch   # 本地 harness，连真
 ### 4.1 ~~合并 T17~~（已完成）
 PPTX 导出与 PDF 解析两侧统一过滤 XML 非法字符，e2e 脚本导出校验到 XML 层。
 
-### 4.2 发布（需用户决定，不要擅自执行）
-1. `anna-app apps publish` → `anna-app apps submit-review`（用户会联系 HR 加速审核）。
-2. 审核通过后，**用另一个账号**在 staging 安装并跑通一次（约 8 额度）。
+### 4.2 发布（进行中）
+- ✅ `anna-app apps publish` → v0.1.0（version_id=716）；`apps sync-meta` 已同步名称、简介和图标。
+- ✅ `anna-app apps submit-review` → `pending_review`。用户联系 HR 加速审核。
+- ⏳ 审核通过（APPROVED）后：用另一个账号直接安装，跑通一篇论文（约 8 额度）。
+- ⏳ 验收通过后：`anna-app apps release 0.1.0` 上架（若管理员审核时已勾选发布则自动 PUBLISHED，可跳过）。
+- 注意：审核期间若再 cut 新版本，需重新 `submit-review` 才会换成新的审核候选版本。
 
 ### 4.3 交付
-- GitHub URL、App name（Paper2Slides）、slug（paper2slides）。
-- 仓库目前**私有**：需用户决定改公开还是邀请对方。
+- GitHub：https://github.com/LiuMingyang-1/paper2slides （已公开）
+- App name：Paper2Slides；slug：paper2slides
 
 ### 4.4 可选（用户说不必追求完美）
 - 表格核验加入行列约束（目前表格错列时仍判 ✅）。
