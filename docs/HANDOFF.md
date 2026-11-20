@@ -80,11 +80,13 @@ npm run build && anna-app dev --port 5182 --no-watch   # 本地 harness，连真
 - 回复用户要简洁（中文）。
 - Commit 结尾：`Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>`。
 
-## 6. 自动化跑真实流程的脚本（不在仓库里）
+## 6. 端到端自动化脚本
 
-`/tmp/p2s-cdp/real.mjs`（puppeteer-core + 本机 Chrome）：打开 harness → 上传 PDF → 点"理解论文并生成大纲" → 点"生成幻灯片" → 截图并导出。日志写到 `/tmp/p2s-real-run.log`，产物在 `/tmp/p2s-real-out/`，任何一步出现"操作失败"就停止，并导出调用日志和截图。
+脚本位于 `eval/e2e/real.mjs`，安装方式和参数见 [eval/e2e/README.md](../eval/e2e/README.md)。从仓库根目录执行 `npm ci --prefix eval/e2e`。默认输出到 `eval/out/`，包含实时进度、累计额度、逐页截图、引用核验文字、调用日志和校验过的 PPTX。
 
-`/tmp` 可能被清理。如果脚本不在了，在仓库外重建：在 `/tmp/p2s-cdp` 里 `npm i puppeteer-core@23`。逻辑是从 harness 页面里找 URL 含 `/dev/` 的 iframe，然后用 `[...document.querySelectorAll("button")].find(x => x.textContent.includes("…"))` 点击按钮。
+- 使用 `anna-app dev --port 5182 --no-watch --no-llm` 启动 harness，然后运行 `node eval/e2e/real.mjs --stop-after parse`，可零额度验证上传和解析。
+- 启动 `npm run dev:web` 后运行 `node eval/e2e/real.mjs --demo --replay-run6`，可零额度验证 10 页截图和导出。普通 `--demo` 使用内置的 5 页 fixture。
+- 经额度授权后，运行 `node eval/e2e/real.mjs --pdf eval/papers/bert.pdf --out /tmp/p2s-real` 执行真实流程。验证热缓存时加 `--repeat 2`，脚本会在同一 App 会话中重新上传。分别启动脚本会创建新会话，默认 harness 的 `runtime_state` 会随会话重置。
 
 ## 7. 已知风险
 
