@@ -31,7 +31,9 @@ export const LAYOUTS: Readonly<Record<LayoutId, LayoutDefinition>> = {
     description: "标题页",
     requiresFigure: false,
     slots: {
-      title,
+      // Cover keeps the full paper title (often > 60 chars, e.g. BERT's is 80);
+      // the 60-char conclusion-title limit applies to content slides only.
+      title: { ...title, maxChars: 180 },
       subtitle: { type: "string", required: false, maxChars: 120 },
       authors: { type: "string", required: false, maxChars: 160 },
     },

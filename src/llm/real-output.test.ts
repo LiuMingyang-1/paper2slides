@@ -47,3 +47,15 @@ describe("real model output regressions", () => {
     await expect(client.complete(PROMPTS.slide!, vars, validator)).rejects.toThrow();
   });
 });
+
+describe("cover title length", () => {
+  it("accepts the full 80-char BERT title on the cover but keeps 60 for content slides", () => {
+    const bert = "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding";
+    const cover = slideValidator({ outlineId: "s1", titlePage: true, evidenceIds: ids, figureIds: new Set() });
+    expect(cover({ id: "s1", outlineId: "s1", layout: "title", slots: { title: bert } }, []).value.slots.title).toBe(bert);
+    const content = slideValidator({ outlineId: "s2", titlePage: false, evidenceIds: ids, figureIds: new Set() });
+    const point = { text: "MLM masks 15% of tokens", kind: "fact", evidenceIds: ["e4-14"] };
+    expect(() => content({ id: "s2", outlineId: "s2", layout: "bullets",
+      slots: { title: "x".repeat(130), bullets: [point] } }, [])).toThrow();
+  });
+});
