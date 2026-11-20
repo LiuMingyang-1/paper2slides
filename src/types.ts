@@ -189,6 +189,13 @@ export interface RetrievalHit {
   score: number;
 }
 
+export interface RetrievalFilter {
+  type?: EvidenceType;
+  /** An exact prefix of the evidence's section path. */
+  sectionPath?: readonly string[];
+}
+
 export interface Retriever {
   search(query: string, k: number): Promise<RetrievalHit[]>;
+  search(query: string, k: number, filter?: RetrievalFilter): Promise<RetrievalHit[]>;
 }
