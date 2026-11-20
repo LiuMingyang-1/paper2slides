@@ -39,7 +39,7 @@ npm run build && anna-app dev --port 5182 --no-watch   # 本地 harness，连真
 | `src/pipeline/` | understand → outline → slides，缓存 | 缓存键含提示词版本：**改提示词会使对应步骤缓存失效** |
 | `src/layout/`, `src/export/` | 6 种版式、自适应、PPTX 导出 | 预览与导出共用测量 |
 | `src/ui/`, `src/store/` | 三栏 UI、气泡、核验面板、Demo | Demo 数据在 `src/ui/demo/` |
-| `prompts/` | 4 个提示词 + 迭代记录 | 当前版本：understand@2、outline@2、slide@3、compress@1（以 frontmatter 为准） |
+| `prompts/` | 4 个提示词 + 迭代记录 | 当前版本：understand@2、outline@2、slide@3、compress@3（以 frontmatter 为准） |
 | `eval/runs/2026-11-20/` | 当天真实运行的调用日志与截图 | `run3-s*.png` 是旧提示词效果 |
 
 ## 4. 明天待办（按顺序）
